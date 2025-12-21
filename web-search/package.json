@@ -1,0 +1,25 @@
+{
+	"name": "web-search",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Web search skill with Exa and DuckDuckGo providers",
+	"main": "web-search.js",
+	"bin": {
+		"web-search": "web-search.js"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"duck-duck-scrape": "^2.2.7",
+		"zod": "^4.2.1"
+	},
+	"keywords": [
+		"web",
+		"search",
+		"exa",
+		"duckduckgo"
+	],
+	"author": "acai-ts",
+	"license": "MIT"
+}
