@@ -17,7 +17,7 @@ npm install
 ## Usage
 
 ```bash
-{baseDir}/transcript.js <video-id-or-url>
+{baseDir}/scripts/transcript.js <video-id-or-url>
 ```
 
 Accepts video ID or full URL:
