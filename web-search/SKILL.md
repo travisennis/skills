@@ -43,10 +43,10 @@ To get your Exa API key:
 
 ```bash
 # Basic search
-{baseDir}/web-search.js <query>
+{baseDir}/scripts/web-search.js <query>
 
 # Search with options
-{baseDir}/web-search.js <query> [options]
+{baseDir}/scripts/web-search.js <query> [options]
 ```
 
 ## Options
@@ -62,25 +62,25 @@ To get your Exa API key:
 
 ```bash
 # Basic search with default settings
-{baseDir}/web-search.js "machine learning frameworks"
+{baseDir}/scripts/web-search.js "machine learning frameworks"
 
 # Search with specific number of results
-{baseDir}/web-search.js "javascript tutorials" --results 3
+{baseDir}/scripts/web-search.js "javascript tutorials" --results 3
 
 # Force DuckDuckGo provider
-{baseDir}/web-search.js "python libraries" --provider duckduckgo
+{baseDir}/scripts/web-search.js "python libraries" --provider duckduckgo
 
 # Search with JSON output
-{baseDir}/web-search.js "react hooks" --json
+{baseDir}/scripts/web-search.js "react hooks" --json
 
 # Search with verbose output
-{baseDir}/web-search.js "typescript best practices" --verbose
+{baseDir}/scripts/web-search.js "typescript best practices" --verbose
 
 # Search with safe search off
-{baseDir}/web-search.js "AI research" --safe off
+{baseDir}/scripts/web-search.js "AI research" --safe off
 
 # Show help
-{baseDir}/web-search.js --help
+{baseDir}/scripts/web-search.js --help
 ```
 
 ## Search Providers
