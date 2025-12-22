@@ -32,8 +32,8 @@ To get your API key:
 ## Usage
 
 ```bash
-{baseDir}/raindrop.js <search-query>
-{baseDir}/raindrop.js <search-query> [options]
+{baseDir}/scripts/raindrop.js <search-query>
+{baseDir}/scripts/raindrop.js <search-query> [options]
 ```
 
 ## Options
@@ -47,22 +47,22 @@ To get your API key:
 
 ```bash
 # Simple search
-{baseDir}/raindrop.js "machine learning"
+{baseDir}/scripts/raindrop.js "machine learning"
 
 # Search with date filter
-{baseDir}/raindrop.js javascript --created 2024-01-01
+{baseDir}/scripts/raindrop.js javascript --created 2024-01-01
 
 # Search with date range and JSON output
-{baseDir}/raindrop.js python --created ">2023-12-01" --json
+{baseDir}/scripts/raindrop.js python --created ">2023-12-01" --json
 
 # Search with tag and limit results
-{baseDir}/raindrop.js #programming --limit 10
+{baseDir}/scripts/raindrop.js #programming --limit 10
 
 # Combined options
-{baseDir}/raindrop.js test -c ">2024-01-01" -l 5 -j
+{baseDir}/scripts/raindrop.js test -c ">2024-01-01" -l 5 -j
 
 # Show help
-{baseDir}/raindrop.js --help
+{baseDir}/scripts/raindrop.js --help
 ```
 
 ## Output Formats
