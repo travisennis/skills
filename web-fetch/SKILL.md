@@ -39,10 +39,10 @@ To get your API key:
 
 ```bash
 # Basic URL fetch
-{baseDir}/web-fetch.js <url>
+{baseDir}/scripts/web-fetch.js <url>
 
 # Fetch with options
-{baseDir}/web-fetch.js <url> [options]
+{baseDir}/scripts/web-fetch.js <url> [options]
 ```
 
 ## Options
@@ -59,25 +59,25 @@ To get your API key:
 
 ```bash
 # Fetch a webpage with default settings
-{baseDir}/web-fetch.js https://example.com
+{baseDir}/scripts/web-fetch.js https://example.com
 
 # Fetch and output as markdown
-{baseDir}/web-fetch.js https://example.com --output markdown
+{baseDir}/scripts/web-fetch.js https://example.com --output markdown
 
 # Use Jina AI for enhanced HTML cleaning
-{baseDir}/web-fetch.js https://example.com --jina
+{baseDir}/scripts/web-fetch.js https://example.com --jina
 
 # Fetch with custom timeout and verbose output
-{baseDir}/web-fetch.js https://example.com --timeout 60000 --verbose
+{baseDir}/scripts/web-fetch.js https://example.com --timeout 60000 --verbose
 
 # Fetch and include headers in output
-{baseDir}/web-fetch.js https://example.com --headers
+{baseDir}/scripts/web-fetch.js https://example.com --headers
 
 # Fetch with token counting
-{baseDir}/web-fetch.js https://example.com --count-tokens
+{baseDir}/scripts/web-fetch.js https://example.com --count-tokens
 
 # Show help
-{baseDir}/web-fetch.js --help
+{baseDir}/scripts/web-fetch.js --help
 ```
 
 ## Content Type Handling
