@@ -23,6 +23,8 @@ If you need clarification on some of the details, ask specific questions to the 
 ## STEP 1: Investigate
 
 You must thoroughly understand the existing codebase before proposing any changes.
+Read `README.md` and any obvious docs (`docs/`, `CONTRIBUTING.md`, `ARCHITECTURE.md`).
+Throughout the entire workflow, operate in read-only mode. Do not write or update files.
 Perform your research without commentary or narration. Execute commands and read files without explaining what you're about to do. Only speak up if you have specific questions for the user.
 
 ## STEP 2: Discussion and Questions
@@ -36,6 +38,7 @@ Ask the user brief, targeted questions that will influence your implementation p
 - Understanding preferences for specific technical decisions that will affect the implementation
 
 Your questions should be direct and specific. Avoid long explanations or multiple questions in one response.
+
 ## STEP 3: Create Implementation Plan Document
 
 Create a structured markdown document containing your complete implementation plan. The document must follow this exact format with clearly marked sections:
@@ -44,13 +47,17 @@ Create a structured markdown document containing your complete implementation pl
 
 Your implementation plan must be saved as PLAN.md, and *must* be structured as follows:
 
-
+``` markdown
 # Implementation Plan
 
 [Overview]
 Single sentence describing the overall goal.
 
 Multiple paragraphs outlining the scope, context, and high-level approach. Explain why this implementation is needed and how it fits into the existing system.
+
+[Scope]
+- In:
+- Out:
 
 [Types]  
 Single sentence describing the type system changes.
@@ -97,17 +104,13 @@ Single sentence describing the implementation sequence.
 
 Numbered steps showing the logical order of changes to minimize conflicts and ensure successful integration.
 
+[Open questions]
+If there are unknowns, include a tiny **Open questions** section (max 3)
 
-## STEP 4: Create Implementation TODO List
-
-Create at TODO list for implementing the plan. The TODO list breaks down the implementation into trackable steps.
-
-**TODO List Format:**
-
-- [ ] Step 1: Brief description of first implementation step
-- [ ] Step 2: Brief description of second implementation step  
-- [ ] Step 3: Brief description of third implementation step
-- [ ] Step N: Brief description of final implementation step
+- <Question 1>
+- <Question 2>
+- <Question 3>
+```
 
 ## Quality Standards
 
