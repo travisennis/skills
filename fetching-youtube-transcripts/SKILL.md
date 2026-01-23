@@ -9,15 +9,18 @@ Fetch video transcripts from YouTube.
 
 ## Setup
 
+Run this from this file's directory.
+
 ```bash
-cd {baseDir}
 npm install
 ```
 
 ## Usage
 
+Run this script from this file's directory.
+
 ```bash
-{baseDir}/scripts/transcript.js <video-id-or-url>
+./scripts/transcript.js <video-id-or-url>
 ```
 
 Accepts:

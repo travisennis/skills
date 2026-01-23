@@ -9,26 +9,30 @@ Chrome DevTools Protocol for agent-assisted web automation. Connects to Chrome o
 
 ## Setup
 
+Run this from this file's directory.
 ```bash
-cd {baseDir}
 npm install
 ```
 
 ## Start Chrome
 
+Run this script from this file's directory.
+
 ```bash
-{baseDir}/scripts/browser-start.js              # Fresh profile
-{baseDir}/scripts/browser-start.js --profile    # Copy user's profile (cookies, logins)
+./scripts/browser-start.js              # Fresh profile
+./scripts/browser-start.js --profile    # Copy user's profile (cookies, logins)
 ```
 
 ## Commands
 
-- **Navigate**: `{baseDir}/scripts/browser-nav.js <url>` [+ `--new` for new tab]
-- **Evaluate JS**: `{baseDir}/scripts/browser-eval.js '<code>'`
-- **Screenshot**: `{baseDir}/scripts/browser-screenshot.js`
-- **Pick elements**: `{baseDir}/scripts/browser-pick.js "description"` - interactive picker for user to select DOM elements
-- **Cookies**: `{baseDir}/scripts/browser-cookies.js`
-- **Extract content**: `{baseDir}/scripts/browser-content.js <url>` - markdown via Readability
+Run this script from this file's directory.
+
+- **Navigate**: `./scripts/browser-nav.js <url>` [+ `--new` for new tab]
+- **Evaluate JS**: `./scripts/browser-eval.js '<code>'`
+- **Screenshot**: `./scripts/browser-screenshot.js`
+- **Pick elements**: `./scripts/browser-pick.js "description"` - interactive picker for user to select DOM elements
+- **Cookies**: `./scripts/browser-cookies.js`
+- **Extract content**: `./scripts/browser-content.js <url>` - markdown via Readability
 
 ## Use When
 

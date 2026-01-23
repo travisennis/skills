@@ -18,8 +18,10 @@ Get token: https://app.raindrop.io/settings/integrations
 
 ## Usage
 
+Run this script from this file's directory.
+
 ```bash
-{baseDir}/scripts/raindrop.js "<query>" [options]
+./scripts/raindrop.js "<query>" [options]
 ```
 
 ## Options
@@ -32,16 +34,16 @@ Get token: https://app.raindrop.io/settings/integrations
 
 ```bash
 # Basic search
-{baseDir}/scripts/raindrop.js "machine learning"
+./scripts/raindrop.js "machine learning"
 
 # Date filter
-{baseDir}/scripts/raindrop.js javascript --created ">2024-01-01"
+./scripts/raindrop.js javascript --created ">2024-01-01"
 
 # JSON output with limit
-{baseDir}/scripts/raindrop.js python -l 10 -j
+./scripts/raindrop.js python -l 10 -j
 
 # Tag search
-{baseDir}/scripts/raindrop.js "#programming"
+./scripts/raindrop.js "#programming"
 ```
 
 ## Output

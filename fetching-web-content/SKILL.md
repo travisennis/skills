@@ -21,8 +21,10 @@ Get key: https://jina.ai/reader/
 
 ## Usage
 
+Run this script from this file's directory.
+
 ```bash
-{baseDir}/scripts/web-fetch.js <url> [options]
+./scripts/web-fetch.js <url> [options]
 ```
 
 ## Options
@@ -37,13 +39,13 @@ Get key: https://jina.ai/reader/
 
 ```bash
 # Basic fetch
-{baseDir}/scripts/web-fetch.js https://example.com
+./scripts/web-fetch.js https://example.com
 
 # As markdown with Jina cleaning
-{baseDir}/scripts/web-fetch.js https://example.com -o markdown -j
+./scripts/web-fetch.js https://example.com -o markdown -j
 
 # JSON output with headers
-{baseDir}/scripts/web-fetch.js https://example.com -o json -H
+./scripts/web-fetch.js https://example.com -o json -H
 ```
 
 ## Notes

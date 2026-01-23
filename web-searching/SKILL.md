@@ -21,8 +21,10 @@ Get key: https://exa.ai/
 
 ## Usage
 
+Run this script from this file's directory.
+
 ```bash
-{baseDir}/scripts/web-search.js "<query>" [options]
+./scripts/web-search.js "<query>" [options]
 ```
 
 ## Options
@@ -35,13 +37,13 @@ Get key: https://exa.ai/
 
 ```bash
 # Basic search
-{baseDir}/scripts/web-search.js "machine learning frameworks"
+./scripts/web-search.js "machine learning frameworks"
 
 # Exa with 3 results
-{baseDir}/scripts/web-search.js "python tutorials" -r 3
+./scripts/web-search.js "python tutorials" -r 3
 
 # DuckDuckGo with JSON
-{baseDir}/scripts/web-search.js "react hooks" -p duckduckgo -j
+./scripts/web-search.js "react hooks" -p duckduckgo -j
 ```
 
 ## Notes

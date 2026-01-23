@@ -18,8 +18,10 @@ export TICKETS_DIR="/path/to/.tickets"
 
 ## Usage
 
+Run this script from this file's directory.
+
 ```bash
-{baseDir}/scripts/tickets.sh <command> [args]
+./scripts/tickets.sh <command> [args]
 ```
 
 ## Commands
