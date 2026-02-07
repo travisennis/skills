@@ -41,6 +41,35 @@ Perform a thorough, skeptical, and constructive code review. Produce a structure
 - **Be balanced** — Include positive feedback alongside criticism.
 - **No open questions** — If something is unclear, investigate further. The final review should be complete and actionable.
 
+## What to check
+
+### Code Smells
+- Duplicates, long methods, deep nesting, dead code, unused imports
+- Leaky abstractions, tight coupling, improper layering
+- Edge cases: null, empty, timezones, encodings
+- Concurrency misuse and non-idempotent ops where required
+
+### Security
+- Secrets in code/logs; proper secret management
+- Input validation and output encoding; SQL/NoSQL/OS injection; XSS/CSRF
+- AuthN/AuthZ and multi-tenant boundaries
+- SSRF/XXE/path traversal/file upload validation
+- Crypto choices; TLS verification; CORS and security headers
+- Dependency CVEs and supply-chain risks; IaC/container misconfig
+
+### Performance
+- Time/space complexity; hot-path allocations; blocking I/O
+- N+1 queries; missing indexes; inefficient joins; full scans
+- Caching correctness and stampedes
+- Chatty network calls; batching; timeouts; backoff
+- Client bundle size and critical path (if UI)
+
+### Tests needed
+- Does new behavior have unit/integration/e2e tests
+- Edge cases, negative cases, concurrency/time-based cases
+- Minimal test plan to guard the change
+
+
 ## Review Patterns
 
 **New features** — Verify correctness, check error handling and edge cases, assess test coverage, consider performance, review API design.
