@@ -83,6 +83,12 @@
 - [Assessment of code clarity and documentation]
 - [Maintainability considerations]
 
+## Risk Assessment & Deployment Considerations
+
+- **Risk level:** [Low/Medium/High]
+- **Deployment notes:** [Migrations, feature flags, rollback plans, or "None"]
+- **Breaking changes:** [Any breaking changes or "None"]
+
 ## Manual Testing Recommendations
 
 Based on the code review, manual testing should verify:

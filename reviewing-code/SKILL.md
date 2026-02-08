@@ -10,11 +10,13 @@ Perform a thorough, skeptical, and constructive code review. Produce a structure
 
 ## Workflow
 
-1. **Gather context** — Read all relevant files fully: changed files, implementation plans, related documentation, and any referenced GitHub issues. Determine the review scope from the user's input (unstaged changes, a commit, a branch range, specific files, or an issue reference).
+1. **Pre-review assessment** — Before reading code, check CI status (`gh pr checks`), PR metadata (title, description, size, linked issues), and scope. If CI is failing, note it and decide whether a full review is worthwhile yet. Assess PR size and determine the review strategy (see Review Strategies below).
 
-2. **Retrieve changes** — Get the relevant diff or file contents for the review scope.
+2. **Gather context** — Read all relevant files fully: changed files, implementation plans, related documentation, and any referenced GitHub issues. Determine the review scope from the user's input (unstaged changes, a commit, a branch range, specific files, or an issue reference).
 
-3. **Analyze systematically** — Evaluate the changes across these dimensions:
+3. **Retrieve changes** — Get the relevant diff or file contents for the review scope.
+
+4. **Analyze systematically** — Evaluate the changes across these dimensions:
 
    - **Correctness & logic** — Does the code work as intended? Are there bugs, logic errors, or unhandled edge cases? Is error handling robust?
    - **Project conventions** — Does the code follow existing patterns, naming conventions, and code structure? Are imports and dependencies appropriate?
@@ -22,14 +24,15 @@ Perform a thorough, skeptical, and constructive code review. Produce a structure
    - **Test coverage** — Are tests included? Do they cover edge cases? Are there missing test scenarios?
    - **Security** — Are there vulnerabilities, injection risks, or improper handling of user input or sensitive data?
    - **Maintainability** — Is the code clear, well-named, modular, and easy to understand?
+   - **Documentation** — Are API docs updated if public APIs changed? Are README/guides updated for user-facing changes? Do comments explain "why" not "what"? Is a changelog entry needed?
 
-4. **Read related code for context** — Look at similar implementations, related tests, and documentation in the codebase to inform the review.
+5. **Read related code for context** — Look at similar implementations, related tests, and documentation in the codebase to inform the review.
 
-5. **Synthesize findings** — Group related issues, prioritize by severity (critical, important, minor), identify patterns, and note positive aspects.
+6. **Synthesize findings** — Group related issues, prioritize by severity (critical, important, minor), identify patterns, and note positive aspects. Include a risk assessment and any deployment considerations (migrations, feature flags, rollback plans).
 
-6. **Write the review report** — Write findings to `review.md` using the template in [references/TEMPLATE.md](references/TEMPLATE.md). Include specific file:line references for all findings.
+7. **Write the review report** — Write findings to `review.md` using the template in [references/TEMPLATE.md](references/TEMPLATE.md). Include specific file:line references for all findings.
 
-7. **Update GitHub issue** — If a GitHub issue was provided, add a comment summarizing the review findings.
+8. **Update GitHub issue** — If a GitHub issue was provided, add a comment summarizing the review findings.
 
 ## Review Guidelines
 
@@ -79,3 +82,27 @@ Perform a thorough, skeptical, and constructive code review. Produce a structure
 **Refactoring** — Verify behavior is preserved, assess maintainability improvement, check for performance implications, review test coverage.
 
 **Security changes** — Thoroughly assess security implications, check for new vulnerabilities, verify input validation, review error handling for information disclosure.
+
+## Review Strategies
+
+**Large PRs** — Review in multiple passes: (1) high-level to understand the overall approach, (2) architecture to review design decisions, (3) implementation to review critical sections, (4) details to scan remaining code. Consider requesting the PR be split into smaller, focused PRs or that the author add more intermediate commits for clarity.
+
+**Complex changes** — Understand first by asking questions before suggesting changes. Focus on correctness. Suggest alternatives only if significantly better. Defer optimizations unless critical, and suggest them as follow-ups.
+
+**Hotfix/Urgent PRs** — Balance speed with quality. Focus on critical issues only. Trust automated tests more. Request a follow-up PR for non-critical improvements.
+
+## Recommendation Criteria
+
+- **Approve** — No critical or major issues. Code follows established patterns. Changes are well-implemented and ready for production.
+- **Approve with comments** — Minor issues that can be addressed post-merge. Non-blocking suggestions for future improvements.
+- **Request changes** — Critical issues that must be addressed. Major architectural concerns. Significant quality or security violations. Requires another review cycle.
+
+## Handling Disagreements
+
+When a review surfaces a genuine disagreement on approach:
+
+1. **Discuss objectively** — Reference requirements, constraints, and established patterns rather than personal preferences.
+2. **Consider tradeoffs** — List pros and cons of each approach.
+3. **Seek consensus** — Involve other team members if needed.
+4. **Document the decision** — Record why the chosen approach was selected.
+5. **Move forward** — Once decided, implement consistently.
