@@ -17,33 +17,101 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ## Usage
 
 ```bash
-# Run a script with inline dependencies
-uv run script.py
-
-# Run with specific Python version
-uv run --python 3.11 script.py
-
-# Run with verbose output
-uv run -v script.py
+uv run script.py                   # Run a script
+uv run script.py arg1 arg2         # With arguments
+uv run --python 3.10 script.py     # Specific Python version
+uv run -v script.py                # Verbose output
+echo 'print("hi")' | uv run -      # From stdin
 ```
 
-## Script Format
+In a project directory, use `--no-project` to skip installing the project:
 
-Add metadata in a TOML comment block at the top:
+```bash
+uv run --no-project script.py
+```
+
+### Ad-hoc Dependencies
+
+Run with dependencies without modifying the script:
+
+```bash
+uv run --with requests script.py
+uv run --with 'requests>2,<3' script.py
+uv run --with requests --with rich script.py
+```
+
+## Inline Script Metadata (Recommended)
+
+Declare dependencies directly in the script via a TOML comment block:
 
 ```python
 # /// script
-# name = "my-script"
-# description = "Process data files"
-# version = "1.0.0"
-# authors = ["Name <email@example.com>"]
-# dependencies = ["pandas>=2.0", "numpy~=1.24"]
-# license = {text = "MIT"}
-# requires-python = ">=3.10"
-# ```
+# requires-python = ">=3.12"
+# dependencies = [
+#   "requests<3",
+#   "rich",
+# ]
+# ///
 
-import pandas as pd
-import numpy as np
+import requests
+from rich import print
+```
+
+Then just: `uv run script.py`
+
+### Managing Script Dependencies
+
+```bash
+uv init --script example.py --python 3.12   # Create script with metadata
+uv add --script example.py requests rich    # Add dependencies to script
+```
+
+### Alternative Index
+
+```bash
+uv add --index "https://example.com/simple" --script example.py requests
+```
+
+Adds to metadata:
+
+```python
+# [[tool.uv.index]]
+# url = "https://example.com/simple"
+```
+
+### Locking Dependencies
+
+```bash
+uv lock --script example.py  # Creates example.py.lock
+```
+
+### Reproducibility
+
+Pin resolution date to get deterministic results:
+
+```python
+# /// script
+# dependencies = ["requests"]
+# [tool.uv]
+# exclude-newer = "2023-10-16T00:00:00Z"
+# ///
+```
+
+### Executable Scripts (Shebang)
+
+```python
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = ["httpx"]
+# ///
+
+import httpx
+print(httpx.get("https://example.com"))
+```
+
+```bash
+chmod +x myscript
+./myscript
 ```
 
 ## Dependency Specification
@@ -61,7 +129,6 @@ import numpy as np
 #     "pandas>=2.0",
 #     "numpy",
 #     "requests[socks]",          # optional extras
-#     "torch --index-url https://download.pytorch.org/whl/cpu",  # custom index
 # ]
 # ///
 ```
