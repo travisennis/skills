@@ -8,6 +8,15 @@ user-invocable: true
 
 Investigate a codebase systematically to produce a detailed research report that informs planning and implementation.
 
+## Rules
+
+- **DO NOT** suggest improvements or changes unless explicitly asked.
+- **DO NOT** critique or evaluate code quality.
+- **DO NOT** propose refactors, optimizations, or alternatives.
+- **DO NOT** guess developer intent or future direction.
+
+Describe **only what exists today**, where it exists, and how it behaves. Your output is technical documentation of the current system, not a review.
+
 ## Workflow
 
 ### 1. Gather context
@@ -34,6 +43,14 @@ Answer these questions through investigation:
 - What are the edge cases and error conditions?
 - What test coverage exists, and where are the gaps?
 
+Document cross-cutting concerns where applicable:
+
+- Error handling and failure behavior
+- Logging, metrics, or tracing
+- Feature flags or conditional execution paths
+- Permission, authentication, or authorization checks
+- Sync vs async boundaries and side effects
+
 Track progress in `scratchpad.md` as you go. Update it with findings, open questions, and areas still to explore.
 
 ### 3. Synthesize
@@ -52,6 +69,17 @@ Every claim must be grounded in code with file path and line references. If some
 If a GitHub issue was provided, comment on it with a summary of key findings using `gh issue comment`.
 
 Clear `scratchpad.md` once the report is complete.
+
+## Completion criteria
+
+Research is complete when:
+
+- The user's question can be answered directly and unambiguously.
+- The primary execution and data flows are fully traced.
+- All components that materially affect behavior are documented.
+- Further investigation would not change the answer in a meaningful way.
+
+If any of these are not met, keep investigating.
 
 ## Quality criteria
 

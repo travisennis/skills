@@ -20,6 +20,18 @@
 
 [Similar structure]
 
+## Primary Execution / Data Flow
+
+Step-by-step description of what happens at runtime for the primary path:
+
+1. [Step 1 with file:line references]
+2. [Step 2 with file:line references]
+3. [Step 3 with file:line references]
+
+Important conditionals or branching behavior:
+
+- [Condition]: [What happens, with file:line references]
+
 ## Architecture & Design Patterns
 
 ### Pattern 1: [Pattern Name]
@@ -27,12 +39,6 @@
 - **Description**: [How it works]
 - **Example**: [file:line reference]
 - **When used**: [Context where this pattern applies]
-
-## Data Flow
-
-1. [Step 1 with file:line references]
-2. [Step 2 with file:line references]
-3. [Step 3 with file:line references]
 
 ## Components & Files
 
@@ -50,6 +56,14 @@
 - **Dependencies**: [What this depends on]
 - **Consumers**: [What depends on this]
 - **External systems**: [APIs, databases, etc.]
+
+## Cross-Cutting Concerns
+
+- **Error handling**: [How errors are caught, propagated, or reported]
+- **Logging / tracing**: [What is logged and where]
+- **Feature flags**: [Any conditional execution paths]
+- **Auth / permissions**: [Relevant checks, if any]
+- **Sync / async boundaries**: [Notable concurrency or async patterns]
 
 ## Edge Cases & Error Handling
 
