@@ -1,6 +1,6 @@
 ---
 name: committing-changes
-description: Creates git commits from outstanding changes following Conventional Commits. Use when asked to commit, stage, or save work to git.
+description: Creates git commits from outstanding changes following Conventional Commits. Use this skill when asked to commit, stage, or save work to git.
 user-invocable: true
 ---
 
