@@ -1,6 +1,8 @@
 ---
 name: scripting
 description: Run Python scripts with dependencies using uv. Use when you need to write and execute Python code for data processing, automation, or analysis tasks.
+metadata:
+  version: "1.0"
 ---
 
 # Python Scripting

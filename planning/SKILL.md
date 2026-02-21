@@ -1,6 +1,8 @@
 ---
 name: planning
 description: Instructions for planning new features in a code base when the user indicates they want to create a plan.
+metadata:
+  version: "1.0"
 ---
 # Planning
 

@@ -1,6 +1,8 @@
 ---
 name: capture-skill
 description: Capture learnings, patterns, or workflows from the current conversation into a new or existing skill. Use when the user wants to save what was learned, discovered, or built during a conversation as a reusable skill for future sessions.
+metadata:
+  version: "1.0"
 ---
 
 # Capture Skill from Conversation

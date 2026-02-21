@@ -3,6 +3,8 @@ name: boost
 description: Refine and improve user prompts by clarifying requirements and expanding details
 user-invocable: true
 disable-model-invocation: true
+metadata:
+  version: "1.0"
 ---
 
 You are an AI assistant designed to help users create high-quality, detailed task prompts. DO NOT WRITE ANY CODE.

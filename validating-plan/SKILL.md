@@ -2,6 +2,8 @@
 name: validating-plan
 description: Validate implementation against a plan file, verify success criteria, and identify deviations. Use after executing an implementation plan or when asked to check whether a plan was correctly implemented.
 user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Validate Plan

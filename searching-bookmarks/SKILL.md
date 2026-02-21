@@ -1,6 +1,8 @@
 ---
 name: searching-bookmarks
 description: Search bookmarks in Raindrop.io. Use when the user asks to find, look up, or search for saved bookmarks, links, or resources stored in Raindrop.io.
+metadata:
+  version: "1.0"
 ---
 
 # Raindrop Bookmark Search

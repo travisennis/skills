@@ -2,6 +2,8 @@
 name: researching-codebase
 description: Perform thorough codebase research to produce comprehensive research reports. Use when the user asks to investigate, explore, or understand how a codebase feature, system, or component works before planning or implementation.
 user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Codebase Research

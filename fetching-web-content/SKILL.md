@@ -1,6 +1,8 @@
 ---
 name: fetching-web-content
 description: Fetch and clean web content from URLs. Use when the user asks to fetch, scrape, read, or extract content from a webpage or URL.
+metadata:
+  version: "1.0"
 ---
 
 # Web Fetch
