@@ -9,12 +9,20 @@ user-invocable: true
 ## Workflow
 
 1. Review conversation history to understand what was accomplished.
-2. Inspect the working tree status and diff to understand outstanding modifications.
+2. Inspect the working tree status (`git status`) and diff (`git diff`) to understand outstanding modifications. Run `git log` to see recent commit messages for style.
 3. Verify staged changes with `git diff --cached` and run tests/lint if applicable before committing.
 4. Determine whether changes should form one commit or multiple atomic commits. Group related files together.
-5. Stage files explicitly — never use `-A` or `.` with `git add`.
+5. Stage files explicitly — never use `-A` or `.` with `git add`. Prefer adding specific files by name to avoid accidentally including sensitive files (.env, credentials) or large binaries.
 6. Write commit messages following the format and rules below.
 7. Create the commit(s) and confirm the result by reviewing recent git log.
+
+## Safety Protocol
+
+- **Never run destructive git commands** (push --force, reset --hard, checkout ., restore ., clean -f, branch -D) unless the user explicitly requests these actions.
+- **Never skip hooks** (--no-verify, --no-gpg-sign) unless the user explicitly requests it.
+- **Never force push** to main/master — warn the user if they request it.
+- **Always create new commits** rather than amending, unless the user explicitly requests amending. When a pre-commit hook fails, the commit did NOT happen — so --amend would modify the PREVIOUS commit, potentially destroying work. Instead, fix the issue, re-stage, and create a NEW commit.
+- **Warn about sensitive files** — Do not commit files that likely contain secrets (.env, credentials.json, etc). Alert the user if they specifically request these files be committed.
 
 ## Conventional Commits Format
 
@@ -62,6 +70,20 @@ user-invocable: true
 ### Footer (Optional)
 - Reference issues: `Fixes #123`, `Closes #456`
 - Breaking changes: `BREAKING CHANGE: API response format changed`
+
+## Important Notes
+
+- **Do not push** to the remote repository unless the user explicitly asks.
+- **No interactive git commands** — Avoid commands with the `-i` flag (like `git rebase -i` or `git add -i`) since they require interactive input.
+- **No --no-edit with rebase** — The `--no-edit` flag is not valid for git rebase.
+- **No empty commits** — If there are no changes to commit (no untracked files and no modifications), do not create an empty commit.
+- **Use HEREDOC for messages** — Pass the commit message via a HEREDOC to ensure correct formatting:
+  ```bash
+  git commit -m "$(cat <<'EOF'
+  Commit message here.
+  EOF
+  )"
+  ```
 
 ## Rules
 
