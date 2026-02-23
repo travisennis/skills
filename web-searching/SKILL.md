@@ -1,6 +1,8 @@
 ---
 name: web-searching
 description: Perform web searches using Exa API with DuckDuckGo fallback. Use when the user asks to search the web, find online information, or look up current events.
+user-invocable: true
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---

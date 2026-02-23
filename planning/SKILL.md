@@ -1,6 +1,8 @@
 ---
 name: planning
 description: Instructions for planning new features in a code base when the user indicates they want to create a plan.
+user-invocable: true
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---
