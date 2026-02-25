@@ -1,7 +1,6 @@
 ---
 name: reviewing-code
 description: Review code changes with thorough analysis and write structured review reports. Use when asked to review, check, or analyze code quality, diffs, commits, branches, or unstaged changes.
-user-invocable: true
 metadata:
   version: "1.0"
 ---

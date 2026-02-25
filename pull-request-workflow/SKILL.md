@@ -1,6 +1,8 @@
 ---
 name: pull-request-workflow
 description: Guidelines for creating, managing, and reviewing pull requests with or without templates
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---

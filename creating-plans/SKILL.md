@@ -1,7 +1,6 @@
 ---
 name: creating-plans
 description: Create detailed implementation plans through iterative codebase research. Use when the user wants to plan a feature, design an implementation, or scope a technical task from a GitHub issue or task description.
-user-invocable: true
 metadata:
   version: "1.0"
 ---

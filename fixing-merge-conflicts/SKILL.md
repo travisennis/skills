@@ -1,7 +1,6 @@
 ---
 name: fixing-merge-conflicts
 description: Resolves merge conflicts on the current Git branch non-interactively. Use when a merge, rebase, or cherry-pick leaves conflict markers in the working tree.
-user-invocable: true
 metadata:
   version: "1.0"
 ---

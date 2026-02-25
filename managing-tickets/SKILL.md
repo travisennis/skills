@@ -1,7 +1,8 @@
 ---
+o
 name: managing-tickets
 description: Manage tickets with dependency tracking and workflow automation. Use when the user asks to create, track, or manage tickets/issues/tasks with dependencies.
-user-invocable: true
+user-invocable: false
 disable-model-invocation: true
 metadata:
   version: "1.0"

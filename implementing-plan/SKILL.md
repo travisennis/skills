@@ -1,7 +1,6 @@
 ---
 name: implementing-plan
 description: Implement approved technical plans phase-by-phase with automated and manual verification. Use when the user says "implement the plan", "execute plan.md", or wants to carry out a previously created plan.
-user-invocable: true
 metadata:
   version: "1.0"
 ---
