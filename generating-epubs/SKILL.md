@@ -50,6 +50,7 @@ uv run scripts/web-to-epub.py -f urls.txt -o reading.epub
 | `--title` | EPUB title | `Collected Articles` |
 | `--author` | EPUB author | `Web Reader` |
 | `--lang` | EPUB language code | `en` |
+| `--no-images` | Skip downloading/embedding images | `false` |
 | `--insecure` | Skip SSL certificate verification | `false` |
 
 #### Troubleshooting

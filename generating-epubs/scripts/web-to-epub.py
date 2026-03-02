@@ -16,7 +16,9 @@ and builds a single EPUB with automatic table of contents.
 """
 
 import argparse
+import hashlib
 import html
+import mimetypes
 import sys
 import os
 from pathlib import Path
@@ -28,6 +30,17 @@ from bs4 import BeautifulSoup
 from readability import Document
 from ebooklib import epub
 from tqdm import tqdm
+
+# Supported image MIME types for EPUB
+SUPPORTED_IMAGE_TYPES = {
+    "image/jpeg", "image/png", "image/gif", "image/svg+xml", "image/webp",
+}
+
+# Map common extensions to MIME types as a fallback
+EXT_TO_MIME = {
+    ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
+    ".gif": "image/gif", ".svg": "image/svg+xml", ".webp": "image/webp",
+}
 
 
 def fetch_page(url: str, timeout: int = 20, verify: bool = True) -> Optional[BeautifulSoup]:
@@ -95,7 +108,80 @@ def make_chapter_html(article: dict) -> str:
     return markup
 
 
-def create_epub(articles: list[dict], output_path: str, title: str = "Collected Articles", author: str = "Web Reader", lang: str = "en") -> None:
+def _guess_mime(url: str, response: Optional[httpx.Response] = None) -> Optional[str]:
+    """Guess image MIME type from response headers or URL extension."""
+    if response is not None:
+        ct = response.headers.get("content-type", "")
+        mime = ct.split(";")[0].strip().lower()
+        if mime in SUPPORTED_IMAGE_TYPES:
+            return mime
+    ext = Path(urlparse(url).path).suffix.lower()
+    return EXT_TO_MIME.get(ext)
+
+
+def download_images(
+    article_html: str,
+    base_url: str,
+    chapter_index: int,
+    image_cache: dict[str, tuple[str, str]],
+    timeout: int = 20,
+    verify: bool = True,
+) -> tuple[str, list[epub.EpubImage]]:
+    """
+    Download images referenced in article HTML and rewrite src attributes.
+
+    Returns the updated HTML and a list of EpubImage items to add to the book.
+    ``image_cache`` maps absolute image URLs to (epub_path, media_type) so
+    images shared across chapters are only downloaded once.
+    """
+    soup = BeautifulSoup(article_html, "html.parser")
+    epub_images: list[epub.EpubImage] = []
+
+    for img in soup.find_all("img"):
+        src = img.get("src", "")
+        if not src or src.startswith("data:"):
+            continue
+
+        abs_url = urljoin(base_url, src)
+
+        # Already downloaded in a previous chapter — just rewrite the src
+        if abs_url in image_cache:
+            img["src"] = image_cache[abs_url][0]
+            continue
+
+        try:
+            with httpx.Client(timeout=timeout, follow_redirects=True, verify=verify) as client:
+                resp = client.get(abs_url, headers={
+                    "User-Agent": "Mozilla/5.0 (Reader Bot/1.0)"
+                })
+                resp.raise_for_status()
+        except httpx.HTTPError:
+            img.decompose()  # remove broken image from HTML
+            continue
+
+        mime = _guess_mime(abs_url, resp)
+        if not mime:
+            img.decompose()
+            continue
+
+        # Deterministic filename based on URL so duplicates map to the same file
+        url_hash = hashlib.sha1(abs_url.encode()).hexdigest()[:12]
+        ext = {v: k for k, v in EXT_TO_MIME.items()}.get(mime, ".bin")
+        epub_path = f"images/ch{chapter_index}_{url_hash}{ext}"
+
+        epub_img = epub.EpubImage()
+        epub_img.file_name = epub_path
+        epub_img.media_type = mime
+        epub_img.content = resp.content
+
+        epub_images.append(epub_img)
+        image_cache[abs_url] = (epub_path, mime)
+        img["src"] = epub_path
+
+    return str(soup), epub_images
+
+
+def create_epub(articles: list[dict], output_path: str, title: str = "Collected Articles", author: str = "Web Reader", lang: str = "en", include_images: bool = True, timeout: int = 20, verify: bool = True) -> None:
     """Create an EPUB from a list of articles."""
     book = epub.EpubBook()
     
@@ -106,15 +192,27 @@ def create_epub(articles: list[dict], output_path: str, title: str = "Collected 
     book.add_author(author)
     
     chapters = []
+    image_cache: dict[str, tuple[str, str]] = {}
     
     for i, article in enumerate(articles):
+        chapter_html = make_chapter_html(article)
+
+        # Download and embed images
+        if include_images:
+            chapter_html, epub_images = download_images(
+                chapter_html, article["url"], i + 1, image_cache,
+                timeout=timeout, verify=verify,
+            )
+            for img_item in epub_images:
+                book.add_item(img_item)
+
         # Create chapter
         chapter = epub.EpubHtml(
             title=article["title"],
             file_name=f"chapter_{i + 1}.xhtml",
             lang=lang
         )
-        chapter.content = make_chapter_html(article)
+        chapter.content = chapter_html
         chapter.add_link(
             href="style.css",
             rel="stylesheet",
@@ -253,6 +351,11 @@ Examples:
         help="EPUB language code (default: en)"
     )
     parser.add_argument(
+        "--no-images",
+        action="store_true",
+        help="Skip downloading and embedding images (faster, smaller EPUB)"
+    )
+    parser.add_argument(
         "--insecure",
         action="store_true",
         help="Skip SSL certificate verification (use with caution)"
@@ -294,7 +397,10 @@ Examples:
     
     # Create EPUB
     try:
-        create_epub(articles, args.output, args.title, args.author, args.lang)
+        create_epub(
+            articles, args.output, args.title, args.author, args.lang,
+            include_images=not args.no_images, timeout=args.timeout, verify=verify,
+        )
         print(f"✓ EPUB created: {os.path.abspath(args.output)}")
     except Exception as e:
         print(f"Error creating EPUB: {e}", file=sys.stderr)
