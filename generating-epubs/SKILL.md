@@ -24,8 +24,9 @@ Convert one or more web articles into a single EPUB with automatic table of cont
    ```bash
    uv run /path/to/skills/generating-epubs/scripts/web-to-epub.py [urls or -f file] -o output.epub
    ```
-5. **Verify output** — Confirm the EPUB was created, report the absolute path and file size to the user.
-6. **Clean up** — Remove any temporary URL file created in step 3.
+5. **Check the summary** — The script outputs a summary showing how many articles succeeded/failed. **You MUST report any failed URLs to the user** with their reasons.
+6. **Verify output** — Confirm the EPUB was created, report the absolute path and file size to the user.
+7. **Clean up** — Remove any temporary URL file created in step 3.
 
 #### Command Reference
 
@@ -55,9 +56,13 @@ uv run scripts/web-to-epub.py -f urls.txt -o reading.epub
 
 #### Troubleshooting
 
+The script outputs a summary at the end showing which URLs failed and why. Common issues:
+
 - **SSL errors** → use `--insecure`
 - **No content extracted** → page likely requires JavaScript or has a paywall
 - **Timeouts** → increase with `-t 60`
+
+If articles fail, the summary will suggest troubleshooting tips. Report these to the user so they can decide whether to retry with different options.
 
 ## Adding New Workflows
 

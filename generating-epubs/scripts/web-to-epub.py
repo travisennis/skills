@@ -261,11 +261,18 @@ def create_epub(articles: list[dict], output_path: str, title: str = "Collected 
     epub.write_epub(output_path, book, {})
 
 
-def fetch_articles(urls: list[str], concurrency: int = 3, timeout: int = 20, verify: bool = True) -> list[dict]:
-    """Fetch multiple URLs with controlled concurrency. Preserves input URL order."""
+def fetch_articles(urls: list[str], concurrency: int = 3, timeout: int = 20, verify: bool = True) -> tuple[list[dict], list[tuple[str, str]]]:
+    """Fetch multiple URLs with controlled concurrency. Preserves input URL order.
+    
+    Returns:
+        tuple of (articles, failed_urls) where:
+            articles: list of successfully extracted article dicts
+            failed_urls: list of (url, reason) tuples for failed extractions
+    """
     import concurrent.futures
     
-    results: dict[int, Optional[dict]] = {}
+    results: dict[int, dict] = {}
+    failed: dict[int, tuple[str, str]] = {}  # index -> (url, reason)
     
     with tqdm(total=len(urls), desc="Fetching articles", unit="url") as pbar:
         with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as executor:
@@ -276,18 +283,24 @@ def fetch_articles(urls: list[str], concurrency: int = 3, timeout: int = 20, ver
             
             for future in concurrent.futures.as_completed(future_to_index):
                 idx = future_to_index[future]
+                url = urls[idx]
                 try:
                     article = future.result()
                     if article:
                         results[idx] = article
                         print(f"  ✓ Extracted: {article['title'][:50]}...")
                     else:
-                        print(f"  ✗ Skipped: {urls[idx]}")
+                        failed[idx] = (url, "No content extracted (paywall, JS-required, or unsupported format)")
+                        print(f"  ✗ Skipped: {url}")
                 except Exception as e:
-                    print(f"  ✗ Error processing {urls[idx]}: {e}", file=sys.stderr)
+                    failed[idx] = (url, str(e))
+                    print(f"  ✗ Error processing {url}: {e}", file=sys.stderr)
                 pbar.update(1)
     
-    return [results[i] for i in sorted(results)]
+    articles = [results[i] for i in sorted(results)]
+    failed_urls = [failed[i] for i in sorted(failed)]
+    
+    return articles, failed_urls
 
 
 def read_urls_from_file(filepath: str) -> list[str]:
@@ -387,13 +400,18 @@ Examples:
     
     # Fetch and extract articles
     verify = not args.insecure
-    articles = fetch_articles(urls, args.concurrency, args.timeout, verify)
+    articles, failed_urls = fetch_articles(urls, args.concurrency, args.timeout, verify)
     
     if not articles:
         print("Error: No articles could be extracted.", file=sys.stderr)
+        if failed_urls:
+            print("\nFailed URLs:", file=sys.stderr)
+            for url, reason in failed_urls:
+                print(f"  • {url}", file=sys.stderr)
+                print(f"    Reason: {reason}", file=sys.stderr)
         sys.exit(1)
     
-    print(f"Extracted {len(articles)} articles, building EPUB...")
+    print(f"\nExtracted {len(articles)} articles, building EPUB...")
     
     # Create EPUB
     try:
@@ -405,6 +423,21 @@ Examples:
     except Exception as e:
         print(f"Error creating EPUB: {e}", file=sys.stderr)
         sys.exit(1)
+    
+    # Print summary
+    print(f"\n{'='*50}")
+    print(f"Summary: {len(articles)} articles extracted")
+    if failed_urls:
+        print(f"         {len(failed_urls)} URLs failed\n")
+        print("Failed URLs:")
+        for url, reason in failed_urls:
+            print(f"  • {url}")
+            print(f"    Reason: {reason}")
+        print("\nTroubleshooting tips:")
+        print("  • Try --insecure if SSL errors occurred")
+        print("  • Increase timeout with -t 60 for slow sites")
+        print("  • Check if the page requires JavaScript (not supported)")
+        print("  • Verify the URL is not behind a paywall")
 
 
 if __name__ == "__main__":
