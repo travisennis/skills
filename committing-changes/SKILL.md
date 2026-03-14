@@ -28,7 +28,7 @@ metadata:
 ## Conventional Commits Format
 
 ```
-<type>[optional scope]: <description>
+<type>[(optional scope)]: <description>
 
 [optional body]
 
