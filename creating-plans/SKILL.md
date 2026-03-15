@@ -2,12 +2,14 @@
 name: creating-plans
 description: Create detailed implementation plans through iterative codebase research. Use when the user wants to plan a feature, design an implementation, or scope a technical task from a GitHub issue or task description.
 metadata:
-  version: "1.0"
+  version: "2.0"
 ---
 
 # Creating Implementation Plans
 
 Create implementation plans through an interactive, iterative process. Be skeptical, thorough, and collaborative.
+
+Plans are **living documents** that guide both the initial implementation and future contributors. A good plan enables a complete novice to implement the feature end-to-end without prior knowledge of the repository.
 
 ## Workflow
 
@@ -22,6 +24,8 @@ If a GitHub issue URL/ID or file path was provided, read those inputs fully and 
 - Track planning progress in `scratchpad.md` (reuse this file across sessions)
 
 Present a summary of findings and ask only questions that codebase research could not answer — specific technical decisions, business logic clarifications, or design preferences.
+
+**Self-containment check**: Ensure all required knowledge is embedded in the plan. Do not point to external blogs or docs; if knowledge is required, include it in your own words.
 
 ### 2. Research and Design
 
@@ -55,6 +59,10 @@ Present the draft plan location and ask for feedback on phase scoping, success c
 - **Be thorough**: Read all context files completely. Include specific file paths and line numbers. Write measurable success criteria with clear automated vs manual distinction.
 - **Be practical**: Focus on incremental, testable changes. Consider migration and rollback. Think about edge cases. Include "what we're NOT doing."
 - **No open questions in the final plan**: If you encounter unresolved questions, stop and research or ask for clarification immediately. The final plan must be complete and actionable.
+- **Plain language**: Define every term of art immediately. Avoid undefined jargon. Do not say "as defined previously" — include explanations even if repetitive.
+- **Observable outcomes**: Phrase acceptance as behavior a human can verify (e.g., "after starting the server, navigating to http://localhost:8080/health returns HTTP 200 with body OK") rather than internal attributes (e.g., "added a HealthCheck struct").
+- **Idempotent steps**: Write steps so they can be run multiple times without causing damage or drift. Include safe retry or rollback paths for risky operations.
+- **Living document**: Plans must be maintained throughout implementation. Record decisions, surprises, and progress as work proceeds.
 
 ## Success Criteria Categories
 
@@ -65,6 +73,14 @@ Always separate success criteria into two categories:
 
 After each phase's automated verification passes, pause for manual confirmation before proceeding.
 
+### Validation Requirements
+
+Validation is not optional. Every plan must include:
+- Specific test commands and how to interpret their results
+- Expected outputs and error messages so success is unambiguous
+- End-to-end scenarios that prove effectiveness beyond compilation
+- Evidence capture: include actual terminal output, short diffs, or logs as indented examples
+
 ## Common Implementation Patterns
 
 **Database changes**: schema/migration → store methods → business logic → API → clients
@@ -72,3 +88,26 @@ After each phase's automated verification passes, pause for manual confirmation 
 **New features**: research existing patterns → data model → backend logic → API endpoints → UI
 
 **Refactoring**: document current behavior → plan incremental changes → maintain backwards compatibility → migration strategy
+
+**Prototyping milestones**: When de-risking is needed, include explicit prototyping phases that:
+- Validate feasibility before full implementation
+- Evaluate external libraries or dependencies independently
+- Prove concepts with additive, testable code
+- State criteria for promoting or discarding the prototype
+
+## Decision Documentation
+
+Resolve ambiguities autonomously and record decisions in the plan:
+- Document why a path was chosen, not just what was chosen
+- Update the plan to reflect implications of changes
+- Record the date/author for each significant decision
+
+## Plan Maintenance (Living Documents)
+
+Plans must be updated as work proceeds:
+- **Progress**: Timestamped checklist of completed and remaining work
+- **Surprises & Discoveries**: Unexpected behaviors, bugs, optimizations found
+- **Decision Log**: Why changes were made to the plan
+- **Outcomes & Retrospective**: Summary of what was achieved vs. original purpose
+
+When revising a plan, write a note at the bottom describing the change and the reason why.
