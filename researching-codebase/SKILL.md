@@ -63,7 +63,14 @@ Track progress in `scratchpad.md` as you go. Update it with findings, open quest
 
 ### 4. Write the report
 
-Write findings to `research.md` using the template in [references/report-template.md](references/report-template.md).
+Determine the output path for the research report:
+
+- **Spec-linked research**: If this research is for an existing spec (a `docs/specs/<slug>/` directory exists with a `prd.md`), write to `docs/specs/<slug>/research.md`.
+- **Ad-hoc research**: If no spec context exists, write to `research.md` at the project root.
+
+If it's not obvious from context which mode applies, ask the user whether this research is linked to a specific spec or is ad-hoc.
+
+Write findings using the template in [references/report-template.md](references/report-template.md).
 
 Every claim must be grounded in code with file path and line references. If something is unclear after investigation, document it as a known gap rather than leaving it ambiguous.
 

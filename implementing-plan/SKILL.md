@@ -12,15 +12,16 @@ Implement an approved technical plan from `plan.md`. These plans contain phases 
 ## Getting Started
 
 When given a plan path:
-- Read `plan.md` completely and check for any existing checkmarks (- [x])
+- Read the plan completely and check for any existing checkmarks (- [x])
 - Read the GitHub issue if provided and all files mentioned in the plan
-- Check `research.md` for any related research documents
+- If working within a spec context (`docs/specs/<slug>/tasks/<task-slug>/plan.md`), also read the PRD (`../../prd.md`) and research (`../../research.md`) for full context
+- Check for related research documents
 - **Read files fully** — complete context is essential
 - Think deeply about how the pieces fit together
 - Create `scratchpad.md` to track progress (reuse this file — no need to preserve prior data)
 - Start implementing once the plan is understood
 
-If no plan path provided, assume `plan.md` and ask for confirmation or GitHub issue reference.
+If no plan path provided, look for a plan at `docs/specs/*/tasks/*/plan.md` or `plan.md` at the project root. Ask for confirmation or a GitHub issue reference.
 
 ## Implementation Philosophy
 
@@ -75,5 +76,7 @@ If the plan has existing checkmarks:
 When all phases are complete:
 - Clear `scratchpad.md` (reuse the file for next session)
 - Ensure all checkboxes in the plan are marked complete
+- If working within a spec context, update the task status to "✅ Complete" in `docs/specs/<slug>/tasks/index.md`
+- Update `docs/specs/index.md` to reflect current task completion counts
 - Summarize what was implemented
 - Update the GitHub issue with completion status

@@ -31,9 +31,14 @@ Perform a thorough, skeptical, and constructive code review. Produce a structure
 
 6. **Synthesize findings** — Group related issues, prioritize by severity (critical, important, minor), identify patterns, and note positive aspects. Include a risk assessment and any deployment considerations (migrations, feature flags, rollback plans).
 
-7. **Write the review report** — Write findings to `review.md` using the template in [references/TEMPLATE.md](references/TEMPLATE.md). Include specific file:line references for all findings.
+7. **Write the review report** — Write findings using the template in [references/TEMPLATE.md](references/TEMPLATE.md). Include specific file:line references for all findings.
 
-8. **Update GitHub issue** — If a GitHub issue was provided, add a comment summarizing the review findings.
+   **Output location** depends on context and outcome:
+   - **Task-linked review with plan changes**: If working within a spec context and the review results in changes to the implementation plan, write to `docs/specs/<slug>/tasks/<task-slug>/review.md` and update the plan with a note referencing the review.
+   - **Task-linked review, no plan changes**: Write to `docs/specs/<slug>/tasks/<task-slug>/review.md` for the record.
+   - **Standalone review**: Write to `review.md` at the project root (ephemeral — overwritten next session).
+
+8. **Update artifacts** — If working within a spec context, update the task entry in `docs/specs/<slug>/tasks/index.md` to note the review status. If a GitHub issue was provided, add a comment summarizing the review findings.
 
 ## Review Guidelines
 

@@ -13,9 +13,10 @@ Break a PRD into independently-grabbable GitHub issues using vertical slices (tr
 
 ### 1. Locate the PRD
 
-Ask the user for the PRD GitHub issue number (or URL).
+The PRD may be either a GitHub issue or a local file at `docs/specs/<slug>/prd.md`.
 
-If the PRD is not already in your context window, fetch it with `gh issue view <number>` (with comments).
+- **GitHub issue**: Ask the user for the PRD issue number (or URL). If the PRD is not already in your context window, fetch it with `gh issue view <number>` (with comments).
+- **Local file**: If the user provides a path like `docs/specs/<slug>/prd.md`, read it directly. Identify the **spec slug** from the path (the directory name under `docs/specs/`).
 
 ### 2. Explore the codebase (optional)
 
@@ -86,5 +87,27 @@ Reference by number from the parent PRD:
 - User story 7
 
 </issue-template>
+
+### 6. Create Task Index
+
+After all issues are created, generate the local task tracking structure:
+
+1. **Create the tasks directory**: `docs/specs/<slug>/tasks/`
+
+2. **Create a subdirectory for each task**: `docs/specs/<slug>/tasks/<task-slug>/`
+   - Derive `<task-slug>` from the task title: lowercase, kebab-case, max ~50 characters.
+
+3. **Write `docs/specs/<slug>/tasks/index.md`** with a task breakdown table:
+
+   ```markdown
+   # Tasks — <PRD Title>
+
+   | # | Task | Status | Issue | Blocked By |
+   |---|------|--------|-------|------------|
+   | 1 | <task title> | 🔲 Not started | [#<num>](url) | — |
+   | 2 | <task title> | 🔲 Not started | [#<num>](url) | #<blocker> |
+   ```
+
+4. **Update `docs/specs/index.md`** to reflect the total task count for this spec (add or update the row for this spec's slug).
 
 Do NOT close or modify the parent PRD issue.

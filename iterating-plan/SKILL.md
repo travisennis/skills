@@ -11,7 +11,9 @@ Update an existing implementation plan based on provided feedback. Be skeptical,
 
 ## Inputs
 
-- **Plan file**: A path to the plan file (default: `plan.md`) or a GitHub issue URL/ID
+- **Plan file**: A path to the plan file or a GitHub issue URL/ID. The plan may be located at:
+  - `docs/specs/<slug>/tasks/<task-slug>/plan.md` (task-linked plan within a spec)
+  - `plan.md` at the project root (standalone plan)
 - **Feedback**: The requested changes or modifications
 
 If either input is missing, ask for it before proceeding.
@@ -48,6 +50,7 @@ Make focused, precise edits:
 - Include specific file paths and line numbers for new content
 - Write measurable success criteria
 - Maintain the distinction between automated and manual verification criteria
+- If working within a spec context, reference the PRD (`../../prd.md`) and research (`../../research.md`) to ensure changes remain aligned with product requirements
 
 ### 5. Summarize Changes
 

@@ -46,7 +46,21 @@ Get user confirmation on the module design.
 
 ### 5. Write the PRD
 
-Write the PRD to `prd.md` using the template below. The PRD should be a durable document that survives refactoring and technical changes.
+**Generate a slug** from the feature name: convert to kebab-case, drop filler words, max ~50 chars, keep it human-readable (e.g., "User Authentication with RBAC" → `user-auth-rbac`).
+
+Create the directory `docs/specs/<slug>/` and write the PRD to `docs/specs/<slug>/prd.md` using the template below. The PRD should be a durable document that survives refactoring and technical changes.
+
+**Update the spec index:** Add or update an entry in `docs/specs/index.md` (create the file if it doesn't exist). The index is a markdown table:
+
+```markdown
+# Spec Index
+
+| Spec | Status | Created | Tasks |
+|------|--------|---------|-------|
+| [Feature Name](slug/prd.md) | Draft | YYYY-MM-DD | #issue, #issue |
+```
+
+Set Status to `Draft` initially. Fill in Created with today's date and link Tasks after issues are created in step 6.
 
 ### 6. Create GitHub Issues
 
@@ -66,7 +80,7 @@ Each child issue should reference the PRD and describe a specific, implementable
 
 ## PRD Template
 
-Use the following template for `prd.md`:
+Use the following template for `docs/specs/<slug>/prd.md`:
 
 ```markdown
 # [Feature Name] - Product Requirements Document
@@ -137,9 +151,10 @@ Any further notes about the feature.
 The PRD is the **input** to the technical workflow:
 
 ```
-prd.md (what to build) → research.md (understand existing code) → plan.md (how to build it)
+docs/specs/<slug>/prd.md (what to build) → research.md (understand existing code) → plan.md (how to build it)
 ```
 
 - `validating-plan` should verify against **both** the plan (technical correctness) AND the PRD (product requirements)
 - `iterating-plan` should reference PRD constraints when refining technical approaches
-- Multiple `plan.md` files can reference the same `prd.md` when a feature is split across issues
+- Multiple `plan.md` files can reference the same `docs/specs/<slug>/prd.md` when a feature is split across issues
+- `docs/specs/index.md` serves as the central registry of all specs

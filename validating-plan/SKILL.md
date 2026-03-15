@@ -11,8 +11,8 @@ Validate that an implementation plan was correctly executed. Verify all success 
 
 ## Setup
 
-1. **Locate the plan** — check `plan.md`, use a provided path, or ask the user.
-2. **Determine context** — if continuing a session, review what was implemented. If starting fresh, discover what was done through git history and codebase analysis.
+1. **Locate the plan** — check for a plan at `docs/specs/<slug>/tasks/<task-slug>/plan.md`, fall back to `plan.md` at the project root, use a provided path, or ask the user.
+2. **Determine context** — if continuing a session, review what was implemented. If starting fresh, discover what was done through git history and codebase analysis. If working within a spec context, read the PRD (`../../prd.md`) and research (`../../research.md`) for full context.
 3. **Gather implementation evidence** — review recent commits and diffs covering the implementation period.
 4. **Check for a linked GitHub issue** — if the plan references an issue, retrieve its details.
 
@@ -79,7 +79,11 @@ For each phase in the plan:
 - Document new API endpoints
 ```
 
-### Update GitHub Issue
+### Update Artifacts
+
+If working within a spec context:
+- Update the task status in `docs/specs/<slug>/tasks/index.md` to reflect validation results.
+- Update `docs/specs/index.md` to reflect current task completion counts.
 
 If a GitHub issue is linked:
 - Add the validation summary as a comment.

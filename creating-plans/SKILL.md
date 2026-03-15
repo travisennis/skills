@@ -18,6 +18,7 @@ Plans are **living documents** that guide both the initial implementation and fu
 If a GitHub issue URL/ID or file path was provided, read those inputs fully and begin research immediately. Otherwise, ask the user for the task description, constraints, and any relevant context.
 
 - Search the codebase for files, patterns, and conventions related to the task
+- Check for existing research at `docs/specs/<slug>/research.md` if working within a spec context
 - Explore directory structures and trace data flow through key functions
 - Note file:line references for important discoveries
 - Cross-reference requirements with actual code to identify discrepancies, assumptions, and true scope
@@ -42,11 +43,16 @@ Propose an outline of implementation phases, each with a name and what it accomp
 
 ### 4. Write the Plan
 
-Write the plan to `plan.md` (reuse this file each session) using the template in [references/plan-template.md](references/plan-template.md).
+Write the plan using the template in [references/plan-template.md](references/plan-template.md). The output path depends on context:
 
-If a GitHub issue was provided, comment on the issue with a summary using the `gh` CLI.
+- **Task-linked plan** (spec context): When a `docs/specs/<slug>/tasks/` directory exists, write the plan to `docs/specs/<slug>/tasks/<task-slug>/plan.md`. The `<task-slug>` should match the task directory created by `converting-prd-to-issues`, or be derived from the task/issue title (kebab-case, max ~50 chars) if creating a new task directory. Reference the PRD and research by relative path (e.g., `../../prd.md`, `../../research.md`).
+- **Standalone plan** (no spec context): Write the plan to `plan.md` at the project root (reuse this file each session).
 
-Clear `scratchpad.md` once the plan is complete.
+After writing the plan:
+
+1. If working within a spec context, update `docs/specs/<slug>/tasks/index.md` to reflect the task's status as "Planned".
+2. If a GitHub issue was provided, comment on the issue with a summary using the `gh` CLI.
+3. Clear `scratchpad.md` once the plan is complete.
 
 ### 5. Review and Iterate
 
