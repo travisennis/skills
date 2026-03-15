@@ -8,7 +8,7 @@ A collection of specialized skills for the acai agent, providing structured work
 
 ## The Complete Development Workflow
 
-Eight skills work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping validated code. All durable artifacts are persisted to `docs/specs/` for posterity.
+Nine skills work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping validated code. All durable artifacts are persisted to `docs/specs/` for posterity.
 
 ```
                          ┌─────────────────────┐
@@ -36,6 +36,12 @@ Eight skills work together to form a comprehensive product-to-code lifecycle—f
                     │  Per-task lifecycle:              │
                     │  Plan → Implement → Validate →   │
                     │  Review                           │
+                    └────────────────┬─────────────────┘
+                                     │
+                                     ▼
+                    ┌──────────────────────────────────┐
+                    │  Validate Workflow                │
+                    │  (Audit docs/specs/ integrity)   │
                     └──────────────────────────────────┘
 ```
 
@@ -51,6 +57,7 @@ Eight skills work together to form a comprehensive product-to-code lifecycle—f
 | **implementing-plan** | Execute approved plans phase-by-phase | After planning—when it's time to write code |
 | **validating-plan** | Verify that implementation matches the plan and PRD requirements | After implementation—before calling work complete |
 | **reviewing-code** | Comprehensive code review of changes | After changes are made—whether from a plan or ad-hoc work |
+| **validating-workflow** | Validate docs/specs/ integrity, consistency, and completeness | After completing work, before marking done, or periodic audits |
 
 ### Artifact Directory Structure
 
@@ -148,6 +155,15 @@ Assess code quality systematically:
 
 **Output:** `docs/specs/<slug>/tasks/<task-slug>/review.md` when working within a spec context (persisted for posterity). Falls back to `review.md` at the project root for standalone reviews. If a review triggers plan changes, the plan is updated with a note referencing the review.
 
+#### 9. Validate Workflow (`validating-workflow`)
+Audit the entire `docs/specs/` artifact system for integrity and consistency:
+- Run automated checks (broken links, missing indexes, orphaned directories)
+- Verify lifecycle completeness (every spec has expected artifacts for its status)
+- Check status coherence (artifact presence matches reported status)
+- Detect stale specs that need attention
+
+**Output:** Validation report summarizing errors, warnings, and suggested fixes. Updates indexes and statuses as needed.
+
 ### Flexible Usage
 
 While these skills form a complete workflow, they can be used independently:
@@ -157,6 +173,7 @@ While these skills form a complete workflow, they can be used independently:
 - **Plan only:** Use `creating-plans` to design a solution for an existing PRD or issue
 - **Review only:** Use `reviewing-code` on any changes, regardless of whether they followed a plan
 - **Validate existing work:** Use `validating-plan` to check if past work matches requirements
+- **Audit docs:** Use `validating-workflow` to check all artifacts are present, consistent, and up to date
 
 All skills support both **spec-linked** mode (artifacts in `docs/specs/`) and **standalone** mode (artifacts at project root) for flexibility.
 
