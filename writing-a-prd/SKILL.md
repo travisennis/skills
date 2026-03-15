@@ -1,27 +1,75 @@
 ---
 name: writing-a-prd
-description: This skill will be invoked when the user wants to create a PRD.
+description: Create a Product Requirements Document (PRD) that defines what to build, why it matters, and how success is measured. Use when starting a new feature, product initiative, or when you need to align on requirements before technical planning.
 metadata:
-  version: "1.0"
+  version: "2.0"
 ---
 
-This skill will be invoked when the user wants to create a PRD. You should go through the steps below. You may skip steps if you don't consider them necessary.
+# Writing a PRD
 
-1. Ask the user for a long, detailed description of the problem they want to solve and any potential ideas for solutions.
+Create a comprehensive Product Requirements Document that captures the problem, solution, and success criteria from the user's perspective. The PRD is the foundation for all subsequent technical work.
 
-2. Explore the repo to verify their assertions and understand the current state of the codebase.
+## Workflow
 
-3. Interview the user relentlessly about every aspect of this plan until you reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
+### 1. Gather Requirements
 
-4. Sketch out the major modules you will need to build or modify to complete the implementation. Actively look for opportunities to extract deep modules that can be tested in isolation.
+Ask the user for a detailed description of:
+- The problem they want to solve
+- Who the users are and what they need
+- Any ideas for solutions or constraints
+- Success criteria and key metrics
 
-A deep module (as opposed to a shallow module) is one which encapsulates a lot of functionality in a simple, testable interface which rarely changes.
+### 2. Explore the Codebase
 
-Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
+Explore the repo to verify assertions and understand:
+- Current state of relevant systems
+- Existing patterns and conventions
+- Technical constraints or opportunities
+- Integration points
 
-5. Once you have a complete understanding of the problem and solution, use the template below to write the PRD. The PRD should be submitted as a GitHub issue.
+### 3. Interview and Refine
 
-<prd-template>
+Walk through the design with the user to resolve ambiguities:
+- Clarify user flows and edge cases
+- Resolve dependencies between decisions
+- Confirm scope and priorities
+- Identify what is explicitly out of scope
+
+### 4. Sketch Modules
+
+Outline the major components needed:
+- Deep modules (encapsulate complex functionality in simple interfaces)
+- Interfaces between components
+- Testing approach for each module
+
+Get user confirmation on the module design.
+
+### 5. Write the PRD
+
+Write the PRD to `prd.md` using the template below. The PRD should be a durable document that survives refactoring and technical changes.
+
+### 6. Create GitHub Issues
+
+After writing the PRD:
+
+1. **Create a parent issue** for the PRD itself (for tracking and discussion)
+2. **Create child issues** for each major deliverable or implementation phase
+
+**When to create multiple issues:**
+- Large features that can be parallelized (different teams or contributors)
+- Phased rollouts (MVP, then enhancements)
+- Platform splits (iOS/Android, frontend/backend)
+- Risk decomposition (spike/prototype, then production)
+- Clear boundaries between components
+
+Each child issue should reference the PRD and describe a specific, implementable piece of work.
+
+## PRD Template
+
+Use the following template for `prd.md`:
+
+```markdown
+# [Feature Name] - Product Requirements Document
 
 ## Problem Statement
 
@@ -37,11 +85,7 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 
 1. As an <actor>, I want a <feature>, so that <benefit>
 
-<user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
-</user-story-example>
-
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+This list should be extensive and cover all aspects of the feature.
 
 ## Implementation Decisions
 
@@ -73,4 +117,29 @@ A description of the things that are out of scope for this PRD.
 
 Any further notes about the feature.
 
-</prd-template>
+## Linked Issues
+
+- PRD tracking issue: #[number]
+- Implementation issues:
+  - #[number] - [description]
+  - #[number] - [description]
+```
+
+## Guidelines
+
+- **User-centric**: Describe everything from the user's perspective, not the implementation
+- **Durable**: Avoid file paths, line numbers, or code specifics that change frequently
+- **Complete**: No open questions should remain; if something is unclear, ask before finalizing
+- **Measurable**: Include success criteria that can be validated later
+
+## Relationship to Technical Planning
+
+The PRD is the **input** to the technical workflow:
+
+```
+prd.md (what to build) → research.md (understand existing code) → plan.md (how to build it)
+```
+
+- `validating-plan` should verify against **both** the plan (technical correctness) AND the PRD (product requirements)
+- `iterating-plan` should reference PRD constraints when refining technical approaches
+- Multiple `plan.md` files can reference the same `prd.md` when a feature is split across issues
