@@ -5,16 +5,26 @@
 # ///
 
 """
-Spec documentation integrity checker for the docs/specs/ artifact system.
+Project documentation integrity checker.
+
+Validates both the docs/specs/ artifact system AND project-level documentation
+(ARCHITECTURE.md, README.md, design docs index, tech debt).
 
 Checks:
-  1. Index coverage — every spec dir is listed in docs/specs/index.md and vice versa
-  2. Artifact completeness — each spec has the expected files for its lifecycle stage
-  3. Task tracking consistency — tasks/index.md entries match actual task directories
-  4. Status coherence — artifact presence matches reported status
-  5. Link integrity — relative markdown links in spec artifacts resolve
-  6. Plan structure — plans have required sections
-  7. Stale artifact detection — specs with incomplete lifecycle artifacts
+  Spec checks:
+    1. Index coverage — every spec dir is listed in docs/specs/index.md and vice versa
+    2. Artifact completeness — each spec has the expected files for its lifecycle stage
+    3. Task tracking consistency — tasks/index.md entries match actual task directories
+    4. Status coherence — artifact presence matches reported status
+    5. Link integrity — relative markdown links in spec artifacts resolve
+    6. Plan structure — plans have required sections
+    7. Stale artifact detection — specs with incomplete lifecycle artifacts
+
+  Project doc checks:
+    8. ARCHITECTURE.md — exists and has required sections
+    9. README.md — exists
+   10. Design docs index — index.md matches directory contents
+   11. Tech debt — docs/tech-debt.md exists
 """
 
 import argparse
@@ -93,7 +103,9 @@ def extract_link_target(cell: str) -> str | None:
     return match.group(1) if match else None
 
 
-# ── Check 1: Spec index coverage ────────────────────────────────────
+# ── Spec Checks ──────────────────────────────────────────────────────
+
+# Check 1: Spec index coverage
 
 def check_spec_index(specs_dir: Path, root: Path) -> None:
     index_path = specs_dir / "index.md"
@@ -130,7 +142,7 @@ def check_spec_index(specs_dir: Path, root: Path) -> None:
         add(ERROR, "index", f"Index references '{slug}' but no directory exists at {relative(specs_dir / slug, root)}")
 
 
-# ── Check 2: Artifact completeness ──────────────────────────────────
+# Check 2: Artifact completeness
 
 def check_artifact_completeness(specs_dir: Path, root: Path) -> None:
     if not specs_dir.exists():
@@ -159,7 +171,7 @@ def check_artifact_completeness(specs_dir: Path, root: Path) -> None:
             check_task_tracking(spec_dir, tasks_dir, tasks_index, root)
 
 
-# ── Check 3: Task tracking consistency ───────────────────────────────
+# Check 3: Task tracking consistency
 
 def check_task_tracking(spec_dir: Path, tasks_dir: Path, tasks_index: Path, root: Path) -> None:
     content = tasks_index.read_text(encoding="utf-8")
@@ -219,18 +231,13 @@ def check_task_tracking(spec_dir: Path, tasks_dir: Path, tasks_index: Path, root
             add(INFO, "completeness", f"Spec '{slug}', task '{task_slug}': no plan.md yet")
 
 
-# ── Check 4: Link integrity ─────────────────────────────────────────
+# Check 4: Link integrity (specs)
 
-def check_links(specs_dir: Path, root: Path) -> None:
+def check_spec_links(specs_dir: Path, root: Path) -> None:
     if not specs_dir.exists():
         return
 
-    md_files: list[Path] = []
-
-    # Collect all markdown files under docs/specs/
-    md_files.extend(specs_dir.glob("**/*.md"))
-
-    for md_file in md_files:
+    for md_file in specs_dir.glob("**/*.md"):
         content = md_file.read_text(encoding="utf-8")
         links = extract_markdown_links(content)
         file_dir = md_file.parent
@@ -241,18 +248,7 @@ def check_links(specs_dir: Path, root: Path) -> None:
                 add(ERROR, "links", f"Broken link in {relative(md_file, root)}: \"{link}\" → target not found")
 
 
-# ── Check 5: Plan structure ──────────────────────────────────────────
-
-REQUIRED_PLAN_SECTIONS = [
-    "## Phase",
-    "## Success Criteria",
-]
-
-RECOMMENDED_PLAN_SECTIONS = [
-    "What We're NOT Doing",
-    "## Implementation",
-]
-
+# Check 5: Plan structure
 
 def check_plan_structure(specs_dir: Path, root: Path) -> None:
     if not specs_dir.exists():
@@ -275,7 +271,7 @@ def check_plan_structure(specs_dir: Path, root: Path) -> None:
             add(INFO, "plan-structure", f"{rel}: consider adding a 'What We're NOT Doing' or 'Out of Scope' section")
 
 
-# ── Check 6: Stale specs ────────────────────────────────────────────
+# Check 6: Stale specs
 
 def check_stale_specs(specs_dir: Path, root: Path) -> None:
     if not specs_dir.exists():
@@ -297,11 +293,85 @@ def check_stale_specs(specs_dir: Path, root: Path) -> None:
             add(INFO, "stale", f"Spec '{slug}': has PRD but no research.md — consider researching before planning")
 
 
+# ── Project Doc Checks ───────────────────────────────────────────────
+
+ARCHITECTURE_REQUIRED_SECTIONS = [
+    "overview",
+    "codemap",
+    "invariant",
+    "boundar",
+    "cross-cutting",
+]
+
+
+def check_architecture(root: Path) -> None:
+    arch_path = root / "ARCHITECTURE.md"
+    if not arch_path.exists():
+        add(WARNING, "project-docs", "ARCHITECTURE.md not found — consider creating one")
+        return
+
+    content = arch_path.read_text(encoding="utf-8").lower()
+    for section in ARCHITECTURE_REQUIRED_SECTIONS:
+        if section not in content:
+            add(WARNING, "project-docs", f"ARCHITECTURE.md may be missing a '{section}' section")
+
+
+def check_readme(root: Path) -> None:
+    readme_path = root / "README.md"
+    if not readme_path.exists():
+        add(WARNING, "project-docs", "README.md not found")
+
+
+def check_design_docs_index(root: Path) -> None:
+    design_docs_dir = root / "docs" / "design-docs"
+    if not design_docs_dir.exists():
+        return  # No design docs directory — nothing to check
+
+    # Collect actual markdown files (excluding index.md itself)
+    actual_files: set[str] = set()
+    for f in design_docs_dir.iterdir():
+        if f.is_file() and f.suffix == ".md" and f.name != "index.md":
+            actual_files.add(f.name)
+
+    if not actual_files:
+        return  # Empty directory — nothing to check
+
+    index_path = design_docs_dir / "index.md"
+    if not index_path.exists():
+        add(ERROR, "project-docs", f"docs/design-docs/ has {len(actual_files)} file(s) but no index.md")
+        return
+
+    content = index_path.read_text(encoding="utf-8")
+
+    # Check each file is mentioned in the index (by filename)
+    for filename in sorted(actual_files):
+        if filename not in content:
+            add(WARNING, "project-docs", f"docs/design-docs/{filename} exists but is not referenced in docs/design-docs/index.md")
+
+    # Check index links resolve
+    links = extract_markdown_links(content)
+    for link in links:
+        resolved = (design_docs_dir / link).resolve()
+        if not resolved.exists():
+            add(ERROR, "links", f"Broken link in docs/design-docs/index.md: \"{link}\" → target not found")
+
+
+def check_tech_debt(root: Path) -> None:
+    tech_debt_path = root / "docs" / "tech-debt.md"
+    agents_path = root / "AGENTS.md"
+
+    # Only flag if AGENTS.md references tech-debt
+    if agents_path.exists():
+        content = agents_path.read_text(encoding="utf-8")
+        if "tech-debt" in content.lower() and not tech_debt_path.exists():
+            add(INFO, "project-docs", "AGENTS.md references tech-debt.md but docs/tech-debt.md does not exist")
+
+
 # ── Main ─────────────────────────────────────────────────────────────
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Validate docs/specs/ artifact integrity and consistency."
+        description="Validate project documentation integrity and consistency."
     )
     parser.add_argument(
         "root",
@@ -320,22 +390,44 @@ def main() -> None:
         action="store_true",
         help="Output results as JSON",
     )
+    parser.add_argument(
+        "--specs-only",
+        action="store_true",
+        help="Only check docs/specs/ artifacts",
+    )
+    parser.add_argument(
+        "--project-only",
+        action="store_true",
+        help="Only check project-level docs (ARCHITECTURE.md, README, etc.)",
+    )
     args = parser.parse_args()
 
     root = Path(args.root).resolve()
     specs_dir = root / "docs" / "specs"
 
-    if not specs_dir.exists():
-        print("ℹ️  No docs/specs/ directory found. Nothing to validate.")
-        sys.exit(0)
+    run_specs = not args.project_only
+    run_project = not args.specs_only
 
-    print("🔍 Validating docs/specs/ integrity...\n")
+    print("🔍 Validating project documentation...\n")
 
-    check_spec_index(specs_dir, root)
-    check_artifact_completeness(specs_dir, root)
-    check_links(specs_dir, root)
-    check_plan_structure(specs_dir, root)
-    check_stale_specs(specs_dir, root)
+    if run_specs:
+        if specs_dir.exists():
+            check_spec_index(specs_dir, root)
+            check_artifact_completeness(specs_dir, root)
+            check_spec_links(specs_dir, root)
+            check_plan_structure(specs_dir, root)
+            check_stale_specs(specs_dir, root)
+        elif not args.specs_only:
+            pass  # No specs dir is fine if we're checking everything
+        else:
+            print("ℹ️  No docs/specs/ directory found. Nothing to validate.")
+            sys.exit(0)
+
+    if run_project:
+        check_architecture(root)
+        check_readme(root)
+        check_design_docs_index(root)
+        check_tech_debt(root)
 
     # Filter by severity
     severity_order = {"error": 0, "warning": 1, "info": 2}
