@@ -186,15 +186,13 @@ def check_task_tracking(spec_dir: Path, tasks_dir: Path, tasks_index: Path, root
         task_cell = row.get("Task", "")
         status_cell = row.get("Status", "")
 
-        # Try to extract a link target, or use the task name to derive slug
-        issue_cell = row.get("Issue", "")
-        link = extract_link_target(issue_cell)
+        # Extract task slug from the Task column link (e.g., "task-slug/issue.md")
+        # The Task column contains the link to the issue.md file
+        task_link = extract_link_target(task_cell)
 
-        # Derive task slug from the task title
-        task_title = task_cell.strip()
-        if task_title:
-            # Convert to kebab-case slug
-            task_slug = re.sub(r"[^a-z0-9]+", "-", task_title.lower()).strip("-")[:50]
+        if task_link:
+            # Extract directory name from link path (e.g., "task-slug/issue.md" -> "task-slug")
+            task_slug = task_link.split("/")[0]
             indexed_tasks.add(task_slug)
             task_statuses[task_slug] = status_cell
 
