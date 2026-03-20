@@ -1,6 +1,8 @@
 ---
 name: simplifying-code
 description: Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality. Use when asked to "simplify code", "clean up code", "refactor for clarity", "improve readability", or review recently modified code for elegance. Adapts to the detected language and project conventions.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "2.0"
 ---

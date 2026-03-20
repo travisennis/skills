@@ -1,9 +1,10 @@
 ---
 name: managing-docs
 description: Validate and update all project documentation — specs, architecture, design docs, and README. Use after completing work, when asked to check documentation hygiene, or when asked to update project docs. Replaces managing-architecture-document and validating-workflow.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "1.0"
-user-invocable: true
 ---
 
 # Managing Project Documentation

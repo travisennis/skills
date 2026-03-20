@@ -1,6 +1,8 @@
 ---
 name: iterating-plan
 description: Iterates on existing implementation plans based on feedback — researching the codebase, validating feasibility, and updating plan files. Use when asked to update, modify, revise, or refine an existing plan.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---

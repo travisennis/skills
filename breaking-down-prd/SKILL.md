@@ -1,6 +1,8 @@
 ---
 name: breaking-down-prd
 description: Break a PRD into independently-implementable tasks with local tracking
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "3.0"
 ---

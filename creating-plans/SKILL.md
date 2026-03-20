@@ -1,6 +1,8 @@
 ---
 name: creating-plans
 description: Create detailed implementation plans through iterative codebase research. Use when the user wants to plan a feature, design an implementation, or scope a technical task.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "2.0"
 ---

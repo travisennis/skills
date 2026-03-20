@@ -1,6 +1,8 @@
 ---
 name: github-issue-creator
 description: Convert raw notes, error logs, voice dictation, or screenshots into crisp GitHub-flavored markdown issue reports. Use when the user pastes bug info, error messages, or informal descriptions and wants a structured GitHub issue. Supports images/GIFs for visual evidence.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---

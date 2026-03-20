@@ -1,6 +1,8 @@
 ---
 name: writing-a-prd
 description: Create a Product Requirements Document (PRD) that defines what to build, why it matters, and how success is measured. Use when starting a new feature, product initiative, or when you need to align on requirements before technical planning.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "2.0"
 ---

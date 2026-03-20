@@ -1,6 +1,8 @@
 ---
 name: finding-bugs
 description: Find bugs, security vulnerabilities, and code quality issues in local branch changes. Use when asked to review changes, find bugs, security review, or audit code on the current branch.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---

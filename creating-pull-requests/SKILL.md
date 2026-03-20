@@ -1,6 +1,8 @@
 ---
 name: creating-pull-requests
 description: Creates pull request descriptions by analyzing branch diffs. Use when opening a PR, drafting a PR description, or preparing changes for review.
+user-invocable: false
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---
