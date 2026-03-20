@@ -8,7 +8,7 @@ A collection of specialized skills for the acai agent, providing structured work
 
 ## The Complete Development Workflow
 
-Nine skills work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping validated code. All durable artifacts are persisted to `docs/specs/` for posterity.
+Nine skills work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping validated code. Spec artifacts (PRDs, research, plans, reviews) are ephemeral working documents persisted to `.agents/specs/` (gitignored, not committed to the repo).
 
 ```
                          ┌─────────────────────┐
@@ -19,9 +19,9 @@ Nine skills work together to form a comprehensive product-to-code lifecycle—fr
                                     │
                                     ▼
 ┌─────────────────────┐     ┌─────────────────────┐
-│  Researching        │────▶│  Converting PRD     │
-│  Codebase           │     │  to Issues          │
-│  (Investigate)      │     │  (Break down)       │
+│  Researching        │────▶│  Breaking Down      │
+│  Codebase           │     │  PRD                │
+│  (Investigate)      │     │  (Create Tasks)     │
 └─────────────────────┘     └──────────┬──────────┘
                                        │
                           ┌────────────┼────────────┐
@@ -51,30 +51,29 @@ Nine skills work together to form a comprehensive product-to-code lifecycle—fr
 |-------|---------|-------------|
 | **writing-a-prd** | Define product requirements, user stories, and success criteria | At the start—when you need to align on what to build |
 | **researching-codebase** | Deep investigation of existing code to understand how things work | Before planning—when you need to understand the codebase, a feature, or a system |
-| **converting-prd-to-issues** | Break a PRD into vertical-slice tasks with GitHub issues | After the PRD—when you need to decompose work into independently-grabbable tasks |
+| **breaking-down-prd** | Break a PRD into vertical-slice tasks with local tracking | After the PRD—when you need to decompose work into independently-implementable tasks |
 | **creating-plans** | Create detailed, actionable implementation plans per task | After research—when you're ready to design a solution for a specific task |
 | **iterating-plan** | Update existing plans based on new information or feedback | When requirements change or plans need refinement |
 | **implementing-plan** | Execute approved plans phase-by-phase | After planning—when it's time to write code |
 | **validating-plan** | Verify that implementation matches the plan and PRD requirements | After implementation—before calling work complete |
 | **reviewing-code** | Comprehensive code review of changes | After changes are made—whether from a plan or ad-hoc work |
-| **managing-docs** | Validate and update all project documentation — specs, architecture, design docs, README, tech debt | After completing work, before marking done, or periodic audits |
+| **managing-docs** | Validate and update all project documentation — specs, architecture, design docs, README | After completing work, before marking done, or periodic audits |
 
 ### Artifact Directory Structure
 
-All durable artifacts are persisted within the project's `docs/specs/` directory:
+Spec artifacts are ephemeral working documents stored in `.agents/specs/` (gitignored). They are not committed to the repository.
 
 ```
-docs/
-├── specs/
-│   ├── index.md                        # Catalog of all specs (auto-maintained)
-│   └── <slug>/                         # e.g. "user-auth-rbac"
-│       ├── prd.md                      # Product requirements (durable)
-│       ├── research.md                 # Codebase investigation findings
-│       └── tasks/
-│           ├── index.md                # Task breakdown + status tracking
-│           └── <task-slug>/            # e.g. "add-role-model"
-│               ├── plan.md             # Implementation plan (living doc)
-│               └── review.md           # Code review (kept if substantive)
+.agents/
+└── specs/
+    ├── index.md                        # Catalog of all specs (auto-maintained)
+    └── <slug>/                         # e.g. "user-auth-rbac"
+        ├── prd.md                      # Product requirements
+        ├── research.md                 # Codebase investigation findings
+        ├── tasks.md                    # Task breakdown with details + status
+        └── <task-slug>/                # e.g. "add-role-model"
+            ├── plan.md                 # Implementation plan (living doc)
+            └── review.md               # Code review (kept if substantive)
 ```
 
 Slugs are derived from content (feature name for specs, task title for tasks): kebab-case, max ~50 chars, human-readable.
@@ -88,9 +87,9 @@ Start by capturing what needs to be built:
 - Success criteria and key metrics
 - What's in scope and what's explicitly out of scope
 
-**Output:** `docs/specs/<slug>/prd.md` — A durable product requirements document.
+**Output:** `.agents/specs/<slug>/prd.md` — Product requirements document.
 
-Creates the spec directory and adds an entry to `docs/specs/index.md`.
+Creates the spec directory and adds an entry to `.agents/specs/index.md`.
 
 #### 2. Research (`researching-codebase`)
 Investigate the codebase to understand:
@@ -99,15 +98,15 @@ Investigate the codebase to understand:
 - Integration points and dependencies
 - Edge cases and potential pitfalls
 
-**Output:** `docs/specs/<slug>/research.md` — A comprehensive report with file references and findings. Falls back to `research.md` at the project root for ad-hoc research without a spec context.
+**Output:** `.agents/specs/<slug>/research.md` — A comprehensive report with file references and findings. Falls back to `research.md` at the project root for ad-hoc research without a spec context.
 
-#### 3. Break Down (`converting-prd-to-issues`)
-Decompose the PRD into independently-grabbable vertical slices:
+#### 3. Break Down (`breaking-down-prd`)
+Decompose the PRD into independently-implementable vertical slices:
 - Each task cuts through all integration layers end-to-end
 - Each task is demoable or verifiable on its own
-- Creates GitHub issues for tracking
+- Creates local task directories and tracking files
 
-**Output:** `docs/specs/<slug>/tasks/index.md` — Task breakdown with dependency graph and status tracking. Creates a subdirectory for each task.
+**Output:** `.agents/specs/<slug>/tasks.md` — Single file with all tasks, their details, and a summary table with status.
 
 #### 4. Plan (`creating-plans`)
 Use PRD requirements and research findings to create a detailed implementation plan for each task:
@@ -116,7 +115,7 @@ Use PRD requirements and research findings to create a detailed implementation p
 - Identify files to modify and integration points
 - Document what you're NOT doing (scope boundaries)
 
-**Output:** `docs/specs/<slug>/tasks/<task-slug>/plan.md` — A living document that guides implementation. Falls back to `plan.md` at the project root for standalone plans.
+**Output:** `.agents/specs/<slug>/<task-slug>/plan.md` — A living document that guides implementation. Falls back to `plan.md` at the project root for standalone plans.
 
 #### 5. Refine (`iterating-plan`)
 As work progresses or requirements change:
@@ -134,7 +133,7 @@ Execute the plan phase-by-phase:
 - Update checkboxes in the plan as you go
 - Pause for manual verification when needed
 
-**Output:** Working code + updated `plan.md` with progress tracked. Updates task status in `tasks/index.md`.
+**Output:** Working code + updated `plan.md` with progress tracked. Updates task status in `tasks.md`.
 
 #### 7. Validate (`validating-plan`)
 Verify the implementation against **both** the plan and the PRD:
@@ -144,7 +143,7 @@ Verify the implementation against **both** the plan and the PRD:
 - Identify any deviations from the plan
 - Document what needs manual testing
 
-**Output:** Validation report with pass/fail status. Updates task status in `tasks/index.md`.
+**Output:** Validation report with pass/fail status. Updates task status in `tasks.md`.
 
 #### 8. Review (`reviewing-code`)
 Assess code quality systematically:
@@ -153,13 +152,13 @@ Assess code quality systematically:
 - Identify bugs and edge cases
 - Provide actionable feedback
 
-**Output:** `docs/specs/<slug>/tasks/<task-slug>/review.md` when working within a spec context (persisted for posterity). Falls back to `review.md` at the project root for standalone reviews. If a review triggers plan changes, the plan is updated with a note referencing the review.
+**Output:** `.agents/specs/<slug>/<task-slug>/review.md` when working within a spec context. Falls back to `review.md` at the project root for standalone reviews. If a review triggers plan changes, the plan is updated with a note referencing the review.
 
 #### 9. Manage Docs (`managing-docs`)
 Audit and update all project documentation — specs and project-level docs:
 - Run automated checks (broken links, missing indexes, orphaned directories, stale ARCHITECTURE.md)
 - Verify lifecycle completeness (every spec has expected artifacts for its status)
-- Check project docs (ARCHITECTURE.md sections, design-docs index, README, tech-debt)
+- Check project docs (ARCHITECTURE.md sections, design-docs index, README)
 - Update stale docs based on recent changes
 
 **Output:** Documentation health report summarizing errors, warnings, and suggested fixes. Updates indexes, statuses, and project docs as needed.
@@ -170,23 +169,23 @@ While these skills form a complete workflow, they can be used independently:
 
 - **PRD only:** Use `writing-a-prd` to define requirements for someone else to implement
 - **Research only:** Use `researching-codebase` to understand a codebase without implementing anything
-- **Plan only:** Use `creating-plans` to design a solution for an existing PRD or issue
+- **Plan only:** Use `creating-plans` to design a solution for an existing PRD or task
 - **Review only:** Use `reviewing-code` on any changes, regardless of whether they followed a plan
 - **Validate existing work:** Use `validating-plan` to check if past work matches requirements
 - **Audit docs:** Use `managing-docs` to check all project documentation is present, consistent, and up to date
 
-All skills support both **spec-linked** mode (artifacts in `docs/specs/`) and **standalone** mode (artifacts at project root) for flexibility.
+All skills support both **spec-linked** mode (artifacts in `.agents/specs/`) and **standalone** mode (artifacts at project root) for flexibility.
 
 ### Key Artifacts
 
 | Artifact | Location | Purpose | Created By |
 |----------|----------|---------|------------|
-| `prd.md` | `docs/specs/<slug>/` | Product requirements—durable reference for what to build | `writing-a-prd` |
-| `research.md` | `docs/specs/<slug>/` or root | Technical documentation of current system state | `researching-codebase` |
-| `tasks/index.md` | `docs/specs/<slug>/tasks/` | Task breakdown with status tracking | `converting-prd-to-issues` |
-| `plan.md` | `docs/specs/<slug>/tasks/<task>/` or root | Living implementation guide with phases and success criteria | `creating-plans`, `iterating-plan` |
-| `review.md` | `docs/specs/<slug>/tasks/<task>/` or root | Structured code review findings | `reviewing-code` |
-| `index.md` | `docs/specs/` | Catalog of all specs with status | All skills (auto-maintained) |
+| `prd.md` | `.agents/specs/<slug>/` | Product requirements—reference for what to build | `writing-a-prd` |
+| `research.md` | `.agents/specs/<slug>/` or root | Technical documentation of current system state | `researching-codebase` |
+| `tasks.md` | `.agents/specs/<slug>/tasks.md` | Task breakdown with details + status | `breaking-down-prd` |
+| `plan.md` | `.agents/specs/<slug>/<task-slug>/` | Living implementation guide with phases and success criteria | `creating-plans`, `iterating-plan` |
+| `review.md` | `.agents/specs/<slug>/<task-slug>/` | Structured code review findings | `reviewing-code` |
+| `index.md` | `.agents/specs/` | Catalog of all specs with status | All skills (auto-maintained) |
 | `scratchpad.md` | Project root | Working notes during research/implementation (ephemeral) | All skills (reused) |
 
 ## References

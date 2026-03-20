@@ -1,6 +1,6 @@
 ---
 name: creating-plans
-description: Create detailed implementation plans through iterative codebase research. Use when the user wants to plan a feature, design an implementation, or scope a technical task from a GitHub issue or task description.
+description: Create detailed implementation plans through iterative codebase research. Use when the user wants to plan a feature, design an implementation, or scope a technical task.
 metadata:
   version: "2.0"
 ---
@@ -15,10 +15,10 @@ Plans are **living documents** that guide both the initial implementation and fu
 
 ### 1. Gather Context
 
-If a GitHub issue URL/ID or file path was provided, read those inputs fully and begin research immediately. Otherwise, ask the user for the task description, constraints, and any relevant context.
+If a file path was provided, read those inputs fully and begin research immediately. Otherwise, ask the user for the task description, constraints, and any relevant context.
 
 - Search the codebase for files, patterns, and conventions related to the task
-- Check for existing research at `docs/specs/<slug>/research.md` if working within a spec context
+- Check for existing research at `.agents/specs/<slug>/research.md` if working within a spec context
 - Explore directory structures and trace data flow through key functions
 - Note file:line references for important discoveries
 - Cross-reference requirements with actual code to identify discrepancies, assumptions, and true scope
@@ -45,14 +45,13 @@ Propose an outline of implementation phases, each with a name and what it accomp
 
 Write the plan using the template in [references/plan-template.md](references/plan-template.md). The output path depends on context:
 
-- **Task-linked plan** (spec context): When a `docs/specs/<slug>/tasks/` directory exists, write the plan to `docs/specs/<slug>/tasks/<task-slug>/plan.md`. The `<task-slug>` should match the task directory created by `converting-prd-to-issues`, or be derived from the task/issue title (kebab-case, max ~50 chars) if creating a new task directory. Reference the PRD and research by relative path (e.g., `../../prd.md`, `../../research.md`).
+- **Task-linked plan** (spec context): When a `.agents/specs/<slug>/tasks.md` file exists, write the plan to `.agents/specs/<slug>/<task-slug>/plan.md`. The `<task-slug>` should match the task name from `tasks.md` (kebab-case, max ~50 chars). Reference the PRD and research by relative path (e.g., `../prd.md`, `../research.md`).
 - **Standalone plan** (no spec context): Write the plan to `plan.md` at the project root (reuse this file each session).
 
 After writing the plan:
 
-1. If working within a spec context, update `docs/specs/<slug>/tasks/index.md` to reflect the task's status as "Planned".
-2. If a GitHub issue was provided, comment on the issue with a summary using the `gh` CLI.
-3. Clear `scratchpad.md` once the plan is complete.
+1. If working within a spec context, update the task status in `.agents/specs/<slug>/tasks.md` to "📋 Planned".
+2. Clear `scratchpad.md` once the plan is complete.
 
 ### 5. Review and Iterate
 

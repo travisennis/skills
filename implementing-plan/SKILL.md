@@ -13,15 +13,15 @@ Implement an approved technical plan from `plan.md`. These plans contain phases 
 
 When given a plan path:
 - Read the plan completely and check for any existing checkmarks (- [x])
-- Read the GitHub issue if provided and all files mentioned in the plan
-- If working within a spec context (`docs/specs/<slug>/tasks/<task-slug>/plan.md`), also read the PRD (`../../prd.md`) and research (`../../research.md`) for full context
+- Read all files mentioned in the plan
+- If working within a spec context (`.agents/specs/<slug>/<task-slug>/plan.md`), also read the PRD (`../prd.md`) and research (`../research.md`) for full context
 - Check for related research documents
 - **Read files fully** — complete context is essential
 - Think deeply about how the pieces fit together
 - Create `scratchpad.md` to track progress (reuse this file — no need to preserve prior data)
 - Start implementing once the plan is understood
 
-If no plan path provided, look for a plan at `docs/specs/*/tasks/*/plan.md` or `plan.md` at the project root. Ask for confirmation or a GitHub issue reference.
+If no plan path provided, look for a plan at `.agents/specs/<slug>/*/plan.md` or `plan.md` at the project root. Ask for confirmation or a task reference.
 
 ## Implementation Philosophy
 
@@ -52,10 +52,6 @@ If instructed to execute multiple phases consecutively, skip the pause until the
 
 Do not check off manual testing steps until confirmed by the user.
 
-## GitHub Issue Updates
-
-After completing each phase, post a progress comment on the GitHub issue (if provided) noting what was completed and the verification status. After all phases are complete, add a final completion comment and close the issue if appropriate.
-
 ## If You Get Stuck
 
 When something isn't working as expected:
@@ -76,7 +72,6 @@ If the plan has existing checkmarks:
 When all phases are complete:
 - Clear `scratchpad.md` (reuse the file for next session)
 - Ensure all checkboxes in the plan are marked complete
-- If working within a spec context, update the task status to "✅ Complete" in `docs/specs/<slug>/tasks/index.md`
-- Update `docs/specs/index.md` to reflect current task completion counts
+- If working within a spec context, update the task status to "✅ Complete" in `.agents/specs/<slug>/tasks.md`
+- Update `.agents/specs/index.md` to reflect current task completion counts
 - Summarize what was implemented
-- Update the GitHub issue with completion status

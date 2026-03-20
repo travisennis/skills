@@ -11,9 +11,9 @@ Perform a thorough, skeptical, and constructive code review. Produce a structure
 
 ## Workflow
 
-1. **Pre-review assessment** — Before reading code, check CI status (`gh pr checks`), PR metadata (title, description, size, linked issues), and scope. If CI is failing, note it and decide whether a full review is worthwhile yet. Assess PR size and determine the review strategy (see Review Strategies below).
+1. **Pre-review assessment** — Before reading code, assess the scope and size of changes. Determine the review strategy (see Review Strategies below).
 
-2. **Gather context** — Read all relevant files fully: changed files, implementation plans, related documentation, and any referenced GitHub issues. Determine the review scope from the user's input (unstaged changes, a commit, a branch range, specific files, or an issue reference).
+2. **Gather context** — Read all relevant files fully: changed files, implementation plans, related documentation. Determine the review scope from the user's input (unstaged changes, a commit, a branch range, specific files, or a plan reference).
 
 3. **Retrieve changes** — Get the relevant diff or file contents for the review scope.
 
@@ -34,11 +34,11 @@ Perform a thorough, skeptical, and constructive code review. Produce a structure
 7. **Write the review report** — Write findings using the template in [references/TEMPLATE.md](references/TEMPLATE.md). Include specific file:line references for all findings.
 
    **Output location** depends on context and outcome:
-   - **Task-linked review with plan changes**: If working within a spec context and the review results in changes to the implementation plan, write to `docs/specs/<slug>/tasks/<task-slug>/review.md` and update the plan with a note referencing the review.
-   - **Task-linked review, no plan changes**: Write to `docs/specs/<slug>/tasks/<task-slug>/review.md` for the record.
+   - **Task-linked review with plan changes**: If working within a spec context and the review results in changes to the implementation plan, write to `.agents/specs/<slug>/<task-slug>/review.md` and update the plan with a note referencing the review.
+   - **Task-linked review, no plan changes**: Write to `.agents/specs/<slug>/<task-slug>/review.md` for the record.
    - **Standalone review**: Write to `review.md` at the project root (ephemeral — overwritten next session).
 
-8. **Update artifacts** — If working within a spec context, update the task entry in `docs/specs/<slug>/tasks/index.md` to note the review status. If a GitHub issue was provided, add a comment summarizing the review findings.
+8. **Update artifacts** — If working within a spec context, update the task entry in `.agents/specs/<slug>/tasks.md` to note the review status.
 
 ## Review Guidelines
 

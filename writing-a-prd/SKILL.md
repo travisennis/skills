@@ -48,39 +48,23 @@ Get user confirmation on the module design.
 
 **Generate a slug** from the feature name: convert to kebab-case, drop filler words, max ~50 chars, keep it human-readable (e.g., "User Authentication with RBAC" → `user-auth-rbac`).
 
-Create the directory `docs/specs/<slug>/` and write the PRD to `docs/specs/<slug>/prd.md` using the template below. The PRD should be a durable document that survives refactoring and technical changes.
+Create the directory `.agents/specs/<slug>/` and write the PRD to `.agents/specs/<slug>/prd.md` using the template below. The PRD should be a durable document that survives refactoring and technical changes.
 
-**Update the spec index:** Add or update an entry in `docs/specs/index.md` (create the file if it doesn't exist). The index is a markdown table:
+**Update the spec index:** Add or update an entry in `.agents/specs/index.md` (create the file if it doesn't exist). The index is a markdown table:
 
 ```markdown
 # Spec Index
 
-| Spec | Status | Created | Tasks |
+| Spec | Status | Created |
 |------|--------|---------|-------|
-| [Feature Name](slug/prd.md) | Draft | YYYY-MM-DD | #issue, #issue |
+| [Feature Name](slug/prd.md) | Draft | YYYY-MM-DD |
 ```
 
-Set Status to `Draft` initially. Fill in Created with today's date and link Tasks after issues are created in step 6.
-
-### 6. Create GitHub Issues
-
-After writing the PRD:
-
-1. **Create a parent issue** for the PRD itself (for tracking and discussion)
-2. **Create child issues** for each major deliverable or implementation phase
-
-**When to create multiple issues:**
-- Large features that can be parallelized (different teams or contributors)
-- Phased rollouts (MVP, then enhancements)
-- Platform splits (iOS/Android, frontend/backend)
-- Risk decomposition (spike/prototype, then production)
-- Clear boundaries between components
-
-Each child issue should reference the PRD and describe a specific, implementable piece of work.
+Set Status to `Draft` initially. Fill in Created with today's date.
 
 ## PRD Template
 
-Use the following template for `docs/specs/<slug>/prd.md`:
+Use the following template for `.agents/specs/<slug>/prd.md`:
 
 ```markdown
 # [Feature Name] - Product Requirements Document
@@ -131,12 +115,9 @@ A description of the things that are out of scope for this PRD.
 
 Any further notes about the feature.
 
-## Linked Issues
+## Tasks
 
-- PRD tracking issue: #[number]
-- Implementation issues:
-  - #[number] - [description]
-  - #[number] - [description]
+Tasks for this PRD are tracked in `.agents/specs/<slug>/tasks/index.md` after running `breaking-down-prd`.
 ```
 
 ## Guidelines
@@ -151,10 +132,10 @@ Any further notes about the feature.
 The PRD is the **input** to the technical workflow:
 
 ```
-docs/specs/<slug>/prd.md (what to build) → research.md (understand existing code) → plan.md (how to build it)
+.agents/specs/<slug>/prd.md (what to build) → research.md (understand existing code) → plan.md (how to build it)
 ```
 
 - `validating-plan` should verify against **both** the plan (technical correctness) AND the PRD (product requirements)
 - `iterating-plan` should reference PRD constraints when refining technical approaches
-- Multiple `plan.md` files can reference the same `docs/specs/<slug>/prd.md` when a feature is split across issues
-- `docs/specs/index.md` serves as the central registry of all specs
+- Multiple `plan.md` files can reference the same `.agents/specs/<slug>/prd.md` when a feature is split across issues
+- `.agents/specs/index.md` serves as the central registry of all specs

@@ -22,7 +22,7 @@ Describe **only what exists today**, where it exists, and how it behaves. Your o
 
 ### 1. Gather context
 
-- Read any provided files, GitHub issues, or documentation fully before starting.
+- Read any provided files or documentation fully before starting.
 - Identify the research question and key areas to investigate.
 - If the scope is ambiguous, ask one clarifying question before proceeding.
 
@@ -65,7 +65,7 @@ Track progress in `scratchpad.md` as you go. Update it with findings, open quest
 
 Determine the output path for the research report:
 
-- **Spec-linked research**: If this research is for an existing spec (a `docs/specs/<slug>/` directory exists with a `prd.md`), write to `docs/specs/<slug>/research.md`.
+- **Spec-linked research**: If this research is for an existing spec (a `.agents/specs/<slug>/` directory exists with a `prd.md`), write to `.agents/specs/<slug>/research.md`.
 - **Ad-hoc research**: If no spec context exists, write to `research.md` at the project root.
 
 If it's not obvious from context which mode applies, ask the user whether this research is linked to a specific spec or is ad-hoc.
@@ -74,7 +74,7 @@ Write findings using the template in [references/report-template.md](references/
 
 Every claim must be grounded in code with file path and line references. If something is unclear after investigation, document it as a known gap rather than leaving it ambiguous.
 
-If a GitHub issue was provided, comment on it with a summary of key findings using `gh issue comment`.
+If working within a spec context, note key findings in the research report.
 
 Clear `scratchpad.md` once the report is complete.
 

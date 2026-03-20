@@ -7,14 +7,14 @@
 """
 Project documentation integrity checker.
 
-Validates both the docs/specs/ artifact system AND project-level documentation
-(ARCHITECTURE.md, README.md, design docs index, tech debt).
+Validates the .agents/specs/ artifact system (ephemeral working directory) AND project-level
+documentation (ARCHITECTURE.md, README.md, design docs index).
 
 Checks:
   Spec checks:
-    1. Index coverage — every spec dir is listed in docs/specs/index.md and vice versa
+    1. Index coverage — every spec dir is listed in .agents/specs/index.md and vice versa
     2. Artifact completeness — each spec has the expected files for its lifecycle stage
-    3. Task tracking consistency — tasks/index.md entries match actual task directories
+    3. Task tracking consistency — tasks.md entries match actual task directories
     4. Status coherence — artifact presence matches reported status
     5. Link integrity — relative markdown links in spec artifacts resolve
     6. Plan structure — plans have required sections
@@ -24,7 +24,10 @@ Checks:
     8. ARCHITECTURE.md — exists and has required sections
     9. README.md — exists
    10. Design docs index — index.md matches directory contents
-   11. Tech debt — docs/tech-debt.md exists
+
+Note: Spec artifacts in .agents/specs/ are ephemeral working documents,
+not committed to the repository. This script validates internal consistency
+of the working directory only.
 """
 
 import argparse
@@ -110,7 +113,7 @@ def extract_link_target(cell: str) -> str | None:
 def check_spec_index(specs_dir: Path, root: Path) -> None:
     index_path = specs_dir / "index.md"
     if not index_path.exists():
-        add(ERROR, "index", f"Missing spec index: {relative(index_path, root)}")
+        add(INFO, "index", f"No spec index found at {relative(index_path, root)} — this is expected if no specs exist yet")
         return
 
     content = index_path.read_text(encoding="utf-8")
@@ -157,62 +160,60 @@ def check_artifact_completeness(specs_dir: Path, root: Path) -> None:
 
         # Every spec must have a PRD
         if not prd.exists():
-            add(ERROR, "completeness", f"Spec '{slug}' is missing prd.md")
+            add(WARNING, "completeness", f"Spec '{slug}' is missing prd.md")
 
-        tasks_dir = spec_dir / "tasks"
-        tasks_index = tasks_dir / "index.md"
+        # Check for tasks.md file (single file with all tasks)
+        tasks_file = spec_dir / "tasks.md"
 
-        # If tasks dir exists, it must have an index
-        if tasks_dir.exists() and not tasks_index.exists():
-            add(ERROR, "completeness", f"Spec '{slug}' has tasks/ directory but no tasks/index.md")
-
-        # If tasks index exists, check task subdirectories
-        if tasks_index.exists():
-            check_task_tracking(spec_dir, tasks_dir, tasks_index, root)
+        # If tasks.md exists, check task directories
+        if tasks_file.exists():
+            check_task_tracking(spec_dir, tasks_file, root)
 
 
 # Check 3: Task tracking consistency
 
-def check_task_tracking(spec_dir: Path, tasks_dir: Path, tasks_index: Path, root: Path) -> None:
-    content = tasks_index.read_text(encoding="utf-8")
+def check_task_tracking(spec_dir: Path, tasks_file: Path, root: Path) -> None:
+    content = tasks_file.read_text(encoding="utf-8")
     rows = extract_table_rows(content)
 
     slug = spec_dir.name
 
-    # Collect task slugs from index
+    # Collect task slugs from tasks.md summary table
     indexed_tasks: set[str] = set()
     task_statuses: dict[str, str] = {}
     for row in rows:
         task_cell = row.get("Task", "")
         status_cell = row.get("Status", "")
 
-        # Extract task slug from the Task column link (e.g., "task-slug/issue.md")
-        # The Task column contains the link to the issue.md file
+        # Extract task name/slug from the Task column
+        # Could be plain text or a link
         task_link = extract_link_target(task_cell)
-
         if task_link:
-            # Extract directory name from link path (e.g., "task-slug/issue.md" -> "task-slug")
             task_slug = task_link.split("/")[0]
-            indexed_tasks.add(task_slug)
-            task_statuses[task_slug] = status_cell
+        else:
+            # Plain text task name - derive slug
+            task_slug = task_cell.lower().replace(" ", "-")[:50]
 
-    # Collect actual task directories
+        indexed_tasks.add(task_slug)
+        task_statuses[task_slug] = status_cell
+
+    # Collect actual task directories (directly under spec dir)
     actual_tasks: set[str] = set()
-    for d in tasks_dir.iterdir():
-        if d.is_dir():
+    for d in spec_dir.iterdir():
+        if d.is_dir() and d.name not in (".git",):
             actual_tasks.add(d.name)
 
-    # Directories not tracked in index
+    # Directories not tracked in tasks.md
     for task_slug in sorted(actual_tasks - indexed_tasks):
-        add(WARNING, "task-tracking", f"Spec '{slug}': task directory '{task_slug}/' exists but may not be tracked in tasks/index.md")
+        add(WARNING, "task-tracking", f"Spec '{slug}': task directory '{task_slug}/' exists but may not be tracked in tasks.md")
 
     # Check status coherence for actual task directories
     for task_slug in sorted(actual_tasks):
-        task_dir = tasks_dir / task_slug
+        task_dir = spec_dir / task_slug
         has_plan = (task_dir / "plan.md").exists()
         has_review = (task_dir / "review.md").exists()
 
-        # Find matching status (approximate match since slug derivation may differ)
+        # Find matching status
         status = ""
         for ts, st in task_statuses.items():
             if ts == task_slug or task_slug.startswith(ts) or ts.startswith(task_slug):
@@ -282,10 +283,10 @@ def check_stale_specs(specs_dir: Path, root: Path) -> None:
         slug = spec_dir.name
         has_prd = (spec_dir / "prd.md").exists()
         has_research = (spec_dir / "research.md").exists()
-        has_tasks = (spec_dir / "tasks").exists()
+        has_tasks = (spec_dir / "tasks.md").exists()
 
         if has_prd and not has_tasks:
-            add(INFO, "stale", f"Spec '{slug}': has PRD but no tasks/ directory — may need breakdown")
+            add(INFO, "stale", f"Spec '{slug}': has PRD but no tasks.md — may need breakdown")
 
         if has_prd and not has_research:
             add(INFO, "stale", f"Spec '{slug}': has PRD but no research.md — consider researching before planning")
@@ -354,17 +355,6 @@ def check_design_docs_index(root: Path) -> None:
             add(ERROR, "links", f"Broken link in docs/design-docs/index.md: \"{link}\" → target not found")
 
 
-def check_tech_debt(root: Path) -> None:
-    tech_debt_path = root / "docs" / "tech-debt.md"
-    agents_path = root / "AGENTS.md"
-
-    # Only flag if AGENTS.md references tech-debt
-    if agents_path.exists():
-        content = agents_path.read_text(encoding="utf-8")
-        if "tech-debt" in content.lower() and not tech_debt_path.exists():
-            add(INFO, "project-docs", "AGENTS.md references tech-debt.md but docs/tech-debt.md does not exist")
-
-
 # ── Main ─────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -391,7 +381,7 @@ def main() -> None:
     parser.add_argument(
         "--specs-only",
         action="store_true",
-        help="Only check docs/specs/ artifacts",
+        help="Only check .agents/specs/ artifacts (ephemeral working directory)",
     )
     parser.add_argument(
         "--project-only",
@@ -401,7 +391,7 @@ def main() -> None:
     args = parser.parse_args()
 
     root = Path(args.root).resolve()
-    specs_dir = root / "docs" / "specs"
+    specs_dir = root / ".agents" / "specs"
 
     run_specs = not args.project_only
     run_project = not args.specs_only
@@ -416,16 +406,16 @@ def main() -> None:
             check_plan_structure(specs_dir, root)
             check_stale_specs(specs_dir, root)
         elif not args.specs_only:
-            pass  # No specs dir is fine if we're checking everything
+            print("ℹ️  No .agents/specs/ directory found. This is expected if no specs exist yet.")
+            print("   Spec artifacts are ephemeral working documents, not committed to the repository.\n")
         else:
-            print("ℹ️  No docs/specs/ directory found. Nothing to validate.")
+            print("ℹ️  No .agents/specs/ directory found. Nothing to validate.")
             sys.exit(0)
 
     if run_project:
         check_architecture(root)
         check_readme(root)
         check_design_docs_index(root)
-        check_tech_debt(root)
 
     # Filter by severity
     severity_order = {"error": 0, "warning": 1, "info": 2}

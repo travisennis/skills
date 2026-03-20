@@ -1,6 +1,6 @@
 ---
 name: managing-docs
-description: Validate and update all project documentation — specs, architecture, design docs, README, and tech debt. Use after completing work, when asked to check documentation hygiene, or when asked to update project docs. Replaces managing-architecture-document and validating-workflow.
+description: Validate and update all project documentation — specs, architecture, design docs, and README. Use after completing work, when asked to check documentation hygiene, or when asked to update project docs. Replaces managing-architecture-document and validating-workflow.
 metadata:
   version: "1.0"
 user-invocable: true
@@ -8,7 +8,7 @@ user-invocable: true
 
 # Managing Project Documentation
 
-Single skill for all project documentation lifecycle — auditing completeness and updating content. Covers both the `docs/specs/` artifact system and project-level docs (ARCHITECTURE.md, README.md, design docs, tech debt).
+Single skill for all project documentation lifecycle — auditing completeness and updating content. Covers the `.agents/specs/` artifact system (ephemeral working directory) and project-level docs (ARCHITECTURE.md, README.md, design docs).
 
 ## When to Use
 
@@ -18,6 +18,12 @@ Single skill for all project documentation lifecycle — auditing completeness a
 - When resuming work — to understand what's been done and what's missing
 - After architectural changes — to update ARCHITECTURE.md
 - After adding CLI flags or features — to update README.md
+
+## About Spec Artifacts
+
+Spec artifacts (PRDs, research, plans, reviews) are ephemeral working documents stored in `.agents/specs/`. They are not committed to the repository — this directory is gitignored. They serve as the agent's working memory during a task lifecycle and are not intended as durable project documentation.
+
+This skill validates internal consistency of working artifacts but does not enforce their presence in committed documentation or treat them as permanent records.
 
 ## Two Modes
 
@@ -47,11 +53,11 @@ uv run <skill-base-dir>/scripts/check-docs.py /path/to/project/root
 
 The script checks:
 
-#### Spec Artifact Checks (`docs/specs/`)
+#### Spec Artifact Checks (`.agents/specs/`)
 
 | Check | What it validates |
 |-------|-------------------|
-| **Index coverage** | Every `docs/specs/<slug>/` directory has an entry in `docs/specs/index.md` and vice versa |
+| **Index coverage** | Every `.agents/specs/<slug>/` directory has an entry in `.agents/specs/index.md` and vice versa |
 | **Artifact completeness** | Each spec has the expected files (prd.md required; tasks/index.md if tasks/ exists) |
 | **Task tracking** | Task directories match entries in `tasks/index.md` |
 | **Status coherence** | Artifact presence matches reported status (e.g., plan.md exists → status shouldn't be "Not started") |
@@ -66,12 +72,11 @@ The script checks:
 | **ARCHITECTURE.md** | Exists, has required sections (Overview, Codemap, Invariants, Boundaries, Cross-Cutting) |
 | **README.md** | Exists |
 | **Design docs index** | `docs/design-docs/index.md` exists if `docs/design-docs/` has entries; index entries match actual files |
-| **Tech debt** | `docs/tech-debt.md` exists if referenced by AGENTS.md |
 
 Options:
 - `--severity error|warning|info` — filter output by minimum severity (default: info)
 - `--json` — output results as JSON for programmatic use
-- `--specs-only` — only check `docs/specs/` artifacts
+- `--specs-only` — only check `.agents/specs/` artifacts
 - `--project-only` — only check project-level docs
 
 ### 2. Review and Interpret Results
@@ -86,36 +91,33 @@ After running the script, review each finding:
 
 #### Specs Lifecycle Checklist
 
-For each spec in `docs/specs/index.md`, verify based on its claimed status:
+For each spec in `.agents/specs/index.md`, verify based on its claimed status:
 
 **Draft status** — minimum artifacts:
-- [ ] `docs/specs/<slug>/prd.md` exists and has all template sections filled in
-- [ ] Entry in `docs/specs/index.md` with correct status and date
+- [ ] `.agents/specs/<slug>/prd.md` exists and has all template sections filled in
+- [ ] Entry in `.agents/specs/index.md` with correct status and date
 
 **Active status** — all of the above, plus:
-- [ ] `docs/specs/<slug>/research.md` exists (or research was deemed unnecessary with documented reason)
-- [ ] `docs/specs/<slug>/tasks/index.md` exists with task breakdown
-- [ ] Task directories exist under `tasks/` for each tracked task
-- [ ] GitHub issues created and linked in tasks/index.md
+- [ ] `.agents/specs/<slug>/research.md` exists (or research was deemed unnecessary with documented reason)
+- [ ] `.agents/specs/<slug>/tasks.md` exists with task breakdown
 
 **Per-task checks** (for each task in an Active spec):
-- [ ] Task directory exists: `docs/specs/<slug>/tasks/<task-slug>/`
+- [ ] Task directory exists: `.agents/specs/<slug>/<task-slug>/`
 - [ ] `plan.md` exists if status is "Planned" or beyond
 - [ ] Plan has numbered phases and success criteria
 - [ ] `review.md` exists if a review was conducted
-- [ ] Status in `tasks/index.md` reflects actual progress
+- [ ] Status in `tasks.md` reflects actual progress
 
 **Complete status** — all of the above, plus:
-- [ ] All tasks marked complete in `tasks/index.md`
+- [ ] All tasks marked complete in `tasks.md`
 - [ ] All plans have checkboxes marked as done
-- [ ] `docs/specs/index.md` status updated to "Complete"
+- [ ] `.agents/specs/index.md` status updated to "Complete"
 
 #### Project Docs Checklist
 
 - [ ] `ARCHITECTURE.md` reflects current module structure (compare top-level `src/` dirs against codemap)
 - [ ] `README.md` reflects current CLI usage and setup instructions
 - [ ] `docs/design-docs/index.md` lists all files in `docs/design-docs/`
-- [ ] `docs/tech-debt.md` exists and is referenced
 
 ### 4. Fix Issues (Update Mode)
 
@@ -132,7 +134,6 @@ For each finding, take the appropriate action:
 **Project doc fixes:**
 - **Stale ARCHITECTURE.md** → Update the codemap to reflect current module structure
 - **Missing design doc index entries** → Add entries for untracked files
-- **Missing tech-debt.md** → Create it with a standard template
 
 ### 5. Report
 
@@ -152,7 +153,6 @@ Summarize the validation results:
 | ARCHITECTURE.md | ✅ Current | — |
 | README.md | ⚠️ May need update | New CLI flags not documented |
 | design-docs/index.md | ✅ In sync | — |
-| tech-debt.md | ❌ Missing | Needs creation |
 
 ### Specs Audited
 | Spec | Status | Lifecycle Complete | Issues |
@@ -226,3 +226,5 @@ This skill validates artifacts produced by the full workflow:
 | `implementing-plan` | Task status updated, checkboxes marked |
 | `validating-plan` | Task status reflects validation results |
 | `reviewing-code` | `review.md` exists when review was conducted |
+
+**Note:** Spec artifacts in `.agents/specs/` are ephemeral working documents validated for internal consistency. They are not committed to the repository and should not be treated as durable project documentation.
