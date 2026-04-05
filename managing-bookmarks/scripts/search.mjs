@@ -5,16 +5,29 @@ import { parseArgs } from 'node:util';
 async function main() {
     const args = process.argv.slice(2);
     
-    // Define command line options
     const options = {
         help: {
             type: 'boolean',
             short: 'h',
             description: 'Show help message'
         },
-        created: {
+        collection: {
             type: 'string',
             short: 'c',
+            description: 'Filter by collection ID'
+        },
+        domain: {
+            type: 'string',
+            short: 'd',
+            description: 'Filter by domain (e.g., github.com)'
+        },
+        tag: {
+            type: 'string',
+            short: 't',
+            description: 'Filter by tag'
+        },
+        created: {
+            type: 'string',
             description: 'Filter by creation date (YYYY-MM-DD format, optional < or > prefix)'
         },
         json: {
@@ -25,7 +38,7 @@ async function main() {
         limit: {
             type: 'string',
             short: 'l',
-            description: 'Limit number of results (default: 25)'
+            description: 'Limit number of results (default: 25, max: 100)'
         }
     };
     
@@ -36,8 +49,8 @@ async function main() {
             allowPositionals: true 
         });
         
-        // Show help if --help flag or no arguments
-        if (values.help || positionals.length === 0) {
+        // Show help if --help flag or no arguments and no filters
+        if (values.help || (positionals.length === 0 && !values.tag && !values.domain)) {
             showHelp(options);
             process.exit(0);
         }
@@ -55,7 +68,7 @@ async function main() {
         }
         
         // Parse limit if provided
-        let perPage = 25; // Default Raindrop API limit
+        let perPage = 25;
         if (values.limit) {
             const limit = parseInt(values.limit, 10);
             if (isNaN(limit) || limit < 1 || limit > 100) {
@@ -75,6 +88,9 @@ async function main() {
         try {
             const result = await searchRaindrop({
                 search,
+                tag: values.tag,
+                domain: values.domain,
+                collection: values.collection,
                 created: values.created,
                 apiKey,
                 perPage
@@ -82,124 +98,90 @@ async function main() {
             
             // Output results
             if (values.json) {
-                // JSON output
                 console.log(JSON.stringify(result, null, 2));
             } else {
-                // Pretty print results
-                if (result.length === 0) {
-                    console.log('No bookmarks found.');
-                } else {
-                    console.log(`Found ${result.length} bookmark(s):\n`);
-                    result.forEach((item, index) => {
-                        console.log(`${index + 1}. ${item.title}`);
-                        console.log(`   URL: ${item.link}`);
-                        if (item.domain) {
-                            console.log(`   Domain: ${item.domain}`);
-                        }
-                        if (item.excerpt) {
-                            console.log(`   Excerpt: ${item.excerpt.substring(0, 100)}${item.excerpt.length > 100 ? '...' : ''}`);
-                        }
-                        console.log();
-                    });
-                }
+                printResults(result);
             }
         } catch (error) {
             console.error(`Error: ${error.message}`);
             process.exit(1);
         }
     } catch (error) {
-        // Handle parseArgs errors (e.g., unknown options)
         console.error(`Error: ${error.message}`);
         showHelp(options);
         process.exit(1);
     }
 }
 
+function showHelp(options) {
+    console.log('Raindrop.io Bookmark Search');
+    console.log('============================\n');
+    console.log('Search your Raindrop.io bookmarks with advanced filters.\n');
+    console.log('Usage:');
+    console.log('  ./search.mjs <search-query> [options]');
+    console.log('  ./search.mjs [options]           (when using -t or -d filters)\n');
+    console.log('Options:');
+    console.log('  -h, --help                Show this help message');
+    console.log('  -c, --collection <id>     Filter by collection ID');
+    console.log('  -d, --domain <domain>     Filter by domain (e.g., github.com)');
+    console.log('  -t, --tag <tag>           Filter by tag');
+    console.log('  --created <date>          Filter by creation date (YYYY-MM-DD)');
+    console.log('                            Use < or > prefix for before/after');
+    console.log('  -j, --json                Output results as JSON');
+    console.log('  -l, --limit <num>         Limit results (1-100, default: 25)\n');
+    console.log('Examples:');
+    console.log('  ./search.mjs "machine learning"');
+    console.log('  ./search.mjs -t "programming"');
+    console.log('  ./search.mjs "tutorial" -d "youtube.com"');
+    console.log('  ./search.mjs "python" -c 123456 --created ">2024-01-01"');
+    console.log('  ./search.mjs -d "github.com" -t "ai" -l 50');
+    console.log('  ./search.mjs --tag "unread" -j > unread.json');
+}
+
 function isValidDate(dateStr) {
-    // Match YYYY-MM-DD with optional < or > prefix
     const dateRegex = /^[<>]?\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateStr)) {
         return false;
     }
     
-    // Extract just the date part for validation
     const datePart = dateStr.replace(/^[<>]/, '');
     const [year, month, day] = datePart.split('-').map(Number);
     
-    // Basic date validation
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
     
-    // Check for valid days in month
     const daysInMonth = new Date(year, month, 0).getDate();
     return day <= daysInMonth;
 }
 
-function showHelp(options) {
-    console.log('Raindrop.io Bookmark Search');
-    console.log('============================\n');
-    console.log('Search your Raindrop.io bookmarks.\n');
-    console.log('Usage:');
-    console.log('  raindrop.js <search-query>');
-    console.log('  raindrop.js <search-query> [options]\n');
-    console.log('Options:');
-    console.log('  -h, --help           Show this help message');
-    console.log('  -c, --created <date> Filter by creation date (YYYY-MM-DD format)');
-    console.log('                       Use < or > prefix for before/after dates');
-    console.log('  -j, --json           Output results as JSON');
-    console.log('  -l, --limit <num>    Limit number of results (1-100, default: 25)\n');
-    console.log('Examples:');
-    console.log('  raindrop.js "machine learning"');
-    console.log('  raindrop.js javascript --created 2024-01-01');
-    console.log('  raindrop.js python --created ">2023-12-01" --json');
-    console.log('  raindrop.js #programming --limit 10');
-    console.log('  raindrop.js test -c ">2024-01-01" -l 5 -j\n');
-    console.log('Environment:');
-    console.log('  Set RAINDROP_API_KEY with your Raindrop.io API token');
-    console.log('  Get token from: https://app.raindrop.io/settings/integrations');
-}
-
-function isApiResponse(data) {
-    if (!data || typeof data !== "object") {
-        return false;
+async function searchRaindrop({ search, tag, domain, collection, created, apiKey, perPage = 25 }) {
+    const collectionId = collection || '0';
+    
+    // Build search query
+    let searchFilter = search || '';
+    
+    if (tag) {
+        searchFilter += ` #${tag}`;
     }
-
-    if (!("items" in data)) {
-        return false;
+    
+    if (domain) {
+        searchFilter += ` domain:${domain}`;
     }
-
-    const { items } = data;
-    if (!Array.isArray(items)) {
-        return false;
-    }
-
-    return items.every(
-        (item) =>
-            item &&
-            typeof item === "object" &&
-            "title" in item &&
-            "link" in item &&
-            typeof item.title === "string" &&
-            typeof item.link === "string",
-    );
-}
-
-async function searchRaindrop({ search, created, apiKey, perPage = 25 }) {
-    const collectionId = "0";
-    let searchFilter = search;
+    
     if (created) {
         searchFilter += ` created:${created}`;
     }
-    const encodedSearch = encodeURIComponent(searchFilter);
+    
+    const encodedSearch = encodeURIComponent(searchFilter.trim());
     const searchUrl = `https://api.raindrop.io/rest/v1/raindrops/${collectionId}?search=${encodedSearch}&perpage=${perPage}`;
-
+    
     try {
         const response = await fetch(searchUrl, {
-            method: "GET",
+            method: 'GET',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
-                "Content-Type": "application/json",
-            },
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
         });
 
         if (!response.ok) {
@@ -217,29 +199,61 @@ async function searchRaindrop({ search, created, apiKey, perPage = 25 }) {
 
         const data = await response.json();
 
-        if (!isApiResponse(data)) {
-            let errorMessage = "Invalid API response format.";
+        if (!data || typeof data !== 'object' || !Array.isArray(data.items)) {
+            let errorMessage = 'Invalid API response format.';
             if (data && typeof data === 'object') {
                 errorMessage += `\nReceived: ${JSON.stringify(data, null, 2)}`;
             }
             throw new Error(errorMessage);
         }
 
-        const parsedData = data.items.map((item) => ({
+        return data.items.map((item) => ({
+            id: item._id,
             title: item.title,
             link: item.link,
             domain: item.domain,
             excerpt: item.excerpt,
+            tags: item.tags || [],
+            created: item.created,
+            lastUpdate: item.lastUpdate,
+            important: item.important || false,
+            cover: item.cover
         }));
-
-        return parsedData;
     } catch (error) {
-        const errorMessage = `Error fetching data: ${error.message}`;
-        throw new Error(errorMessage);
+        if (error.message.startsWith('HTTP error') || error.message.startsWith('Invalid API')) {
+            throw error;
+        }
+        throw new Error(`Error fetching data: ${error.message}`);
     }
 }
 
-// Run the main function
+function printResults(results) {
+    if (results.length === 0) {
+        console.log('No bookmarks found.');
+        return;
+    }
+    
+    console.log(`Found ${results.length} bookmark(s):\n`);
+    
+    results.forEach((item, index) => {
+        const important = item.important ? ' ⭐' : '';
+        console.log(`${index + 1}. ${item.title}${important}`);
+        console.log(`   ID:  ${item.id}`);
+        console.log(`   URL: ${item.link}`);
+        if (item.domain) {
+            console.log(`   Domain: ${item.domain}`);
+        }
+        if (item.tags.length > 0) {
+            console.log(`   Tags: ${item.tags.join(', ')}`);
+        }
+        if (item.excerpt) {
+            const excerpt = item.excerpt.substring(0, 100) + (item.excerpt.length > 100 ? '...' : '');
+            console.log(`   Excerpt: ${excerpt}`);
+        }
+        console.log();
+    });
+}
+
 main().catch(error => {
     console.error(`Unexpected error: ${error.message}`);
     process.exit(1);
