@@ -1,6 +1,8 @@
 ---
 name: deslop
 description: Run a multi-agent review-readiness pass on a nearly finished change before commit, fan out parallel review agents across route conformance, type safety, and overengineering, then synthesize and apply the worthwhile fixes.
+user-invocable: true
+disable-model-invocation: true
 metadata:
   version: "1.0"
 ---
