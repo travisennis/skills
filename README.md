@@ -2,6 +2,64 @@
 
 A collection of specialized skills for the acai agent, providing structured workflows for common software engineering tasks.
 
+## Table of Contents
+
+- [Skills](#skills)
+- [Notes](#notes)
+- [The Complete Development Workflow](#the-complete-development-workflow)
+  - [How They Work Together](#how-they-work-together)
+  - [Artifact Directory Structure](#artifact-directory-structure)
+  - [The Workflow in Practice](#the-workflow-in-practice)
+  - [Flexible Usage](#flexible-usage)
+  - [Key Artifacts](#key-artifacts)
+- [References](#references)
+
+## Skills
+
+| Name | Version | User Invocable | Model Invocable |
+|------|---------|:-:|:-:|
+| agentic-legibility | — | ✅ | ✅ |
+| auditing-codebase | — | ✅ | ✅ |
+| boost | 1.0 | ✅ | ❌ |
+| breaking-down-prd | 3.0 | ❌ | ❌ |
+| browser-automation | 1.0 | ✅ | ✅ |
+| capture-skill | 1.0 | ✅ | ✅ |
+| committing-changes | 1.0 | ✅ | ✅ |
+| creating-plans | 2.0 | ❌ | ❌ |
+| creating-pull-requests | 1.0 | ❌ | ❌ |
+| deslop | 1.0 | ✅ | ❌ |
+| fetching-web-content | 1.0 | ✅ | ❌ |
+| fetching-youtube-transcripts | 1.0 | ✅ | ✅ |
+| finalizing-bugs | 1.0 | ✅ | ✅ |
+| finding-bugs | 1.0 | ❌ | ❌ |
+| fixing-merge-conflicts | 1.0 | ❌ | ❌ |
+| generating-epubs | — | ✅ | ✅ |
+| github-issue-creator | 1.0 | ❌ | ❌ |
+| grill-me | 1.0 | ✅ | ❌ |
+| implementing-plan | 1.0 | ❌ | ❌ |
+| iterating-plan | 1.0 | ❌ | ❌ |
+| managing-bookmarks | — | ✅ | ✅ |
+| managing-docs | 1.0 | ❌ | ❌ |
+| managing-tickets | 1.0 | ❌ | ❌ |
+| pdf | 1.0 | ✅ | ✅ |
+| planning | 1.0 | ❌ | ❌ |
+| playground | 1.0 | ✅ | ✅ |
+| pull-request-workflow | 1.0 | ❌ | ❌ |
+| readiness-report | — | ✅ | ✅ |
+| red-teaming | 1.0 | ✅ | ✅ |
+| researching-codebase | 1.0 | ❌ | ❌ |
+| reviewing-code | 1.0 | ❌ | ❌ |
+| scripting | 1.0 | ✅ | ✅ |
+| simplifying-code | 2.0 | ❌ | ❌ |
+| skill-creator | 1.0 | ✅ | ✅ |
+| tdd | 1.0 | ✅ | ❌ |
+| using-chrome-cdp | — | ✅ | ✅ |
+| validating-plan | 1.0 | ❌ | ❌ |
+| web-searching | 1.0 | ✅ | ❌ |
+| writing-a-prd | 2.0 | ❌ | ❌ |
+| writing-clis-for-agents | 1.0 | ✅ | ✅ |
+| xlsx | 1.0 | ✅ | ✅ |
+
 ## Notes
 
 - These skills use `user-invocable` and `disable-model-invocation`, which while not supported by the spec is supported by a variety of specific agents, like Cursor, Claude Code, and acai.
