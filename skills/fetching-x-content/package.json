@@ -1,0 +1,13 @@
+{
+	"name": "fetching-x-content",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Fetch individual X/Twitter posts and articles through a browser session",
+	"license": "MIT",
+	"bin": {
+		"x-fetch": "./scripts/x-fetch.js"
+	},
+	"dependencies": {
+		"puppeteer-core": "^23.11.1"
+	}
+}
