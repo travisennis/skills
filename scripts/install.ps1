@@ -148,7 +148,7 @@ $replaced = @()
 
 foreach ($skill in $selected) {
     $destSkillPath = Join-Path $Dest $skill
-    $sourceSkillPath = Join-Path $RepoDir $skill
+    $sourceSkillPath = Join-Path (Join-Path $RepoDir "skills") $skill
 
     if (Test-Path $destSkillPath) {
         $conflictChoice = Read-Host "'$skill' already exists at destination. [S]kip or [R]eplace? [S]"

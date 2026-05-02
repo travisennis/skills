@@ -137,7 +137,7 @@ for skill in "${selected[@]}"; do
     case "${conflict_choice^^}" in
       R)
         rm -rf "${DEST:?}/$skill"
-        cp -r "$REPO_DIR/$skill" "$DEST/$skill"
+        cp -r "$REPO_DIR/skills/$skill" "$DEST/$skill"
         replaced+=("$skill")
         ;;
       *)
@@ -145,7 +145,7 @@ for skill in "${selected[@]}"; do
         ;;
     esac
   else
-    cp -r "$REPO_DIR/$skill" "$DEST/$skill"
+    cp -r "$REPO_DIR/skills/$skill" "$DEST/$skill"
     installed+=("$skill")
   fi
 done
