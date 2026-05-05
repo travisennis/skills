@@ -1,6 +1,6 @@
-# acai-skills
+# skills
 
-A collection of specialized skills for the acai agent, providing structured workflows for common software engineering tasks.
+A collection of specialized skills for coding agents, providing structured workflows for common software engineering tasks.
 
 ## Table of Contents
 
