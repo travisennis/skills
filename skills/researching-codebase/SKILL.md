@@ -33,7 +33,7 @@ Describe **only what exists today**, where it exists, and how it behaves. Your o
 Search the codebase systematically using multiple approaches:
 
 - **File discovery**: Use glob patterns to find relevant files by name or extension.
-- **Pattern search**: Use Grep to locate function names, references, and usage patterns.
+- **Pattern search**: Search file contents to locate function names, references, and usage patterns.
 - **Structure exploration**: List directories to understand project organization.
 - **Full reads**: Read discovered files completely to understand implementations.
 
