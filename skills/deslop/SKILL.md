@@ -31,7 +31,7 @@ Before reviewing, read:
 - the relevant active exec plan when one exists for the current work
 - the changed files and enough nearby context to review them properly
 
-If you're working on an ExecPlan, also inspect `docs/exec-plans/active/`. When a plan clearly matches the current task, study it before reviewing as it often contains relevant context, constraints, and acceptance criteria not captured in the ticket or design docs.
+If you're working on an ExecPlan, also inspect `.agents/exec-plans/active/`. When a plan clearly matches the current task, study it before reviewing as it often contains relevant context, constraints, and acceptance criteria not captured in the ticket or design docs.
 
 ## Review protocol
 
