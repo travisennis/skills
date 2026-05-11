@@ -1,5 +1,5 @@
 ---
-name: writing-cli-for-agents
+name: writing-clis-for-agents
 description: >-
   Designs or reviews CLIs so coding agents can run them reliably: non-interactive
   flags, layered --help with examples, stdin/pipelines, fast actionable errors,
