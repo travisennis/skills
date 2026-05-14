@@ -10,6 +10,17 @@ description: >
 
 Use git commands to diagnose a repository before reading its code.
 
+## Reporting Requirements
+
+When presenting audit results, always use the exact structure in [report-template.md](references/report-template.md).
+
+- Include every template section, even for quick or partial audits.
+- Use `Not evaluated` or `None found` when a section has no data.
+- State the audit time window, branch, commit, and command set used.
+- Summarize command output into comparable metrics and tables instead of pasting long raw logs.
+- Distinguish evidence from interpretation; tie each recommendation to an observed signal.
+- Put caveats in the `Gaps and Caveats` section rather than changing the report shape.
+
 ## Quick Audit (5 Commands)
 
 ```bash
