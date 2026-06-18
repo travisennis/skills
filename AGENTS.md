@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is **acai-skills** — a collection of modular skills that extend the acai AI agent with specialized workflows, domain expertise, and tool integrations. Each skill is a self-contained package under `skills/`.
+This is **skills** — a collection of modular skills that extend coding agents with specialized workflows, domain expertise, and tool integrations. Each skill is a self-contained package under `skills/`.
 
 ## Project Structure
 
