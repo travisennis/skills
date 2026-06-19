@@ -4,7 +4,8 @@ description: |
   Refactor a repo's agent documentation into a progressive-disclosure system.
   Audits existing docs (AGENTS.md, README, CONTRIBUTING, ARCHITECTURE, docs/),
   produces a recommendation with a precise file manifest, and waits for user
-  approval before applying changes. Creates a concise AGENTS.md routing layer
+  approval before applying changes. Does not write a plan artifact unless the
+  user asks for one or approves it. Creates a concise AGENTS.md routing layer
   backed by a structured docs/ hierarchy — only creating docs that earn their
   place.
 user-invocable: true
@@ -20,13 +21,14 @@ The skill follows a **plan-first workflow**: Phase 1 audits the existing docs, P
 
 Start by inspecting the current documentation landscape. Be thorough but fast — this is a read-only survey.
 
-### Read these files (present or not)
+### Check these files
 
+- Read each file if present; note it as missing if absent.
 - `AGENTS.md` (or equivalent — `CLAUDE.md`, `.cursorrules`, `.github/CODE_OF_CONDUCT.md`-adjacent agent instructions)
 - `README.md`
 - `CONTRIBUTING.md` (if present)
 - `ARCHITECTURE.md` (if present)
-- Any existing `docs/` content — scan for guardrails, guides, references, design docs, ADRs, runbooks, or specs
+- Existing `docs/` content — inventory doc paths first, then read likely routing, guardrail, guide, reference, design doc, ADR, runbook, or spec files as needed. Do not exhaustively load a large docs tree unless the task requires it.
 - Git status: `git status --short`
 
 ### Catalog what you find
@@ -40,11 +42,19 @@ Build a mental inventory of:
 
 ## Phase 2 — Recommendation
 
-Write a recommendation plan and present it to the user for approval.
+Prepare a recommendation plan and present it to the user for approval.
 
 ### Build the plan
 
-Write the plan to `.agents/plans/docs-refactor-plan.md` (create the directory lazily). The plan must include:
+Prepare the plan in the conversation by default. Do not write a plan file unless the user asks for one or approves it after being asked.
+
+Before writing any plan artifact, ask:
+
+> Do you want this plan saved to a file? If yes, where should it go?
+
+If the user approves but gives no path, suggest `.agents/plans/docs-refactor-plan.md`; do not assume it.
+
+The plan must include:
 
 1. **Current state summary** — what exists, what's in AGENTS.md, what's in docs/
 2. **Proposed changes manifest** — a precise file-by-file table with actions:
@@ -68,7 +78,7 @@ In the conversation, show:
 - **File manifest** — the table of changes (paths + actions)
 - **Notable choices** — e.g., "Skipped DESIGN.md because this repo has no UI." "No security guardrail because nothing security-sensitive was found."
 
-Then ask: **"Review the plan at `.agents/plans/docs-refactor-plan.md` and approve with 'proceed' to apply changes, or give feedback to refine."**
+Then ask: **"Approve with 'proceed' to apply changes, or give feedback to refine."**
 
 Do not proceed to Phase 3 without explicit approval.
 
@@ -82,7 +92,8 @@ Do not proceed to Phase 3 without explicit approval.
 ### Handling pushback
 
 If the user pushes back on specific recommendations:
-- Adjust the plan file and re-present changes
+- Adjust the recommendation and re-present changes
+- If the user previously approved a plan file, ask before updating that file
 - Do not implement partial changes without a clear updated manifest
 
 ## Phase 3 — Implementation (after approval)
@@ -143,11 +154,11 @@ When this file conflicts with a specialized workflow doc for that workflow, the 
 
 ### docs/ layout template
 
-Create only the subdirectories and files the repo needs. Do not create empty bureaucracy.
+Create only the subdirectories and files the repo needs. Do not create empty bureaucracy. Exception: when creating or restructuring a `docs/` hierarchy, create `docs/README.md` as the consistent entrypoint.
 
 ```
 docs/
-├── README.md              # Documentation index (always create)
+├── README.md              # Documentation index for the docs/ hierarchy
 ├── DOMAIN.md              # Domain vocabulary, business terms (if needed)
 ├── DESIGN.md              # UI/UX design language (if repo has UI)
 ├── design-docs/           # Feature/system design docs (if needed)
@@ -165,7 +176,7 @@ docs/
 
 ### Guardrail creation rule
 
-Only create a guardrail file if you can populate it with real content — either moved from existing docs or derived from the audit. If a route section in AGENTS.md points to a guardrail that doesn't exist yet, note the gap in the recommendation. Do not create empty stubs.
+Only create a guardrail file if you can populate it with real content — moved from existing docs, directly evidenced by repo config/scripts, or explicitly approved by the user. Do not invent policy from code shape alone. If a route section in AGENTS.md would point to a guardrail that doesn't exist yet, note the gap in the recommendation. Do not create empty stubs.
 
 ### docs/README.md
 
@@ -182,13 +193,13 @@ Must include:
 3. List what moved out of `AGENTS.md` and where it went
 4. Run markdown formatting/checks if available. If no checks exist, say so.
 5. Report remaining uncommitted/untracked files
-6. Confirm the plan file at `.agents/plans/docs-refactor-plan.md` remains as a record
+6. If a plan file was approved and written, report its path
 
 ## Authority Rules
 
 - Preserve existing project-specific rules. Do not delete meaning; relocate it.
 - Prefer exact links to docs over vague "read docs/" references.
-- If a route points to a doc that does not exist, either create a concise doc or route to the closest existing doc and note the gap.
+- Do not route to missing docs. If a proposed route has no target doc, either create a justified doc with real content, route to the closest existing doc, or list the missing doc as a gap in the recommendation.
 - Keep `AGENTS.md` authoritative about routing, not about every procedure.
 - Keep `docs/README.md` authoritative about documentation navigation, not agent behavior.
 - Keep `CONTRIBUTING.md` authoritative about contributor workflow (if it exists).
