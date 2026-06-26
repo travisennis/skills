@@ -14,8 +14,8 @@ Before proposing tools, inspect:
 - `.github/workflows/`, `.gitlab-ci.yml`, `justfile`, `Makefile`, `Taskfile.yml`.
 - `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`.
 - `.pre-commit-config.yaml`, `lefthook.yml`, `husky` config.
-- Existing markdown configs: `.markdownlint*`, `.prettierrc`, `dprint.json`, `biome.json`.
-- Existing link checkers: `lychee`, `markdown-link-check`, `markdownlint-cli2`, `remark`, `vale`, `mintlify`, `mkdocs`, `docusaurus`, `sphinx`.
+- Existing markdown configs: `.markdownlint*`, `.prettierrc`, `dprint.json`, `biome.json`, `panache.toml`.
+- Existing link checkers: `lychee`, `markdown-link-check`, `markdownlint-cli2`, `remark`, `vale`, `mintlify`, `mkdocs`, `docusaurus`, `sphinx`, `panache`.
 
 Prefer the repo's existing toolchain over introducing a new one.
 

@@ -1,6 +1,6 @@
 ---
 name: documentation-ops
-description: Set up and maintain the operating system around committed project documentation. Use when asked to update docs, make docs stay current, add documentation governance, define documentation ownership or lifecycle rules, add doc freshness/link/lint checks, create documentation templates or standards, add PR checklist rules for docs, or improve how project documentation is managed over time. Scope is committed project documentation, not ephemeral .agents/specs working artifacts.
+description: Set up and maintain the operating system around committed project documentation. Use when asked to update docs, make docs stay current, add documentation governance, define documentation ownership or lifecycle rules, add doc freshness/link/lint checks, create documentation templates or standards, add PR checklist rules for docs, or improve how project documentation is managed over time. Scope is committed project documentation.
 ---
 
 # Documentation Ops
