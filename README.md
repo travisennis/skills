@@ -28,6 +28,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | creating-plans | 2.0 | ❌ | ❌ |
 | creating-pull-requests | 1.0 | ❌ | ❌ |
 | deslop | 1.0 | ✅ | ❌ |
+| docs | 1.0 | ✅ | ✅ |
 | fetching-web-content | 1.0 | ✅ | ❌ |
 | fetching-youtube-transcripts | 1.0 | ✅ | ✅ |
 | finalizing-bugs | 1.0 | ✅ | ✅ |
@@ -39,7 +40,6 @@ A collection of specialized skills for coding agents, providing structured workf
 | implementing-plan | 1.0 | ❌ | ❌ |
 | iterating-plan | 1.0 | ❌ | ❌ |
 | managing-bookmarks | — | ✅ | ✅ |
-| managing-docs | 1.0 | ❌ | ❌ |
 | managing-tickets | 1.0 | ❌ | ❌ |
 | pdf | 1.0 | ✅ | ✅ |
 | planning | 1.0 | ❌ | ❌ |
@@ -98,9 +98,9 @@ Nine skills work together to form a comprehensive product-to-code lifecycle—fr
                                      │
                                      ▼
                     ┌──────────────────────────────────┐
-                     │  Managing Docs                    │
-                     │  (Audit & update all project docs)│
-                     └──────────────────────────────────┘
+                    │  Docs (maintain mode)            │
+                    │  (Update project documentation)  │
+                    └──────────────────────────────────┘
 ```
 
 ### How They Work Together
@@ -115,7 +115,7 @@ Nine skills work together to form a comprehensive product-to-code lifecycle—fr
 | **implementing-plan** | Execute approved plans phase-by-phase | After planning—when it's time to write code |
 | **validating-plan** | Verify that implementation matches the plan and PRD requirements | After implementation—before calling work complete |
 | **reviewing-code** | Comprehensive code review of changes | After changes are made—whether from a plan or ad-hoc work |
-| **managing-docs** | Validate and update all project documentation — specs, architecture, design docs, README | After completing work, before marking done, or periodic audits |
+| **docs** | Audit, refactor, maintain, and govern project documentation | After completing work (maintain mode), or when docs need an audit, restructure, or governance |
 
 ### Artifact Directory Structure
 
@@ -212,14 +212,13 @@ Assess code quality systematically:
 
 **Output:** `.agents/specs/<slug>/<task-slug>/review.md` when working within a spec context. Falls back to `review.md` at the project root for standalone reviews. If a review triggers plan changes, the plan is updated with a note referencing the review.
 
-#### 9. Manage Docs (`managing-docs`)
-Audit and update all project documentation — specs and project-level docs:
-- Run automated checks (broken links, missing indexes, orphaned directories, stale ARCHITECTURE.md)
-- Verify lifecycle completeness (every spec has expected artifacts for its status)
-- Check project docs (ARCHITECTURE.md sections, design-docs index, README)
-- Update stale docs based on recent changes
+#### 9. Update Docs (`docs`)
+Bring project documentation in line with what changed, using the `docs` skill's maintain mode:
+- Decide whether the change affects durable docs (behavior, APIs, setup, architecture)
+- Update the affected docs following the repo's conventions and authority model
+- Report defects found (broken links, stale content, contradictions) with severities
 
-**Output:** Documentation health report summarizing errors, warnings, and suggested fixes. Updates indexes, statuses, and project docs as needed.
+**Output:** Updated project docs (README, ARCHITECTURE.md, docs/) plus a report of what was checked, updated, and remains open. For deeper problems, the same skill offers audit, refactor, and govern modes.
 
 ### Flexible Usage
 
@@ -230,7 +229,7 @@ While these skills form a complete workflow, they can be used independently:
 - **Plan only:** Use `creating-plans` to design a solution for an existing PRD or task
 - **Review only:** Use `reviewing-code` on any changes, regardless of whether they followed a plan
 - **Validate existing work:** Use `validating-plan` to check if past work matches requirements
-- **Audit docs:** Use `managing-docs` to check all project documentation is present, consistent, and up to date
+- **Audit docs:** Use `docs` to score documentation quality, restructure it, keep it current, or add governance
 
 All skills support both **spec-linked** mode (artifacts in `.agents/specs/`) and **standalone** mode (artifacts at project root) for flexibility.
 

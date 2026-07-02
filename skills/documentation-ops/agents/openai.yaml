@@ -1,4 +1,0 @@
-interface:
-  display_name: "Documentation Ops"
-  short_description: "Keep project docs current and governed"
-  default_prompt: "Use $documentation-ops to set up documentation ownership, lifecycle rules, and freshness checks."

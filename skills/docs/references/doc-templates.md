@@ -1,6 +1,6 @@
-# Documentation Patterns
+# Documentation Templates
 
-Use these patterns when creating or normalizing documentation templates. Adapt to the repo's existing style.
+Fill-in shapes for the common doc types. Adapt to the repo's existing style; never impose these where a coherent convention already exists.
 
 ## Guide
 
@@ -143,6 +143,37 @@ Benefits, costs, risks, and follow-up work.
 ## Alternatives Considered
 
 Options rejected and why.
+```
+
+## ARCHITECTURE.md
+
+Use for the system-level map. Follow the principles in `principles.md` §5 (short and stable, bird's-eye first, codemap not atlas, name don't link, invariants and absences, boundaries).
+
+```md
+# Architecture
+
+## Overview
+
+Bird's-eye view of what this project does and the problem it solves.
+
+## Codemap
+
+Coarse-grained modules/directories with one-line descriptions, naming key
+files and types. Answers "where is the thing that does X?"
+
+## Invariants
+
+Rules that hold across the codebase — especially things that deliberately
+do not exist.
+
+## Boundaries
+
+Where subsystems end, what is public vs internal, which modules may depend
+on which.
+
+## Cross-Cutting Concerns
+
+Error handling, logging, auth, config, and other system-level aspects.
 ```
 
 ## Architecture Update Checklist
