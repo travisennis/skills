@@ -4,6 +4,8 @@ Restructure a repo's documentation into a **progressive-disclosure system**: `AG
 
 This mode follows a **plan-first workflow**: Phase 1 surveys the existing docs, Phase 2 produces a recommendation and waits for approval, Phase 3 (after approval) applies changes directly to the working tree. No empty bureaucracy — only create docs that are justified by what the repo needs.
 
+This mode also covers **bootstrapping** a repo with little or no documentation: Phase 1 then surveys the code, config, and toolchain instead of existing docs, and Phase 3 creates rather than relocates. The bar is the same — every created doc must have real content evidenced by the repo, and a new project warrants only the smallest structure it needs today (often just AGENTS.md, a README, and one or two topic docs).
+
 ## Phase 1 — Survey
 
 Inspect the current documentation landscape through the lens of `rubric.md`. Be thorough but fast — this is a read-only survey, not a full scored audit. If a recent audit report exists (or the user provides one), use its "Prioritized Gaps" section as the starting inventory instead of re-deriving it.

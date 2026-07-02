@@ -176,9 +176,10 @@ Are the docs current and coherent, and is that protected mechanically?
 
 Signals:
 - **Internal links resolve**: markdown links to other docs and to files point at things that exist.
+- **Links are portable**: no absolute or machine-specific link targets (`file:///Users/...`, home-directory paths) — these break on every other checkout and signal unreviewed agent output.
 - **Accurate to the tree**: directories/modules named in ARCHITECTURE.md still exist; significant directories are not silently absent from the codemap.
 - **No staleness markers** dominating: pervasive `TODO`/`TBD`/"coming soon", or references to removed tooling.
-- **Mechanical enforcement** (the differentiator for a `3`): CI or hooks that check link resolution, doc coverage (major dirs have agent docs), or freshness; a documented doc-gardening process.
+- **Mechanical enforcement** (the differentiator for a `3`): CI or hooks that check link resolution, doc coverage (major dirs have agent docs), or freshness; a documented doc-gardening process. **Verify the check can fail**: a step neutered with `|| true`, `continue-on-error`, or advisory-only output is not enforcement — read the actual invocation, not just the job name. A deferred check ("not yet blocking") counts only if the follow-up to make it blocking is tracked somewhere actionable, not merely noted in prose.
 
 Score guidance:
 - `0`: docs are visibly stale or broken — dead links, descriptions that no longer match the code.

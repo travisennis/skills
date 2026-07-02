@@ -68,6 +68,8 @@ Never leave multiple current docs with conflicting instructions.
 - **Medium**: default. Add or improve checks that fit existing CI/hook infrastructure. Prefer link checking, markdown linting, and PR checklist rules.
 - **Strong**: new CI workflows, required checks, generated indexes, or coverage gates. Only with explicit approval.
 
+A check that cannot fail is not enforcement. A step neutered with `|| true`, `continue-on-error`, or output-only reporting gives the appearance of governance while enforcing nothing — prefer a blocking check with explicit, commented exclusions over a soft-failing check on everything. When enforcement must be deferred (e.g., a baseline of pre-existing violations needs cleanup first), file the follow-up in the repo's work-tracking system in the same change that defers it; a "not yet enforced" note in a doc is where enforcement goes to die.
+
 ### Discovery
 
 Before proposing tools, inspect: `.github/workflows/`, `.gitlab-ci.yml`, `justfile`, `Makefile`, `Taskfile.yml`; `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`; `.pre-commit-config.yaml`, `lefthook.yml`, husky config; existing markdown configs (`.markdownlint*`, `.prettierrc`, `dprint.json`, `biome.json`); existing link checkers or docs tooling (`lychee`, `markdown-link-check`, `markdownlint-cli2`, `remark`, `vale`, `mkdocs`, `docusaurus`, `sphinx`). Prefer the repo's existing toolchain over introducing a new one.

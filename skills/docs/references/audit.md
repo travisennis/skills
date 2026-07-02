@@ -71,6 +71,6 @@ Present the report to the user. Offer to write it to a file only if the user ask
 
 ## Limits
 
-- Documentation only. Tooling, tests, CI, and security belong to broader readiness-scoring skills (e.g., `readiness-report`, `agentic-legibility`) when installed; point the user there for those.
+- Documentation only. Tooling, tests, CI, and security are out of scope except where they enforce documentation health.
 - Repo-visible evidence only. Do not assume knowledge exists in external systems the agent cannot read.
 - This mode scores and recommends; refactor, maintain, and govern modes do the fixing.

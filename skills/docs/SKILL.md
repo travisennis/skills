@@ -28,7 +28,7 @@ The shared definition of "good", detailed in `references/principles.md`. Hold ev
 
 ## Mode Selection
 
-Classify the request, then read that mode's workflow file. Every mode assumes the doctrine above.
+Classify the request, then read that mode's workflow file. Every mode assumes the doctrine above. When the user invokes this skill with a mode name as the argument (e.g. `/docs audit`, `/docs maintain`), use that mode directly.
 
 | Mode | Use when asked to... | Read |
 |------|----------------------|------|
@@ -37,7 +37,7 @@ Classify the request, then read that mode's workflow file. Every mode assumes th
 | **maintain** | update docs after a change, check whether completed work needs documentation follow-up | `references/maintain.md` |
 | **govern** | define doc ownership or lifecycle rules, add freshness/link/lint checks, add PR doc rules | `references/govern.md` |
 
-If a request spans modes, run them in lifecycle order — audit before refactor, refactor before govern — and say which mode you are in.
+If a request spans modes, run them in lifecycle order — audit before refactor, refactor before govern, with maintain as the ongoing mode that keeps the result current — and say which mode you are in.
 
 ## How Modes Connect
 

@@ -85,3 +85,5 @@ The documentation index must include:
 - Links to the highest-value docs.
 - A section mapping common tasks to the right docs.
 - A note that `AGENTS.md` is the routing layer for agents and this file is the docs index.
+
+**One index per doc set.** Each collection of docs (guardrails, guides, design docs, ADRs) is enumerated in exactly one place. If a subdirectory has its own index file, `docs/README.md` links to that index instead of repeating its table — duplicated hand-maintained tables always drift apart. Prefer generating an index over hand-maintaining it when the repo has a tool for that.

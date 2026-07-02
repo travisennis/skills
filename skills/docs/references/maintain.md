@@ -43,7 +43,10 @@ While updating, watch for (and report) these defects:
 - Stale docs that describe behavior that no longer exists
 - Contradictions between docs and implementation
 - Broken relative links
+- Absolute or machine-specific link targets (`file:///Users/...`, home-directory paths) — replace with named paths or repo-relative links
 - Documentation that duplicates another source of truth instead of pointing to it
+- Index tables that duplicate another index or have drifted from the directory they describe
+- Entry-point creep: the routing file (`AGENTS.md` or equivalent) growing past its line budget (see `taxonomy.md`) or absorbing spec/procedure content that belongs in a deeper doc
 - Generated files that are stale relative to their sources
 
 If you keep finding systemic problems — pervasive duplication, contradictions, no clear home for content — stop patching and recommend audit mode (and refactor mode after it) instead of fixing symptoms one at a time.
@@ -54,6 +57,10 @@ If you keep finding systemic problems — pervasive duplication, contradictions,
 - Follow the existing style and organization.
 - Avoid creating broad architecture docs unless the project already uses them or the user asks for them.
 - Do not invent policies that the repository does not already imply.
+
+## Verify After Editing
+
+After making doc edits, run the repo's available documentation checks — markdown lint, link checker, or a doc-specific task in the repo's task runner (`just`, `make`, npm scripts). If none exist, do a manual pass: confirm every link you touched resolves. Report which checks ran and their results in the handoff; if no checks exist, say so (that is a govern-mode gap worth flagging).
 
 ## Reporting Findings
 
@@ -71,5 +78,8 @@ At handoff, summarize:
 
 - Which documentation was checked
 - Which files were updated
+- Which doc checks ran and their results
 - Which generated files were regenerated, if any
 - Any remaining documentation gaps or decisions needed
+
+When the repo has a work-tracking system (issue tracker, task files, a tool like `ahm`), file remaining gaps there as tickets instead of only mentioning them in the handoff — a gap noted in prose is a gap forgotten.
