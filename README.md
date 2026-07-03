@@ -13,30 +13,33 @@ A collection of specialized skills for coding agents, providing structured workf
 
 | Name | Version | User Invocable | Model Invocable |
 |------|---------|:-:|:-:|
-| agentic-legibility | — | ✅ | ✅ |
 | auditing-codebase | — | ✅ | ✅ |
 | boost | 1.0 | ✅ | ❌ |
 | browser-automation | 1.0 | ✅ | ✅ |
 | capture-skill | 1.0 | ✅ | ✅ |
+| cloning-repos-for-research | 1.0 | ✅ | ✅ |
+| code-review | 1.0 | ✅ | ✅ |
 | committing-changes | 1.0 | ✅ | ✅ |
 | creating-pull-requests | 1.0 | ❌ | ❌ |
 | fetching-web-content | 1.0 | ✅ | ❌ |
+| fetching-x-content | — | ✅ | ✅ |
 | fetching-youtube-transcripts | 1.0 | ✅ | ✅ |
 | fixing-merge-conflicts | 1.0 | ❌ | ❌ |
 | generating-epubs | — | ✅ | ✅ |
 | github-issue-creator | 1.0 | ❌ | ❌ |
 | grill-me | 1.0 | ✅ | ❌ |
+| grill-with-docs | — | ✅ | ✅ |
 | managing-bookmarks | — | ✅ | ✅ |
 | pdf | 1.0 | ✅ | ✅ |
 | planning | 1.0 | ❌ | ❌ |
 | playground | 1.0 | ✅ | ✅ |
 | pull-request-workflow | 1.0 | ❌ | ❌ |
-| readiness-report | — | ✅ | ✅ |
 | red-teaming | 1.0 | ✅ | ✅ |
 | scripting | 1.0 | ✅ | ✅ |
 | simplifying-code | 2.0 | ❌ | ❌ |
 | skill-creator | 1.0 | ✅ | ✅ |
 | tdd | 1.0 | ✅ | ❌ |
+| thermo-nuclear-code-quality-review | — | ✅ | ❌ |
 | using-chrome-cdp | — | ✅ | ✅ |
 | web-searching | 1.0 | ✅ | ❌ |
 | writing-clis-for-agents | 1.0 | ✅ | ✅ |
