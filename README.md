@@ -26,7 +26,6 @@ A collection of specialized skills for coding agents, providing structured workf
 | grill-me | 1.0 | ✅ | ❌ |
 | grill-with-docs | — | ✅ | ✅ |
 | managing-bookmarks | — | ✅ | ✅ |
-| pdf | 1.0 | ✅ | ✅ |
 | playground | 1.0 | ✅ | ✅ |
 | red-teaming | 1.0 | ✅ | ✅ |
 | scripting | 1.0 | ✅ | ✅ |
@@ -35,7 +34,6 @@ A collection of specialized skills for coding agents, providing structured workf
 | using-chrome-cdp | — | ✅ | ✅ |
 | web-searching | 1.0 | ✅ | ❌ |
 | writing-clis-for-agents | 1.0 | ✅ | ✅ |
-| xlsx | 1.0 | ✅ | ✅ |
 
 ## Notes
 
