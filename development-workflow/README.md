@@ -1,6 +1,6 @@
 # Development Workflow
 
-A set of skills that work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping validated code. Spec artifacts (PRDs, research, plans, reviews) are ephemeral working documents persisted to `.agents/specs/` (gitignored, not committed to the repo).
+A set of skills that work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping reviewed code. Spec artifacts (PRDs, research, plans, reviews) are ephemeral working documents persisted to `.agents/specs/` (gitignored, not committed to the repo).
 
 > **Status:** These skills are kept here, separate from the active `skills/` collection. They represent a structured, spec-driven development approach that may be revisited in the future.
 
@@ -12,11 +12,12 @@ A set of skills that work together to form a comprehensive product-to-code lifec
 - [The Workflow in Practice](#the-workflow-in-practice)
 - [Flexible Usage](#flexible-usage)
 - [Key Artifacts](#key-artifacts)
+- [Documentation Follow-up](#documentation-follow-up)
 - [References](#references)
 
 ## The Complete Development Workflow
 
-Nine skills work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping validated code. Spec artifacts (PRDs, research, plans, reviews) are ephemeral working documents persisted to `.agents/specs/` (gitignored, not committed to the repo).
+Eight skills work together to form a comprehensive product-to-code lifecycle—from defining what to build to shipping reviewed code. Spec artifacts (PRDs, research, plans, reviews) are ephemeral working documents persisted to `.agents/specs/` (gitignored, not committed to the repo).
 
 ```
                          ┌─────────────────────┐
@@ -45,12 +46,6 @@ Nine skills work together to form a comprehensive product-to-code lifecycle—fr
                     │  Plan → Implement → Validate →   │
                     │  Review                           │
                     └────────────────┬─────────────────┘
-                                     │
-                                     ▼
-                    ┌──────────────────────────────────┐
-                    │  Docs (maintain mode)            │
-                    │  (Update project documentation)  │
-                    └──────────────────────────────────┘
 ```
 
 ## How They Work Together
@@ -65,7 +60,6 @@ Nine skills work together to form a comprehensive product-to-code lifecycle—fr
 | **implementing-plan** | Execute approved plans phase-by-phase | After planning—when it's time to write code |
 | **validating-plan** | Verify that implementation matches the plan and PRD requirements | After implementation—before calling work complete |
 | **reviewing-code** | Comprehensive code review of changes | After changes are made—whether from a plan or ad-hoc work |
-| **docs** | Audit, refactor, maintain, and govern project documentation | After completing work (maintain mode), or when docs need an audit, restructure, or governance |
 
 ## Artifact Directory Structure
 
@@ -162,14 +156,6 @@ Assess code quality systematically:
 
 **Output:** `.agents/specs/<slug>/<task-slug>/review.md` when working within a spec context. Falls back to `review.md` at the project root for standalone reviews. If a review triggers plan changes, the plan is updated with a note referencing the review.
 
-### 9. Update Docs (`docs`)
-Bring project documentation in line with what changed, using the `docs` skill's maintain mode:
-- Decide whether the change affects durable docs (behavior, APIs, setup, architecture)
-- Update the affected docs following the repo's conventions and authority model
-- Report defects found (broken links, stale content, contradictions) with severities
-
-**Output:** Updated project docs (README, ARCHITECTURE.md, docs/) plus a report of what was checked, updated, and remains open. For deeper problems, the same skill offers audit, refactor, and govern modes.
-
 ## Flexible Usage
 
 While these skills form a complete workflow, they can be used independently:
@@ -179,7 +165,6 @@ While these skills form a complete workflow, they can be used independently:
 - **Plan only:** Use `creating-plans` to design a solution for an existing PRD or task
 - **Review only:** Use `reviewing-code` on any changes, regardless of whether they followed a plan
 - **Validate existing work:** Use `validating-plan` to check if past work matches requirements
-- **Audit docs:** Use `docs` to score documentation quality, restructure it, keep it current, or add governance
 
 All skills support both **spec-linked** mode (artifacts in `.agents/specs/`) and **standalone** mode (artifacts at project root) for flexibility.
 
@@ -194,6 +179,10 @@ All skills support both **spec-linked** mode (artifacts in `.agents/specs/`) and
 | `review.md` | `.agents/specs/<slug>/<task-slug>/` | Structured code review findings | `reviewing-code` |
 | `index.md` | `.agents/specs/` | Catalog of all specs with status | All skills (auto-maintained) |
 | `scratchpad.md` | Project root | Working notes during research/implementation (ephemeral) | All skills (reused) |
+
+## Documentation Follow-up
+
+Documentation work is handled by the active [`docs`](../skills/docs/SKILL.md) skill, not by this parked workflow collection. Use it after implementation or review when a change affects durable project documentation, or independently to audit, refactor, maintain, or govern a repository's docs.
 
 ## References
 

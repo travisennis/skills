@@ -1,6 +1,16 @@
 ---
 name: docs
-description: Audit, refactor, maintain, and govern project documentation for coding agents. Four modes — audit: read the active doc set and score nine agent-legibility dimensions, then report concrete gaps; refactor: restructure AGENTS.md and docs/ into a progressive-disclosure system; maintain: update docs after code or behavior changes; govern: set up documentation ownership, lifecycle rules, and freshness/link/lint enforcement. Use when asked to audit documentation quality, check whether docs are agent-legible, restructure or split an oversized AGENTS.md, organize a docs/ tree, update documentation after a change, decide whether completed work needs doc follow-up, or add documentation governance and CI checks.
+description: >-
+  Audit, refactor, maintain, and govern project documentation for coding agents.
+  Four modes — audit: read the active doc set and score nine agent-legibility
+  dimensions, then report concrete gaps; refactor: restructure AGENTS.md and
+  docs/ into a progressive-disclosure system; maintain: update docs after code
+  or behavior changes; govern: set up documentation ownership, lifecycle rules,
+  and freshness/link/lint enforcement. Use when asked to audit documentation
+  quality, check whether docs are agent-legible, restructure or split an
+  oversized AGENTS.md, organize a docs/ tree, update documentation after a
+  change, decide whether completed work needs doc follow-up, or add
+  documentation governance and CI checks.
 user-invocable: true
 metadata:
   version: "1.0"

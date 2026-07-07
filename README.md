@@ -19,6 +19,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | capture-skill | 1.0 | ✅ | ✅ |
 | cloning-repos-for-research | 1.0 | ✅ | ✅ |
 | code-review | 1.0 | ✅ | ✅ |
+| docs | 1.0 | ✅ | ✅ |
 | fetching-web-content | 1.0 | ✅ | ❌ |
 | fetching-x-content | — | ✅ | ✅ |
 | fetching-youtube-transcripts | 1.0 | ✅ | ✅ |
@@ -41,7 +42,7 @@ A collection of specialized skills for coding agents, providing structured workf
 
 ## Development Workflow
 
-A structured, spec-driven product-to-code lifecycle (PRD → research → task breakdown → plan → implement → validate → review → docs) lives separately in [`development-workflow/`](development-workflow/README.md). These skills are kept apart from the active collection but may be revisited in the future.
+A structured, spec-driven product-to-code lifecycle (PRD → research → task breakdown → plan → implement → validate → review) lives separately in [`development-workflow/`](development-workflow/README.md). Those workflow skills are kept apart from the active collection but may be revisited in the future. Documentation work lives in the active [`docs`](skills/docs/SKILL.md) skill.
 
 ## References
 
