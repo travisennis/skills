@@ -23,11 +23,14 @@ A collection of specialized skills for coding agents, providing structured workf
 | fetching-web-content | 1.0 | ✅ | ❌ |
 | fetching-x-content | — | ✅ | ✅ |
 | fetching-youtube-transcripts | 1.0 | ✅ | ✅ |
+| finding-improvements | — | ✅ | ✅ |
 | generating-epubs | — | ✅ | ✅ |
 | grill-me | 1.0 | ✅ | ❌ |
 | grill-with-docs | — | ✅ | ✅ |
+| grooming-backlog | — | ✅ | ✅ |
 | managing-bookmarks | — | ✅ | ✅ |
 | playground | 1.0 | ✅ | ✅ |
+| preflight | — | ✅ | ✅ |
 | red-teaming | 1.0 | ✅ | ✅ |
 | scripting | 1.0 | ✅ | ✅ |
 | skill-creator | 1.0 | ✅ | ✅ |
