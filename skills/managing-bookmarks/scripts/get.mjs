@@ -18,7 +18,7 @@ async function main() {
         },
         full: {
             type: 'boolean',
-            description: 'Include full content if available'
+            description: 'Fetch the article text (permanent copy, falling back to the live page)'
         }
     };
     
@@ -62,6 +62,15 @@ async function main() {
             process.exit(1);
         }
         
+        if (values.full) {
+            try {
+                bookmark.content = await fetchContent(bookmark, apiKey);
+            } catch (error) {
+                bookmark.content = null;
+                bookmark.contentError = error.message;
+            }
+        }
+
         if (values.json) {
             console.log(JSON.stringify(bookmark, null, 2));
         } else {
@@ -88,10 +97,12 @@ function showHelp(options) {
     console.log('Options:');
     console.log('  -h, --help     Show this help message');
     console.log('  -j, --json     Output results as JSON');
-    console.log('  --full         Include full content if available\n');
+    console.log('  --full         Fetch the article text (Raindrop permanent copy,');
+    console.log('                 falling back to the live page)\n');
     console.log('Examples:');
     console.log('  ./get.mjs 123456789');
     console.log('  ./get.mjs "https://example.com/article"');
+    console.log('  ./get.mjs 123456789 --full');
     console.log('  ./get.mjs 123456789 -j');
 }
 
@@ -166,6 +177,107 @@ function normalizeBookmark(item) {
     };
 }
 
+async function fetchContent(bookmark, apiKey) {
+    // Try Raindrop's permanent copy first (available on paid plans), then the live page
+    let html = null;
+
+    try {
+        const cacheResponse = await fetch(`https://api.raindrop.io/rest/v1/raindrop/${bookmark.id}/cache`, {
+            headers: { 'Authorization': `Bearer ${apiKey}` },
+            redirect: 'follow',
+            signal: AbortSignal.timeout(30000)
+        });
+        if (cacheResponse.ok) {
+            const contentType = cacheResponse.headers.get('content-type') || '';
+            if (contentType.includes('html') || contentType.includes('text')) {
+                html = await decodeBody(cacheResponse);
+            }
+        }
+    } catch {
+        // Permanent copy unavailable; fall through to live fetch
+    }
+
+    if (!html) {
+        const response = await fetch(bookmark.link, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) raindrop-skill/1.0',
+                'Accept': 'text/html,application/xhtml+xml'
+            },
+            redirect: 'follow',
+            signal: AbortSignal.timeout(30000)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Could not fetch page content: HTTP ${response.status}`);
+        }
+
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('html') && !contentType.includes('text')) {
+            throw new Error(`Content is ${contentType || 'unknown type'}, not text — open the URL directly`);
+        }
+
+        html = await decodeBody(response);
+    }
+
+    return htmlToText(html);
+}
+
+async function decodeBody(response) {
+    // response.text() assumes UTF-8; respect the declared charset (header, then <meta>)
+    const buffer = await response.arrayBuffer();
+    let charset = (response.headers.get('content-type') || '').match(/charset=([\w-]+)/i)?.[1];
+    if (!charset) {
+        const head = new TextDecoder('latin1').decode(buffer.slice(0, 2048));
+        charset = head.match(/<meta[^>]+charset=["']?([\w-]+)/i)?.[1];
+    }
+    try {
+        return new TextDecoder(charset || 'utf-8').decode(buffer);
+    } catch {
+        return new TextDecoder('utf-8').decode(buffer);
+    }
+}
+
+function htmlToText(html) {
+    let text = html
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
+        .replace(/<template[\s\S]*?<\/template>/gi, '')
+        .replace(/<svg[\s\S]*?<\/svg>/gi, '')
+        .replace(/<!--[\s\S]*?-->/g, '');
+
+    // Narrow to the main content region when the page marks one up
+    const region = text.match(/<article[\s\S]*?<\/article>/i)
+        || text.match(/<main[\s\S]*?<\/main>/i)
+        || text.match(/<body[\s\S]*?<\/body>/i);
+    if (region) {
+        text = region[0];
+    }
+
+    return text
+        .replace(/<(?:nav|header|footer|aside)[\s\S]*?<\/(?:nav|header|footer|aside)>/gi, '')
+        .replace(/<li[^>]*>/gi, '\n- ')
+        .replace(/<(?:br|\/p|\/div|\/h[1-6]|\/li|\/tr|\/section|\/article|\/blockquote|\/pre|\/ul|\/ol)[^>]*>/gi, '\n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#0*39;|&apos;/g, "'")
+        .replace(/&(mdash|ndash|hellip|lsquo|rsquo|ldquo|rdquo|laquo|raquo|middot|bull|times|copy|trade|reg);/g, (_, name) => ({
+            mdash: '—', ndash: '–', hellip: '…', lsquo: '‘', rsquo: '’',
+            ldquo: '“', rdquo: '”', laquo: '«', raquo: '»', middot: '·',
+            bull: '•', times: '×', copy: '©', trade: '™', reg: '®'
+        }[name]))
+        .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+        .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+        .replace(/&amp;/g, '&')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/ ?\n ?/g, '\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+}
+
 function printBookmark(bookmark, showFull) {
     console.log(`${bookmark.title}`);
     console.log('='.repeat(bookmark.title.length));
@@ -192,6 +304,17 @@ function printBookmark(bookmark, showFull) {
     if (bookmark.note) {
         console.log('Note:');
         console.log(bookmark.note);
+        console.log();
+    }
+
+    if (showFull) {
+        if (bookmark.content) {
+            console.log('Content:');
+            console.log('--------');
+            console.log(bookmark.content);
+        } else {
+            console.log(`Content: unavailable (${bookmark.contentError || 'no text content found'})`);
+        }
         console.log();
     }
 }

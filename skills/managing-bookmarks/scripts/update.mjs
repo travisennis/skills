@@ -29,7 +29,15 @@ async function main() {
         },
         excerpt: {
             type: 'string',
-            description: 'Update excerpt/note'
+            description: 'Update excerpt (short description shown in lists)'
+        },
+        note: {
+            type: 'string',
+            description: 'Update note (longer annotation, e.g. reading notes)'
+        },
+        collection: {
+            type: 'string',
+            description: 'Move to a different collection (by ID)'
         },
         'mark-important': {
             type: 'boolean',
@@ -82,7 +90,20 @@ async function main() {
         if (values.excerpt !== undefined) {
             updates.excerpt = values.excerpt;
         }
+
+        if (values.note !== undefined) {
+            updates.note = values.note;
+        }
         
+        if (values.collection !== undefined) {
+            const collectionId = parseInt(values.collection, 10);
+            if (isNaN(collectionId)) {
+                console.error(`Error: Invalid collection ID "${values.collection}"`);
+                process.exit(1);
+            }
+            updates.collection = { $id: collectionId };
+        }
+
         if (values['mark-important']) {
             updates.important = true;
         } else if (values['unmark-important']) {
@@ -116,7 +137,7 @@ async function main() {
         }
         
         if (Object.keys(updates).length === 0) {
-            console.error("Error: No updates specified. Use --tags, --add-tags, --remove-tags, --title, --excerpt, --mark-important, or --unmark-important");
+            console.error("Error: No updates specified. Use --tags, --add-tags, --remove-tags, --title, --excerpt, --note, --collection, --mark-important, or --unmark-important");
             process.exit(1);
         }
         
@@ -128,7 +149,9 @@ async function main() {
             console.log(`Updated bookmark ${id}:`);
             if (updates.title) console.log(`  Title: ${updates.title}`);
             if (updates.tags) console.log(`  Tags: ${updates.tags.join(', ')}`);
-            if (updates.excerpt) console.log(`  Excerpt: ${updates.excerpt.substring(0, 50)}...`);
+            if (updates.excerpt) console.log(`  Excerpt: ${updates.excerpt.substring(0, 50)}${updates.excerpt.length > 50 ? '...' : ''}`);
+            if (updates.note) console.log(`  Note: ${updates.note.substring(0, 50)}${updates.note.length > 50 ? '...' : ''}`);
+            if (updates.collection) console.log(`  Collection: ${updates.collection.$id}`);
             if (updates.important !== undefined) console.log(`  Important: ${updates.important}`);
         }
         
@@ -145,7 +168,7 @@ async function main() {
 function showHelp(options) {
     console.log('Raindrop.io Bookmark Update');
     console.log('===========================\n');
-    console.log('Update bookmark metadata: tags, title, excerpt, important flag.\n');
+    console.log('Update bookmark metadata: tags, title, excerpt, note, important flag.\n');
     console.log('Usage:');
     console.log('  ./update.mjs <id> [options]\n');
     console.log('Options:');
@@ -154,7 +177,10 @@ function showHelp(options) {
     console.log('  --add-tags <tags>        Add tags (comma-separated)');
     console.log('  --remove-tags <tags>     Remove tags (comma-separated)');
     console.log('  --title <title>          Update title');
-    console.log('  --excerpt <text>         Update excerpt/note');
+    console.log('  --excerpt <text>         Update excerpt (short description)');
+    console.log('  --note <text>            Update note (longer annotation, e.g. reading notes)');
+    console.log('  --collection <id>        Move to a different collection');
+    console.log('                           (use --collection=-1 syntax for negative IDs, e.g. Unsorted)');
     console.log('  --mark-important         Mark as important');
     console.log('  --unmark-important       Unmark as important');
     console.log('  -j, --json               Output results as JSON\n');
@@ -163,6 +189,7 @@ function showHelp(options) {
     console.log('  ./update.mjs 123456789 --tags "ai,ml,research"');
     console.log('  ./update.mjs 123456789 --title "Updated Title" --add-tags "distilled"');
     console.log('  ./update.mjs 123456789 --mark-important');
+    console.log('  ./update.mjs 123456789 --note "Key insight: ..."');
     console.log('  ./update.mjs 123456789 --remove-tags "unread" --add-tags "read"');
 }
 

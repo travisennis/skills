@@ -39,6 +39,15 @@ async function main() {
             type: 'string',
             short: 'l',
             description: 'Limit number of results (default: 25, max: 100)'
+        },
+        page: {
+            type: 'string',
+            short: 'p',
+            description: 'Page number (0-based, use with --limit as page size)'
+        },
+        all: {
+            type: 'boolean',
+            description: 'Fetch all matching results (auto-paginate)'
         }
     };
     
@@ -50,7 +59,7 @@ async function main() {
         });
         
         // Show help if --help flag or no arguments and no filters
-        if (values.help || (positionals.length === 0 && !values.tag && !values.domain)) {
+        if (values.help || (positionals.length === 0 && !values.tag && !values.domain && !values.all)) {
             showHelp(options);
             process.exit(0);
         }
@@ -77,6 +86,21 @@ async function main() {
             }
             perPage = limit;
         }
+
+        // Parse page if provided
+        let page = 0;
+        if (values.page) {
+            page = parseInt(values.page, 10);
+            if (isNaN(page) || page < 0) {
+                console.error('Error: Page must be a non-negative number');
+                process.exit(1);
+            }
+        }
+
+        if (values.all && (values.limit || values.page)) {
+            console.error('Error: --all cannot be combined with --limit or --page');
+            process.exit(1);
+        }
         
         const apiKey = process.env.RAINDROP_API_KEY;
         if (!apiKey) {
@@ -86,15 +110,18 @@ async function main() {
         }
         
         try {
-            const result = await searchRaindrop({
+            const params = {
                 search,
                 tag: values.tag,
                 domain: values.domain,
                 collection: values.collection,
                 created: values.created,
-                apiKey,
-                perPage
-            });
+                apiKey
+            };
+
+            const result = values.all
+                ? await searchAllPages(params)
+                : (await searchRaindrop({ ...params, perPage, page })).items;
             
             // Output results
             if (values.json) {
@@ -128,14 +155,17 @@ function showHelp(options) {
     console.log('  --created <date>          Filter by creation date (YYYY-MM-DD)');
     console.log('                            Use < or > prefix for before/after');
     console.log('  -j, --json                Output results as JSON');
-    console.log('  -l, --limit <num>         Limit results (1-100, default: 25)\n');
+    console.log('  -l, --limit <num>         Limit results (default: 25; the API caps a page at 50)');
+    console.log('  -p, --page <num>          Page number (0-based, page size = --limit)');
+    console.log('  --all                     Fetch all matching results (auto-paginate)\n');
     console.log('Examples:');
     console.log('  ./search.mjs "machine learning"');
     console.log('  ./search.mjs -t "programming"');
     console.log('  ./search.mjs "tutorial" -d "youtube.com"');
     console.log('  ./search.mjs "python" -c 123456 --created ">2024-01-01"');
     console.log('  ./search.mjs -d "github.com" -t "ai" -l 50');
-    console.log('  ./search.mjs --tag "unread" -j > unread.json');
+    console.log('  ./search.mjs "ai" -l 100 -p 1        (results 101-200)');
+    console.log('  ./search.mjs --tag "unread" --all -j > unread.json');
 }
 
 function isValidDate(dateStr) {
@@ -154,7 +184,44 @@ function isValidDate(dateStr) {
     return day <= daysInMonth;
 }
 
-async function searchRaindrop({ search, tag, domain, collection, created, apiKey, perPage = 25 }) {
+async function searchAllPages(params) {
+    // The API silently caps perpage at 50 (despite documenting 100), so the
+    // response's `count` field — not page fullness — decides when to stop.
+    const MAX_PAGES = 400;
+    const results = [];
+
+    for (let page = 0; page < MAX_PAGES; page++) {
+        let response;
+        for (let attempt = 0; ; attempt++) {
+            try {
+                response = await searchRaindrop({ ...params, perPage: 100, page });
+                break;
+            } catch (error) {
+                if (error.status === 429 && attempt < 3) {
+                    console.error('Rate limited; waiting 30s...');
+                    await new Promise(resolve => setTimeout(resolve, 30000));
+                    continue;
+                }
+                throw error;
+            }
+        }
+
+        results.push(...response.items);
+
+        if (response.items.length === 0 || results.length >= response.count) {
+            return results;
+        }
+
+        if (page > 0 && page % 10 === 0) {
+            console.error(`Fetched ${results.length} of ${response.count}...`);
+        }
+    }
+
+    console.error('Warning: stopped early; more results may exist');
+    return results;
+}
+
+async function searchRaindrop({ search, tag, domain, collection, created, apiKey, perPage = 25, page = 0 }) {
     const collectionId = collection || '0';
     
     // Build search query
@@ -173,7 +240,7 @@ async function searchRaindrop({ search, tag, domain, collection, created, apiKey
     }
     
     const encodedSearch = encodeURIComponent(searchFilter.trim());
-    const searchUrl = `https://api.raindrop.io/rest/v1/raindrops/${collectionId}?search=${encodedSearch}&perpage=${perPage}`;
+    const searchUrl = `https://api.raindrop.io/rest/v1/raindrops/${collectionId}?search=${encodedSearch}&perpage=${perPage}&page=${page}`;
     
     try {
         const response = await fetch(searchUrl, {
@@ -194,7 +261,9 @@ async function searchRaindrop({ search, tag, domain, collection, created, apiKey
             } catch (e) {
                 // Ignore if we can't read error body
             }
-            throw new Error(errorMessage);
+            const error = new Error(errorMessage);
+            error.status = response.status;
+            throw error;
         }
 
         const data = await response.json();
@@ -207,18 +276,21 @@ async function searchRaindrop({ search, tag, domain, collection, created, apiKey
             throw new Error(errorMessage);
         }
 
-        return data.items.map((item) => ({
-            id: item._id,
-            title: item.title,
-            link: item.link,
-            domain: item.domain,
-            excerpt: item.excerpt,
-            tags: item.tags || [],
-            created: item.created,
-            lastUpdate: item.lastUpdate,
-            important: item.important || false,
-            cover: item.cover
-        }));
+        return {
+            count: data.count ?? data.items.length,
+            items: data.items.map((item) => ({
+                id: item._id,
+                title: item.title,
+                link: item.link,
+                domain: item.domain,
+                excerpt: item.excerpt,
+                tags: item.tags || [],
+                created: item.created,
+                lastUpdate: item.lastUpdate,
+                important: item.important || false,
+                cover: item.cover
+            }))
+        };
     } catch (error) {
         if (error.message.startsWith('HTTP error') || error.message.startsWith('Invalid API')) {
             throw error;

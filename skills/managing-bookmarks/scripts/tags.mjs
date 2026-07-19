@@ -189,43 +189,19 @@ async function mergeTags(targetTag, sourceTag, apiKey) {
 }
 
 async function deleteTag(tag, apiKey) {
-    // Get all bookmarks with this tag
-    const searchUrl = `https://api.raindrop.io/rest/v1/raindrops/0?search=${encodeURIComponent(`#${tag}`)}&perpage=100`;
-    
-    const searchResponse = await fetch(searchUrl, {
-        method: 'GET',
+    // Single API call removes the tag from every bookmark, regardless of count
+    const response = await fetch('https://api.raindrop.io/rest/v1/tags/0', {
+        method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ tags: [tag] })
     });
-    
-    if (!searchResponse.ok) {
-        const errorText = await searchResponse.text();
-        throw new Error(`Search error! status: ${searchResponse.status} - ${errorText}`);
-    }
-    
-    const data = await searchResponse.json();
-    const bookmarks = data.items || [];
-    
-    // Remove the tag from each bookmark
-    for (const bookmark of bookmarks) {
-        const newTags = bookmark.tags.filter(t => t !== tag);
-        
-        const updateUrl = `https://api.raindrop.io/rest/v1/raindrop/${bookmark._id}`;
-        const updateResponse = await fetch(updateUrl, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ tags: newTags })
-        });
-        
-        if (!updateResponse.ok) {
-            const errorText = await updateResponse.text();
-            throw new Error(`Update error for bookmark ${bookmark._id}! status: ${updateResponse.status} - ${errorText}`);
-        }
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
     }
 }
 

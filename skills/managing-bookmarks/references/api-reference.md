@@ -59,8 +59,9 @@ GET /rest/v1/raindrops/{collectionId}
 
 Query parameters:
 - `search` - Search string (supports special syntax)
-- `perpage` - Number of results (1-100, default: 25)
-- `page` - Page number for pagination
+- `perpage` - Number of results (documented as 1-100, but observed to cap at 50; default: 25)
+- `page` - Page number for pagination (0-based). The response's `count` field gives the
+  total number of matches — use it to decide when to stop paging, not page fullness
 - `sort` - Sort field
 - `all` - Include all nested collections
 
@@ -129,6 +130,8 @@ PUT /rest/v1/raindrop/{id}
 ```
 DELETE /rest/v1/raindrop/{id}
 ```
+
+Moves the bookmark to Trash. Deleting a bookmark that is already in Trash removes it permanently.
 
 ### Collections
 
@@ -238,6 +241,21 @@ PUT /rest/v1/tags/{collectionId}
 ```
 
 This also merges tags if the new name already exists.
+
+#### Remove Tag(s)
+
+```
+DELETE /rest/v1/tags/{collectionId}
+```
+
+**Request body:**
+```json
+{
+  "tags": ["tag-to-remove", "another-tag"]
+}
+```
+
+Removes the tags from every bookmark in the collection (`0` for all) in a single call.
 
 ## Data Types
 

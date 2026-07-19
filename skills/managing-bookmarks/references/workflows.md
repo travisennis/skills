@@ -25,17 +25,17 @@ Save to Raindrop with initial tags:
 
 **List unread articles:**
 ```bash
-./scripts/search.mjs --tag "unread"
+./scripts/search.mjs --tag "to-read"
 ```
 
 **List by topic and read status:**
 ```bash
-./scripts/search.mjs "machine learning" --tag "unread"
+./scripts/search.mjs "machine learning" --tag "to-read"
 ```
 
 **List recent additions:**
 ```bash
-./scripts/search.mjs --tag "unread" --created ">2024-01-01"
+./scripts/search.mjs --tag "to-read" --created ">2024-01-01"
 ```
 
 ### 4. Reading Phase
@@ -46,6 +46,12 @@ Retrieve a specific bookmark to read:
 ./scripts/get.mjs 123456789
 ```
 
+Fetch the full article text for reading or distilling without leaving the terminal:
+
+```bash
+./scripts/get.mjs 123456789 --full
+```
+
 Or open in browser using the URL from the output.
 
 ### 5. Post-Reading Organization
@@ -54,7 +60,7 @@ After reading, update the bookmark:
 
 **Mark as read:**
 ```bash
-./scripts/update.mjs 123456789 --remove-tags "unread" --add-tags "read"
+./scripts/update.mjs 123456789 --remove-tags "to-read" --add-tags "read"
 ```
 
 **Add topic tags based on content:**
@@ -69,14 +75,45 @@ After reading, update the bookmark:
 
 **Add reading notes:**
 ```bash
-./scripts/update.mjs 123456789 --excerpt "Key insight: ..."
+./scripts/update.mjs 123456789 --note "Key insight: ..."
 ```
+
+## Triage Workflow
+
+Triage processes a batch of queued bookmarks so each one ends outside the queue. Pick the batch (by date, topic, or count), then for each bookmark:
+
+**1. Fetch the text:**
+```bash
+./scripts/get.mjs <id> --full
+```
+If the page is a JS-rendered SPA, `--full` returns nothing — fall back to another fetch method, and say so in the note.
+
+**2. Check for an existing note, then write the distillation:**
+```bash
+./scripts/get.mjs <id> -j    # confirm "note" is empty before overwriting
+./scripts/update.mjs <id> --note "2-4 sentence distillation with the key claims and numbers"
+```
+
+**3. Update status — one call, always removing the inbox tag:**
+```bash
+./scripts/update.mjs <id> --remove-tags "to-read" --add-tags "read,distilled,<topic-tags>"
+```
+
+**4. Star standouts; surface duds:**
+```bash
+./scripts/update.mjs <id> --mark-important
+```
+Report deletion candidates to the user instead of deleting them.
+
+**Invariant: a triaged bookmark never keeps its inbox tag.** Removing the inbox tag is what marks the item processed; a bookmark that keeps it will show up in the next triage pass as if untouched. This holds even when an item is assessed without a full read — skimmed, deemed reference-only, or unfetchable — in which case remove the inbox tag and apply an honest status tag (`reference`, `archive`) instead of `read`.
+
+After the batch, report per-bookmark verdicts to the user, leading with the starred items.
 
 ## Tag Taxonomy Strategies
 
 ### Status Tags
-Track reading progress:
-- `unread` - Not yet read
+Track reading progress. The **inbox tag** marks the reading queue — check `./scripts/tags.mjs` for the name actually in use before searching (this account uses `to-read`):
+- `to-read` / `unread` - Inbox tag: not yet processed
 - `reading` - Currently reading
 - `read` - Finished reading
 - `to-distill` - Read, needs summarization
@@ -152,16 +189,16 @@ Delete a tag (removes from all bookmarks):
 
 ### Export for Processing
 
-Get JSON for further processing:
+Get JSON for further processing (`--all` paginates past the API's 50-per-page cap):
 
 ```bash
-./scripts/search.mjs "topic" -j > topic-bookmarks.json
+./scripts/search.mjs "topic" --all -j > topic-bookmarks.json
 ```
 
 ### Extract URLs for Download
 
 ```bash
-./scripts/search.mjs "reference" -j | jq -r '.[].link'
+./scripts/search.mjs "reference" --all -j | jq -r '.[].link'
 ```
 
 ### Create Reading Lists
@@ -169,7 +206,7 @@ Get JSON for further processing:
 Generate a markdown reading list:
 
 ```bash
-./scripts/search.mjs --tag "unread" -j | jq -r '.[] | "- [\(.title)](\(.link))"'
+./scripts/search.mjs --tag "to-read" --all -j | jq -r '.[] | "- [\(.title)](\(.link))"'
 ```
 
 ## Weekly Review Workflow
@@ -191,10 +228,11 @@ Generate a markdown reading list:
 
 4. **Archive completed items:**
    ```bash
-   ./scripts/search.mjs --tag "read" --tag "distilled" -j | \
+   # Multiple tags go in the search query (repeating --tag keeps only the last one)
+   ./scripts/search.mjs "#read #distilled" --all -j | \
      jq -r '.[].id' | \
      while read id; do
-       ./scripts/update.mjs "$id" --add-tags "archive" --remove-tags "unread,reading"
+       ./scripts/update.mjs "$id" --add-tags "archive" --remove-tags "to-read,reading"
      done
    ```
 
