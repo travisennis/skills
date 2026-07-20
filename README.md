@@ -13,6 +13,7 @@ A collection of specialized skills for coding agents, providing structured workf
 
 | Name | Version | User Invocable | Model Invocable |
 |------|---------|:-:|:-:|
+| audit-choices | — | ✅ | ✅ |
 | auditing-codebase | — | ✅ | ✅ |
 | boost | 1.0 | ✅ | ❌ |
 | browser-automation | 1.0 | ✅ | ✅ |
@@ -25,6 +26,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | fetching-youtube-transcripts | 1.0 | ✅ | ✅ |
 | finding-improvements | — | ✅ | ✅ |
 | generating-epubs | — | ✅ | ✅ |
+| grill-for-unknowns | — | ✅ | ✅ |
 | grill-me | 1.0 | ✅ | ❌ |
 | grill-with-docs | — | ✅ | ✅ |
 | grooming-backlog | — | ✅ | ✅ |
@@ -37,6 +39,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | tdd | 1.0 | ✅ | ❌ |
 | using-chrome-cdp | — | ✅ | ✅ |
 | web-searching | 1.0 | ✅ | ❌ |
+| write-docs | — | ✅ | ✅ |
 | writing-clis-for-agents | 1.0 | ✅ | ✅ |
 
 ## Notes
