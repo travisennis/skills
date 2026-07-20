@@ -35,6 +35,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | preflight | — | ✅ | ✅ |
 | red-teaming | 1.0 | ✅ | ✅ |
 | scripting | 1.0 | ✅ | ✅ |
+| show-me-your-work | — | ✅ | ❌ |
 | skill-creator | 1.0 | ✅ | ✅ |
 | tdd | 1.0 | ✅ | ❌ |
 | using-chrome-cdp | — | ✅ | ✅ |
