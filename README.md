@@ -20,6 +20,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | capture-skill | 1.0 | ✅ | ✅ |
 | cloning-repos-for-research | 1.0 | ✅ | ✅ |
 | code-review | 1.0 | ✅ | ✅ |
+| delegating-to-cake | — | ✅ | ✅ |
 | docs | 1.0 | ✅ | ✅ |
 | fetching-web-content | 1.0 | ✅ | ❌ |
 | fetching-x-content | — | ✅ | ✅ |
