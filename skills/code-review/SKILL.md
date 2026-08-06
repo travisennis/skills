@@ -3,7 +3,9 @@ name: code-review
 description: >
   Unified code review for bugs, security vulnerabilities, performance problems, architecture
   issues, and code organization. Works against branches, unstaged changes, specific commits,
-  or files. Scales effort to change size and runs focused passes instead of one subjective read.
+  or files. Publishes the review through GitHub's PR review flow (inline comments, summary
+  body, approve/request-changes) when the branch has an open PR, with a local fallback.
+  Scales effort to change size and runs focused passes instead of one subjective read.
 user-invocable: true
 metadata:
   version: "1.0"
@@ -66,6 +68,26 @@ git diff --stat <range>
 
 If the diff is truncated by the CLI, read affected files individually or use
 `git diff -- <path>` for specific directories until every changed line is seen.
+
+### c. GitHub PR Detection
+
+For **branch** reviews (and any review where the user mentions a PR), check whether the
+current branch has an open PR before reviewing:
+
+```bash
+gh pr status
+# or, for a single value:
+gh pr view --json number,url,state,headRefName,baseRefName,isDraft,title,headRefOid \
+  --jq '{number,url,state,headRefName,baseRefName,isDraft,title,headRefOid}'
+```
+
+- **PR exists → review it, then publish through the GitHub PR review flow** (§6): inline
+  comments on the diff, a summary body, and an `APPROVE` / `REQUEST_CHANGES` / `COMMENT`
+  event. Use `gh pr diff <number>` as the diff — its base may differ from your local base.
+- **No PR → do not create one.** State that the branch has no open PR and offer the user
+  two options: (a) push/open a PR and rerun, or (b) get a local review report (§6e).
+- **Draft PR** → reviews are allowed, but confirm the user wants one before submitting to
+  a draft they may still be shaping.
 
 ---
 
@@ -333,108 +355,68 @@ when documenting it would prevent repeat churn.
 
 ---
 
-## 6. Output Format
+## 6. Publishing via GitHub PR Review
 
-Produce a **structured JSON findings list** for programmatic consumption, followed by a
-**markdown summary** for readability.
+When the reviewed branch has an open PR (§1c), deliver the review the way a human
+reviewer would: **inline comments on the diff, a summary body, and a verdict event**
+(`APPROVE` / `REQUEST_CHANGES` / `COMMENT`). The GitHub review is the output — there is
+no separate JSON dump or markdown report.
 
-### JSON Findings Schema
+### a. Hold findings as working data
 
-Each finding must include concrete evidence (file:line). Do not flag speculative or
-low-confidence issues.
+Run the passes and vetting (§§3–5). Keep findings in the structured schema from
+`references/review-delivery.md` — `id`, `severity`, `evidence`, `recommendation`, and
+friends map directly onto inline comments. Write them to a gitignored scratch file
+(e.g. `.agents/review-findings.json`) so the mapping script can read them.
 
-```json
-{
-  "findings": [
-    {
-      "id": "F-001",
-      "title": "Short imperative description (≤80 chars)",
-      "category": "security | correctness | architecture | performance | maintainability | test-gap | polish | dependencies | migration | dx | docs",
-      "pass": 1 | 2 | 3 | 4 | "large-review",
-      "severity": "critical | high | medium | low",
-      "confidence": 0.0-1.0,
-      "priority": "P0 | P1 | P2 | P3",
-      "leverage": "high | medium | low",
-      "impact": "What breaks, gets riskier, slows down, or becomes harder to maintain",
-      "effort": "S | M | L",
-      "fix_risk": "low | medium | high",
-      "depends_on_findings": ["F-001"],
-      "introduced_status": "introduced | pre_existing_in_touched_code | pre_existing_exposed_by_change",
-      "evidence": [
-        {
-          "file": "relative/path/to/file.ext",
-          "line": 42,
-          "context": "<2-3 lines of surrounding code, optional>"
-        }
-      ],
-      "description": "What's wrong and why it matters (1-3 sentences)",
-      "recommendation": "How to fix it (specific, actionable)",
-      "fix_sketch": "Minimal implementation direction. For critical/high findings include likely files/symbols, test pattern, verification command, and any stop condition.",
-      "why_tests_not_catching": "If applicable — why existing tests don't already cover this"
-    }
-  ],
-  "rejected_findings": [
-    {
-      "title": "Issue considered but rejected",
-      "reason": "Why this is by-design, pre-existing-only, speculative, not_worth_flagging, or otherwise not a finding",
-      "evidence": "file:line or brief note"
-    }
-  ],
-  "scope": {
-    "mode": "branch | unstaged | commit | commits | files",
-    "scale": "XS | S | M | L | XL",
-    "target": "description of what was reviewed",
-    "not_audited": ["Areas or categories intentionally skipped because of scope/scale"]
-  },
-  "summary": {
-    "total_findings": 0,
-    "critical": 0,
-    "high": 0,
-    "medium": 0,
-    "low": 0,
-    "by_category": {}
-  },
-  "verdict": "approve | approve-with-changes | changes-requested",
-  "verdict_explanation": "1-3 sentences justifying the verdict"
-}
+### b. Map evidence to inline positions
+
+GitHub inline comments can only attach to lines shown in the PR diff. Run the helper
+to resolve where each finding's primary evidence lands:
+
+```bash
+node skills/code-review/scripts/map-diff-positions.mjs \
+  --pr <number> \
+  --evidence .agents/review-findings.json
 ```
 
-### Verdict Rules
+Output: one entry per finding — `{commentable: true, position}` (`path` + `line` +
+`side`) when the line is inside the PR diff, or `{commentable: false, reason}` — those
+get carried in the review body instead (pre-existing lines, deleted files, lines
+outside the hunks).
 
-| Verdict | When |
-|---------|------|
-| **approve** | No critical or high findings. Code is well-structured and ready. |
-| **approve-with-changes** | Medium/low findings only. Non-blocking improvements suggested. |
-| **changes-requested** | Critical or high findings that must be addressed before merge. |
+### c. Compose the review body
 
-### Markdown Summary Format
+The body is the summary a maintainer reads first: verdict, scope, top findings with
+file:line, what is intentionally not audited, and context-only (pre-existing) notes.
+The inline comments carry the detail. Use the template in `references/review-delivery.md`.
 
-After the JSON, write a concise markdown summary:
+### d. Submit the review
 
-```markdown
-## Review Summary
+Write the payload (event + body + comments, with the PR head SHA as `commit_id`) to a
+JSON file and POST it. `gh pr review` cannot attach inline comments — use the API:
 
-**Scope:** [mode] — [target]
-**Scale:** [XS/S/M/L/XL]
-**Verdict:** [approve / approve-with-changes / changes-requested]
-**Not Audited:** [anything intentionally skipped because of scope/scale]
-
-### Critical/High Findings
-- **F-001** ([category]) — [title] — [file:line]
-
-### Medium/Low Findings
-- **F-002** ([category]) — [title] — [file:line]
-
-### Positive Aspects
-- [What was done well, with file:line references]
-
-### Notes
-- [Any context, deployment considerations, or deferred items]
-- [Dependency ordering between findings, if any]
-
-### Rejected Findings
-- [Optional: likely concerns reviewed and rejected, with brief reason]
+```bash
+gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents/review.json
 ```
+
+| Verdict | `event` | When |
+|---------|---------|------|
+| **approve** | `APPROVE` | No critical/high findings. May still carry informational comments. |
+| **approve-with-changes** | `COMMENT` | Medium/low findings only — non-blocking suggestions. |
+| **changes-requested** | `REQUEST_CHANGES` | Critical/high or otherwise blocking findings. |
+
+After submitting, confirm it landed:
+`gh pr view <number> --json reviews --jq '.reviews[-1] | {state, body}'`.
+
+### e. Local fallback
+
+If there is no open PR (or the user asks for a local pass), produce the previous
+**JSON findings list + markdown summary** format (§8 of `references/review-delivery.md`)
+and share it in chat. Never create a PR, branch, or review without being asked.
+
+> **Full mechanics** — payload shape, body template, position rules, error handling,
+> and the local fallback format — live in `references/review-delivery.md`.
 
 ---
 
@@ -468,3 +450,8 @@ After the JSON, write a concise markdown summary:
    targeted tests). Do not run installs, formatters, generators, migrations, or commands that
    mutate the user's working tree unless explicitly requested or already known to be safe.
    If an important command is skipped, say which command and why.
+
+9. **PR etiquette.** Only block on findings the change introduced or newly exposes. Keep
+   inline comments on the changed lines — never on unrelated lines. No @-mentions. One
+   review submission per pass. If the author already addressed a finding, confirm it is
+   fixed instead of re-flagging it.
