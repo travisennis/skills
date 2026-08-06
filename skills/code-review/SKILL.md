@@ -85,9 +85,27 @@ gh pr view --json number,url,state,headRefName,baseRefName,isDraft,title,headRef
   comments on the diff, a summary body, and an `APPROVE` / `REQUEST_CHANGES` / `COMMENT`
   event. Use `gh pr diff <number>` as the diff — its base may differ from your local base.
 - **No PR → do not create one.** State that the branch has no open PR and offer the user
-  two options: (a) push/open a PR and rerun, or (b) get a local review report (§6e).
+  two options: (a) push/open a PR and rerun, or (b) get a local review report (§6f).
 - **Draft PR** → reviews are allowed, but confirm the user wants one before submitting to
   a draft they may still be shaping.
+
+### d. Prior Review Threads
+
+A rerun is a **new review**, not a follow-up — but it must account for what was already
+said. Before the passes, fetch every prior review summary and inline thread:
+
+```bash
+# Review summaries (verdict + body)
+gh pr view <n> --json reviews --jq '.reviews[] | {state, body, submittedAt, author: .author.login}'
+
+# Inline review comments (thread roots + replies)
+gh api repos/{owner}/{repo}/pulls/<n>/comments \
+  --jq '.[] | {id, in_reply_to_id, path, line, original_line, body, created_at, author: .user.login}'
+```
+
+Reconstruct threads by grouping comments on `in_reply_to_id` (`null` = thread root).
+Keep the list of prior findings — each gets a disposition in §6a, and none is re-flagged
+blindly.
 
 ---
 
@@ -362,14 +380,32 @@ reviewer would: **inline comments on the diff, a summary body, and a verdict eve
 (`APPROVE` / `REQUEST_CHANGES` / `COMMENT`). The GitHub review is the output — there is
 no separate JSON dump or markdown report.
 
-### a. Hold findings as working data
+### a. Dispose of prior findings
 
-Run the passes and vetting (§§3–5). Keep findings in the structured schema from
+Each run is a fresh review, but it must account for what previous reviews already
+flagged. Verify every prior finding from §1d against the **current** branch and classify
+it:
+
+| Disposition | Meaning |
+|-------------|---------|
+| **confirmed fixed** | Resolved at the cited location — do not re-flag; note where it was fixed. |
+| **still present** | Remains in the current code — re-flag it inline with a reference to the prior finding id. |
+| **partially addressed** | Part fixed, part remains — re-flag only the remaining part. |
+| **superseded / moot** | The code path changed or was removed; the finding no longer applies. |
+| **not verifiable** | Cannot confirm status from the current code; say why. |
+
+The new review opens with a disposition table (§d). Never silently drop a prior finding,
+and never re-flag a confirmed-fixed one.
+
+### b. Hold findings as working data
+
+Run the passes and vetting (§§3–5) — with the prior findings in hand, the passes double
+as verification of each disposition. Keep findings in the structured schema from
 `references/review-delivery.md` — `id`, `severity`, `evidence`, `recommendation`, and
 friends map directly onto inline comments. Write them to a gitignored scratch file
 (e.g. `.agents/review-findings.json`) so the mapping script can read them.
 
-### b. Map evidence to inline positions
+### c. Map evidence to inline positions
 
 GitHub inline comments can only attach to lines shown in the PR diff. Run the helper
 to resolve where each finding's primary evidence lands:
@@ -385,13 +421,14 @@ Output: one entry per finding — `{commentable: true, position}` (`path` + `lin
 get carried in the review body instead (pre-existing lines, deleted files, lines
 outside the hunks).
 
-### c. Compose the review body
+### d. Compose the review body
 
-The body is the summary a maintainer reads first: verdict, scope, top findings with
-file:line, what is intentionally not audited, and context-only (pre-existing) notes.
-The inline comments carry the detail. Use the template in `references/review-delivery.md`.
+The body is the summary a maintainer reads first: **a prior-review disposition table**,
+verdict, scope, top findings with file:line, what is intentionally not audited, and
+context-only (pre-existing) notes. The inline comments carry the detail. Use the
+template in `references/review-delivery.md`.
 
-### d. Submit the review
+### e. Submit the review
 
 Write the payload (event + body + comments, with the PR head SHA as `commit_id`) to a
 JSON file and POST it. `gh pr review` cannot attach inline comments — use the API:
@@ -409,14 +446,15 @@ gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents
 After submitting, confirm it landed:
 `gh pr view <number> --json reviews --jq '.reviews[-1] | {state, body}'`.
 
-### e. Local fallback
+### f. Local fallback
 
 If there is no open PR (or the user asks for a local pass), produce the previous
-**JSON findings list + markdown summary** format (§8 of `references/review-delivery.md`)
+**JSON findings list + markdown summary** format (§9 of `references/review-delivery.md`)
 and share it in chat. Never create a PR, branch, or review without being asked.
 
-> **Full mechanics** — payload shape, body template, position rules, error handling,
-> and the local fallback format — live in `references/review-delivery.md`.
+> **Full mechanics** — prior-thread fetching, disposition rules, payload shape, body
+> template, position rules, error handling, and the local fallback format — live in
+> `references/review-delivery.md`.
 
 ---
 
@@ -453,5 +491,5 @@ and share it in chat. Never create a PR, branch, or review without being asked.
 
 9. **PR etiquette.** Only block on findings the change introduced or newly exposes. Keep
    inline comments on the changed lines — never on unrelated lines. No @-mentions. One
-   review submission per pass. If the author already addressed a finding, confirm it is
-   fixed instead of re-flagging it.
+   review submission per pass. Every prior finding gets an explicit disposition — confirm
+   fixes instead of re-flagging them, and re-flag only what is still present.

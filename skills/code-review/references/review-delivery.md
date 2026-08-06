@@ -66,7 +66,37 @@ Verdict rules (unchanged):
 | **approve-with-changes** | Medium/low findings only. Non-blocking improvements suggested. |
 | **changes-requested** | Critical or high findings that must be addressed before merge. |
 
-## 2. Inline comment position rules
+## 2. Prior review dispositions
+
+Every rerun is a fresh review, but it must open by accounting for what a previous review
+already flagged (SKILL.md §1d). Fetch the prior threads:
+
+```bash
+# Review summaries (verdict + body)
+gh pr view <n> --json reviews --jq '.reviews[] | {state, body, submittedAt, author: .author.login}'
+
+# Inline review comments (thread roots + replies)
+gh api repos/{owner}/{repo}/pulls/<n>/comments \
+  --jq '.[] | {id, in_reply_to_id, path, line, original_line, body, created_at, author: .user.login}'
+```
+
+Reconstruct threads by grouping on `in_reply_to_id` (`null` = thread root). Author replies
+inside a thread often clarify intent — read them before disposing of the finding.
+
+Verify each prior finding against the **current** branch:
+
+| Disposition | Meaning |
+|-------------|---------|
+| **confirmed fixed** | Resolved at the cited location (or the fix is visible in the current diff). Do not re-flag; note where it was fixed. |
+| **still present** | Remains in the current code. Re-flag inline with a reference to the prior finding id. |
+| **partially addressed** | Part fixed, part remains. Re-flag only the remaining part. |
+| **superseded / moot** | The code path changed or was removed; the finding no longer applies. |
+| **not verifiable** | Cannot confirm status from the current code; say why. |
+
+The new review body opens with a disposition table (§5). Never silently drop a prior
+finding; never re-flag a confirmed-fixed one.
+
+## 3. Inline comment position rules
 
 - GitHub review comments can only attach to lines shown in the PR diff
   (`gh pr diff <number>`).
@@ -83,7 +113,7 @@ Verdict rules (unchanged):
   several scattered comments.
 - Deleted files: treat as body-only (do not attempt inline comments on them).
 
-## 3. Mapping helper
+## 4. Mapping helper
 
 `skills/code-review/scripts/map-diff-positions.mjs` resolves evidence against the PR
 diff and reports where each finding can be commented inline.
@@ -108,7 +138,7 @@ Output — one entry per input finding, in order:
 Build one inline comment per `commentable` entry; fold `commentable: false` entries into
 the review body with a one-line note each.
 
-## 4. Review body template
+## 5. Review body template
 
 The body is what a maintainer reads first; the inline comments carry the detail.
 
@@ -118,7 +148,14 @@ The body is what a maintainer reads first; the inline comments carry the detail.
 **Verdict:** <approve | approve-with-changes | changes-requested>
 **Scale:** <XS/S/M/L/XL> · **Not audited:** <list or "none">
 
-### Top findings
+### Prior review dispositions
+| Prior finding | Disposition | Note |
+|---------------|-------------|------|
+| F-001 (security) | confirmed fixed | Fixed in <commit>; null check now at src/a.ts:42. |
+| F-002 (perf) | still present | Re-flagged inline below. |
+| F-003 (architecture) | superseded | Code path removed in refactor. |
+
+### Top findings (new or still present)
 - **F-001** (security, critical) — <title> — <file:line>
 - **F-002** (architecture, medium) — <title> — <file:line>
 
@@ -134,10 +171,11 @@ The body is what a maintainer reads first; the inline comments carry the detail.
 
 Keep the body under ~4,000 characters — GitHub truncates longer bodies.
 
-## 5. Review payload and submission
+## 6. Review payload and submission
 
 Inline comment bodies: start with the finding id, category, and severity, then the
-description and the specific fix.
+description and the specific fix. Re-flagged prior findings start with
+`**Re-flag of prior F-XXX** — ...` so maintainers can connect the threads.
 
 ```json
 {
@@ -173,24 +211,25 @@ gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents
 | **approve-with-changes** | `COMMENT` | Medium/low findings only — non-blocking suggestions. |
 | **changes-requested** | `REQUEST_CHANGES` | Critical/high or otherwise blocking findings. |
 
-## 6. Error handling
+## 7. Error handling
 
 - **422 "line must be part of the diff"** — drop that comment into the body and resubmit.
 - **403/404** — run `gh auth status`; for private repos confirm membership or auth scopes.
 - **Body truncated** — trim the body; the inline comments carry the detail.
 - **Too many comments** — GitHub caps review payloads; merge sibling findings and move
   low-severity items to the body.
-- **No `gh` or unauthenticated** — fall back to the local format (§8) and say why.
+- **No `gh` or unauthenticated** — fall back to the local format (§9) and say why.
 
-## 7. Re-review etiquette
+## 8. Re-review etiquette
 
 - A new submission adds a new review to the PR history — that is expected after the
-  author pushes fixes. Reference the previous review when re-checking fixes.
-- If a finding is already addressed, confirm it is fixed — do not re-flag it.
+  author pushes fixes.
+- Every prior finding gets an explicit disposition (§2); a confirmed-fixed finding is
+  acknowledged, not re-flagged.
 - One review per pass; do not spam multiple submissions.
 - No @-mentions; no comments on unrelated lines.
 
-## 8. Local fallback (no PR / explicit request)
+## 9. Local fallback (no PR / explicit request)
 
 When there is no open PR or the user asks for a local pass, produce the **JSON findings
 list** followed by a concise **markdown summary**. Do not create a PR, branch, or
