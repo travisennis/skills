@@ -155,7 +155,7 @@ The body is what a maintainer reads first; the inline comments carry the detail.
 | F-002 (perf) | still present | Re-flagged inline below. |
 | F-003 (architecture) | superseded | Code path removed in refactor. |
 
-### Top findings (new or still present)
+### Findings to address (Block + Comment — §5 of SKILL.md)
 - **F-001** (security, critical) — <title> — <file:line>
 - **F-002** (architecture, medium) — <title> — <file:line>
 
@@ -167,15 +167,32 @@ The body is what a maintainer reads first; the inline comments carry the detail.
 
 ### Notes
 - <dependencies between findings, deployment considerations, deferred items>
+- <suppressed (low/polish/speculative) items are not listed — they were not published>
 ```
 
 Keep the body under ~4,000 characters — GitHub truncates longer bodies.
 
 ## 6. Review payload and submission
 
-Inline comment bodies: start with the finding id, category, and severity, then the
-description and the specific fix. Re-flagged prior findings start with
-`**Re-flag of prior F-XXX** — ...` so maintainers can connect the threads.
+### Publication bar
+
+Publish only findings that pass the bar (SKILL.md §5):
+
+- **Block** — critical/high, or anything you'd not want merged (incl. medium issues on
+  security boundaries, data loss, or hot paths) → inline comment + `REQUEST_CHANGES`.
+- **Comment** — medium with material, demonstrable impact (correctness, security,
+  hot-path performance, a test gap that would let a regression through) → inline comment.
+- **Suppress** — low severity, polish, nits, style, speculative, no material impact →
+  no comment; at most one line in the body's Notes, or nothing.
+
+When in doubt, leave it out. Re-flagged prior findings follow the same bar; a
+confirmed-fixed finding is acknowledged in the disposition table, not re-commented.
+
+### Inline comment bodies
+
+Start with the finding id, category, and severity, then the description and the specific
+fix. Re-flagged prior findings start with `**Re-flag of prior F-XXX** — ...` so
+maintainers can connect the threads.
 
 ```json
 {
@@ -232,8 +249,9 @@ gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents
 ## 9. Local fallback (no PR / explicit request)
 
 When there is no open PR or the user asks for a local pass, produce the **JSON findings
-list** followed by a concise **markdown summary**. Do not create a PR, branch, or
-review without being asked.
+list** followed by a concise **markdown summary**. Apply the publication bar the same way
+(SKILL.md §5): `Suppress` items go in `rejected_findings`, not the findings list. Do not
+create a PR, branch, or review without being asked.
 
 ```markdown
 ## Review Summary

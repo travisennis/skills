@@ -91,8 +91,8 @@ gh pr view --json number,url,state,headRefName,baseRefName,isDraft,title,headRef
 
 ### d. Prior Review Threads
 
-A rerun is a **new review**, not a follow-up — but it must account for what was already
-said. Before the passes, fetch every prior review summary and inline thread:
+A rerun is a **new review** — but account for what was already said. Before the passes,
+fetch every prior review summary and inline thread:
 
 ```bash
 # Review summaries (verdict + body)
@@ -103,9 +103,7 @@ gh api repos/{owner}/{repo}/pulls/<n>/comments \
   --jq '.[] | {id, in_reply_to_id, path, line, original_line, body, created_at, author: .user.login}'
 ```
 
-Reconstruct threads by grouping comments on `in_reply_to_id` (`null` = thread root).
-Keep the list of prior findings — each gets a disposition in §6a, and none is re-flagged
-blindly.
+Group threads by `in_reply_to_id` (`null` = root). Keep the prior-finding list — each gets a disposition in §6a; none is re-flagged blindly.
 
 ---
 
@@ -371,6 +369,18 @@ Before producing the final review, run a dedicated vetting pass:
 If a likely issue is rejected after vetting, include it only in `rejected_findings`
 when documenting it would prevent repeat churn.
 
+### Publication Bar — what gets left as comments
+
+The review stops bad merges: **call out high-risk, high-severity issues we would not
+want merged**. Be discerning, not exhaustive.
+
+- **Block** — critical/high, or anything you'd not want merged (incl. medium on security boundaries, data loss, hot paths) → inline comment + `REQUEST_CHANGES`.
+- **Comment** — medium with material, demonstrable impact (correctness, security, hot-path performance, a test gap that lets a regression through) → inline comment.
+- **Suppress** — low severity, polish, nits, style, speculative, no material impact → no comment; at most a one-line body note.
+
+When in doubt, leave it out. Suppressed findings stay in the working data (in `rejected_findings` when that prevents repeat churn) — they just don't reach the PR.
+Full criteria: `references/review-delivery.md` §6.
+
 ---
 
 ## 6. Publishing via GitHub PR Review
@@ -382,33 +392,24 @@ no separate JSON dump or markdown report.
 
 ### a. Dispose of prior findings
 
-Each run is a fresh review, but it must account for what previous reviews already
-flagged. Verify every prior finding from §1d against the **current** branch and classify
-it:
-
-| Disposition | Meaning |
-|-------------|---------|
-| **confirmed fixed** | Resolved at the cited location — do not re-flag; note where it was fixed. |
-| **still present** | Remains in the current code — re-flag it inline with a reference to the prior finding id. |
-| **partially addressed** | Part fixed, part remains — re-flag only the remaining part. |
-| **superseded / moot** | The code path changed or was removed; the finding no longer applies. |
-| **not verifiable** | Cannot confirm status from the current code; say why. |
-
-The new review opens with a disposition table (§d). Never silently drop a prior finding,
-and never re-flag a confirmed-fixed one.
+Classify every prior finding from §1d against the current branch — **confirmed fixed**,
+**still present**, **partially addressed**, **superseded / moot**, or **not verifiable**
+(taxonomy in `references/review-delivery.md` §2). The new review opens with a disposition
+table (§d); never silently drop a prior finding or re-flag a confirmed-fixed one.
 
 ### b. Hold findings as working data
 
-Run the passes and vetting (§§3–5) — with the prior findings in hand, the passes double
-as verification of each disposition. Keep findings in the structured schema from
+Run the passes and vetting (§§3–5); with prior findings in hand, the passes double as
+disposition verification. Keep findings in the structured schema from
 `references/review-delivery.md` — `id`, `severity`, `evidence`, `recommendation`, and
 friends map directly onto inline comments. Write them to a gitignored scratch file
 (e.g. `.agents/review-findings.json`) so the mapping script can read them.
 
 ### c. Map evidence to inline positions
 
-GitHub inline comments can only attach to lines shown in the PR diff. Run the helper
-to resolve where each finding's primary evidence lands:
+Only findings that pass the publication bar (§5) are mapped and posted. GitHub inline
+comments can only attach to lines shown in the PR diff; run the helper to resolve where
+each published finding's evidence lands:
 
 ```bash
 node skills/code-review/scripts/map-diff-positions.mjs \
@@ -424,9 +425,9 @@ outside the hunks).
 ### d. Compose the review body
 
 The body is the summary a maintainer reads first: **a prior-review disposition table**,
-verdict, scope, top findings with file:line, what is intentionally not audited, and
-context-only (pre-existing) notes. The inline comments carry the detail. Use the
-template in `references/review-delivery.md`.
+verdict, scope, the **Block/Comment findings** with file:line, and context-only
+(pre-existing) notes; suppressed items are at most a one-line note. Use the template in
+`references/review-delivery.md`.
 
 ### e. Submit the review
 
@@ -440,8 +441,8 @@ gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents
 | Verdict | `event` | When |
 |---------|---------|------|
 | **approve** | `APPROVE` | No critical/high findings. May still carry informational comments. |
-| **approve-with-changes** | `COMMENT` | Medium/low findings only — non-blocking suggestions. |
-| **changes-requested** | `REQUEST_CHANGES` | Critical/high or otherwise blocking findings. |
+| **approve-with-changes** | `COMMENT` | Comment-bucket findings (§5) only — non-blocking. |
+| **changes-requested** | `REQUEST_CHANGES` | Block-bucket findings (§5) — anything you would not want merged. |
 
 After submitting, confirm it landed:
 `gh pr view <number> --json reviews --jq '.reviews[-1] | {state, body}'`.
@@ -452,9 +453,8 @@ If there is no open PR (or the user asks for a local pass), produce the previous
 **JSON findings list + markdown summary** format (§9 of `references/review-delivery.md`)
 and share it in chat. Never create a PR, branch, or review without being asked.
 
-> **Full mechanics** — prior-thread fetching, disposition rules, payload shape, body
-> template, position rules, error handling, and the local fallback format — live in
-> `references/review-delivery.md`.
+> **Full mechanics** — prior-thread fetching, publication bar, dispositions, payload,
+> body template, position rules, error handling, fallback — in `references/review-delivery.md`.
 
 ---
 
@@ -493,3 +493,7 @@ and share it in chat. Never create a PR, branch, or review without being asked.
    inline comments on the changed lines — never on unrelated lines. No @-mentions. One
    review submission per pass. Every prior finding gets an explicit disposition — confirm
    fixes instead of re-flagging them, and re-flag only what is still present.
+
+10. **Publication bar.** The review stops bad merges, not exhaustiveness. Comment only
+    Block/Comment findings; suppress low severity, polish, nits, style, and speculation —
+    when in doubt, leave it out.
