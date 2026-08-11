@@ -371,14 +371,18 @@ when documenting it would prevent repeat churn.
 
 ### Publication Bar — what gets left as comments
 
-The review stops bad merges: **call out high-risk, high-severity issues we would not
-want merged**. Be discerning, not exhaustive.
+Inline comments are reserved for findings that should stop a merge: **critical/high
+severity, or a blocking medium** — a medium you'd not want merged (security boundary,
+data loss, hot path). Blocking mediums are treated as high for publication. Everything
+below the bar stays off the PR.
 
-- **Block** — critical/high, or anything you'd not want merged (incl. medium on security boundaries, data loss, hot paths) → inline comment + `REQUEST_CHANGES`.
-- **Comment** — medium with material, demonstrable impact (correctness, security, hot-path performance, a test gap that lets a regression through) → inline comment.
-- **Suppress** — low severity, polish, nits, style, speculative, no material impact → no comment; at most a one-line body note.
+- **Block** — critical/high, or a blocking medium → inline comment on the primary
+  evidence line + `REQUEST_CHANGES`.
+- **Suppress** — medium without blocking impact, low, polish, nits, style, speculative,
+  no material impact → no comment; at most a one-line body note.
 
-When in doubt, leave it out. Suppressed findings stay in the working data (in `rejected_findings` when that prevents repeat churn) — they just don't reach the PR.
+When in doubt, leave it out. Suppressed findings stay in the working data (in
+`rejected_findings` when that prevents repeat churn) — they just don't reach the PR.
 Full criteria: `references/review-delivery.md` §6.
 
 ---
@@ -402,22 +406,28 @@ table (§d); never silently drop a prior finding or re-flag a confirmed-fixed on
 Run the passes and vetting (§§3–5); with prior findings in hand, the passes double as
 disposition verification. Keep findings in the structured schema from
 `references/review-delivery.md` — `id`, `severity`, `evidence`, `recommendation`, and
-friends map directly onto inline comments. Write them to a gitignored scratch file
-(e.g. `.agents/review-findings.json`) so the mapping script can read them.
+friends map directly onto inline comments. Write them to a scratch file outside the
+repo (e.g. `/tmp/review-findings.json`) so the mapping script can read them. Include
+`severity` on every entry — plus `blocking: true` on any blocking medium — so the
+script can enforce the publication bar (§5) mechanically.
 
 ### c. Map evidence to inline positions
 
-Only findings that pass the publication bar (§5) are mapped and posted. GitHub inline
-comments can only attach to lines shown in the PR diff; run the helper to resolve where
-each published finding's evidence lands:
+Only findings that pass the publication bar (§5) are mapped and posted. Pass
+`--min-severity high` so the helper mechanically drops below-bar findings before
+position mapping — the payload builder never sees them (blocking mediums pass because
+their evidence entries carry `blocking: true`). GitHub inline comments can only
+attach to lines shown in the PR diff; run the helper to resolve where each published
+finding's evidence lands:
 
 ```bash
 node skills/code-review/scripts/map-diff-positions.mjs \
   --pr <number> \
-  --evidence .agents/review-findings.json
+  --evidence /tmp/review-findings.json \
+  --min-severity high
 ```
 
-Output: one entry per finding — `{commentable: true, position}` (`path` + `line` +
+Output: one entry per surviving finding — `{commentable: true, position}` (`path` + `line` +
 `side`) when the line is inside the PR diff, or `{commentable: false, reason}` — those
 get carried in the review body instead (pre-existing lines, deleted files, lines
 outside the hunks).
@@ -425,7 +435,7 @@ outside the hunks).
 ### d. Compose the review body
 
 The body is the summary a maintainer reads first: **a prior-review disposition table**,
-verdict, scope, the **Block/Comment findings** with file:line, and context-only
+verdict, scope, the **Block findings** with file:line, and context-only
 (pre-existing) notes; suppressed items are at most a one-line note. Use the template in
 `references/review-delivery.md`.
 
@@ -435,14 +445,14 @@ Write the payload (event + body + comments, with the PR head SHA as `commit_id`)
 JSON file and POST it. `gh pr review` cannot attach inline comments — use the API:
 
 ```bash
-gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents/review.json
+gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input /tmp/review.json
 ```
 
 | Verdict | `event` | When |
 |---------|---------|------|
-| **approve** | `APPROVE` | No critical/high findings. May still carry informational comments. |
-| **approve-with-changes** | `COMMENT` | Comment-bucket findings (§5) only — non-blocking. |
-| **changes-requested** | `REQUEST_CHANGES` | Block-bucket findings (§5) — anything you would not want merged. |
+| **approve** | `APPROVE` | No critical/high or otherwise blocking findings. |
+| **approve-with-changes** | `COMMENT` | No blocking findings; informational/context notes only. |
+| **changes-requested** | `REQUEST_CHANGES` | Block findings (§5) — critical/high, or a medium you would not want merged. |
 
 After submitting, confirm it landed:
 `gh pr view <number> --json reviews --jq '.reviews[-1] | {state, body}'`.
@@ -495,5 +505,6 @@ and share it in chat. Never create a PR, branch, or review without being asked.
    fixes instead of re-flagging them, and re-flag only what is still present.
 
 10. **Publication bar.** The review stops bad merges, not exhaustiveness. Comment only
-    Block/Comment findings; suppress low severity, polish, nits, style, and speculation —
-    when in doubt, leave it out.
+    Block findings — critical/high, or a blocking medium (treated as high for
+    publication); suppress non-blocking medium, low, polish, nits, style, and
+    speculation — when in doubt, leave it out.

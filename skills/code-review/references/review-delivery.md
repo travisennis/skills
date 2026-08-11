@@ -58,13 +58,13 @@ position mapping and comment composition — it is not the final deliverable.
 }
 ```
 
-Verdict rules (unchanged):
+Verdict rules:
 
 | Verdict | When |
 |---------|------|
-| **approve** | No critical or high findings. Code is well-structured and ready. |
-| **approve-with-changes** | Medium/low findings only. Non-blocking improvements suggested. |
-| **changes-requested** | Critical or high findings that must be addressed before merge. |
+| **approve** | No critical/high or otherwise blocking findings. Code is well-structured and ready. |
+| **approve-with-changes** | No blocking findings; informational/context notes only. |
+| **changes-requested** | Critical/high findings — or a medium you would not want merged — that must be addressed before merge. |
 
 ## 2. Prior review dispositions
 
@@ -116,17 +116,22 @@ finding; never re-flag a confirmed-fixed one.
 ## 4. Mapping helper
 
 `skills/code-review/scripts/map-diff-positions.mjs` resolves evidence against the PR
-diff and reports where each finding can be commented inline.
+diff and reports where each finding can be commented inline. Every evidence entry must
+carry `severity`; pass `--min-severity high` so below-bar findings are dropped from the
+output and never posted (SKILL.md §5). A blocking medium (a `medium` you'd not want
+merged) carries `"blocking": true` and passes the filter despite its severity.
 
 ```bash
-# .agents/review-findings.json (gitignored scratch):
-# [ { "id": "F-001", "file": "src/a.ts", "line": 42 }, ... ]
+# /tmp/review-findings.json (scratch):
+# [ { "id": "F-001", "file": "src/a.ts", "line": 42, "severity": "high" },
+#   { "id": "F-002", "file": "src/a.ts", "line": 55, "severity": "medium", "blocking": true } ]
 node skills/code-review/scripts/map-diff-positions.mjs \
   --pr <number> \
-  --evidence .agents/review-findings.json
+  --evidence /tmp/review-findings.json \
+  --min-severity high
 ```
 
-Output — one entry per input finding, in order:
+Output — one entry per surviving finding, in order:
 
 ```json
 [
@@ -155,9 +160,9 @@ The body is what a maintainer reads first; the inline comments carry the detail.
 | F-002 (perf) | still present | Re-flagged inline below. |
 | F-003 (architecture) | superseded | Code path removed in refactor. |
 
-### Findings to address (Block + Comment — §5 of SKILL.md)
+### Findings to address (Block — §5 of SKILL.md)
 - **F-001** (security, critical) — <title> — <file:line>
-- **F-002** (architecture, medium) — <title> — <file:line>
+- **F-002** (architecture, medium, blocking) — <title> — <file:line>
 
 ### Context-only / pre-existing notes
 - <pre-existing or out-of-diff issues worth mentioning; not blocking>
@@ -167,7 +172,7 @@ The body is what a maintainer reads first; the inline comments carry the detail.
 
 ### Notes
 - <dependencies between findings, deployment considerations, deferred items>
-- <suppressed (low/polish/speculative) items are not listed — they were not published>
+- <suppressed (non-blocking medium/low/polish/speculative) items are not listed — they were not published>
 ```
 
 Keep the body under ~4,000 characters — GitHub truncates longer bodies.
@@ -178,12 +183,12 @@ Keep the body under ~4,000 characters — GitHub truncates longer bodies.
 
 Publish only findings that pass the bar (SKILL.md §5):
 
-- **Block** — critical/high, or anything you'd not want merged (incl. medium issues on
-  security boundaries, data loss, or hot paths) → inline comment + `REQUEST_CHANGES`.
-- **Comment** — medium with material, demonstrable impact (correctness, security,
-  hot-path performance, a test gap that would let a regression through) → inline comment.
-- **Suppress** — low severity, polish, nits, style, speculative, no material impact →
-  no comment; at most one line in the body's Notes, or nothing.
+- **Block** — critical/high, or a blocking medium (a medium you'd not want merged:
+  security boundary, data loss, hot path) → inline comment on the primary evidence line
+  + `REQUEST_CHANGES`.
+- **Suppress** — medium without blocking impact, low severity, polish, nits, style,
+  speculative, no material impact → no comment; at most one line in the body's Notes,
+  or nothing.
 
 When in doubt, leave it out. Re-flagged prior findings follow the same bar; a
 confirmed-fixed finding is acknowledged in the disposition table, not re-commented.
@@ -211,7 +216,7 @@ maintainers can connect the threads.
 ```
 
 ```bash
-gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents/review.json
+gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input /tmp/review.json
 ```
 
 - Get `owner/repo` with `gh repo view --json nameWithOwner --jq .nameWithOwner`.
@@ -224,17 +229,18 @@ gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents
 
 | Verdict | `event` | When |
 |---------|---------|------|
-| **approve** | `APPROVE` | No critical/high findings. May still carry informational comments. |
-| **approve-with-changes** | `COMMENT` | Medium/low findings only — non-blocking suggestions. |
-| **changes-requested** | `REQUEST_CHANGES` | Critical/high or otherwise blocking findings. |
+| **approve** | `APPROVE` | No critical/high or otherwise blocking findings. |
+| **approve-with-changes** | `COMMENT` | No blocking findings; informational/context notes only. |
+| **changes-requested** | `REQUEST_CHANGES` | Critical/high, or otherwise blocking (medium you'd not want merged), findings. |
 
 ## 7. Error handling
 
 - **422 "line must be part of the diff"** — drop that comment into the body and resubmit.
 - **403/404** — run `gh auth status`; for private repos confirm membership or auth scopes.
 - **Body truncated** — trim the body; the inline comments carry the detail.
-- **Too many comments** — GitHub caps review payloads; merge sibling findings and move
-  low-severity items to the body.
+- **Too many comments** — GitHub caps review payloads; merge sibling findings and cut
+  borderline items (below-bar findings were already suppressed — do not move them to the
+  body).
 - **No `gh` or unauthenticated** — fall back to the local format (§9) and say why.
 
 ## 8. Re-review etiquette
@@ -250,7 +256,8 @@ gh api --method POST repos/{owner}/{repo}/pulls/<number>/reviews --input .agents
 
 When there is no open PR or the user asks for a local pass, produce the **JSON findings
 list** followed by a concise **markdown summary**. Apply the publication bar the same way
-(SKILL.md §5): `Suppress` items go in `rejected_findings`, not the findings list. Do not
+(SKILL.md §5): list only Block findings (critical/high and blocking mediums);
+`Suppress` items go in `rejected_findings`, not the findings list. Do not
 create a PR, branch, or review without being asked.
 
 ```markdown
@@ -261,11 +268,8 @@ create a PR, branch, or review without being asked.
 **Verdict:** [approve / approve-with-changes / changes-requested]
 **Not Audited:** [anything intentionally skipped because of scope/scale]
 
-### Critical/High Findings
+### Block Findings (critical/high + blocking medium)
 - **F-001** ([category]) — [title] — [file:line]
-
-### Medium/Low Findings
-- **F-002** ([category]) — [title] — [file:line]
 
 ### Positive Aspects
 - [What was done well, with file:line references]

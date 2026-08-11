@@ -7,13 +7,20 @@
 // it must go in the review body instead.
 //
 // Usage:
-//   node map-diff-positions.mjs --pr <number> --evidence findings.json
-//   node map-diff-positions.mjs --diff <diff-file> --evidence findings.json
+//   node map-diff-positions.mjs --pr <number> --evidence findings.json [--min-severity <level>]
+//   node map-diff-positions.mjs --diff <diff-file> --evidence findings.json [--min-severity <level>]
 //
 // findings.json is an array of:
-//   [ { "id": "F-001", "file": "src/a.ts", "line": 42 }, ... ]
+//   [ { "id": "F-001", "file": "src/a.ts", "line": 42, "severity": "high" }, ... ]
 //
-// Output (JSON to stdout, one entry per input item, in order):
+// --min-severity <critical|high|medium|low>: drop evidence entries whose severity is
+//   below the bar before mapping. Entries without a `severity` field are dropped too
+//   (with a warning). Entries with `"blocking": true` pass regardless of severity —
+//   blocking mediums are treated as high for publication (SKILL.md §5). Use it to
+//   enforce the code-review publication bar: only critical/high and blocking mediums
+//   get inline comments.
+//
+// Output (JSON to stdout, one entry per surviving input item, in order):
 //   { "id": "F-001", "commentable": true,  "position": { "path": "src/a.ts", "line": 42, "side": "RIGHT" } }
 //   { "id": "F-002", "commentable": false, "reason": "..." }
 
@@ -22,10 +29,12 @@ import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 
 const USAGE = `Usage:
-  node map-diff-positions.mjs --pr <number> --evidence findings.json
-  node map-diff-positions.mjs --diff <diff-file> --evidence findings.json
+  node map-diff-positions.mjs --pr <number> --evidence findings.json [--min-severity <level>]
+  node map-diff-positions.mjs --diff <diff-file> --evidence findings.json [--min-severity <level>]
 
-findings.json: [ { "id": "F-001", "file": "src/a.ts", "line": 42 }, ... ]`;
+findings.json: [ { "id": "F-001", "file": "src/a.ts", "line": 42, "severity": "high" }, ... ]
+--min-severity: critical | high | medium | low — drop below-bar evidence entries
+                (entries with "blocking": true pass regardless of severity)`;
 
 function fail(msg) {
   console.error(`error: ${msg}`);
@@ -33,13 +42,20 @@ function fail(msg) {
   process.exit(1);
 }
 
-const { values } = parseArgs({
+const { values: parsed } = parseArgs({
   options: {
     pr: { type: 'string' },
     diff: { type: 'string' },
     evidence: { type: 'string' },
+    'min-severity': { type: 'string' },
   },
 });
+
+const values = { ...parsed };
+if (values['min-severity'] !== undefined) {
+  values.minSeverity = values['min-severity'];
+  delete values['min-severity'];
+}
 
 if (!values.evidence) fail('--evidence is required');
 if (!values.pr && !values.diff) fail('one of --pr or --diff is required');
@@ -155,12 +171,33 @@ function mapLine(base, path, line, entry) {
   };
 }
 
-const results = evidence.map((item) => {
+const severityOrder = ['low', 'medium', 'high', 'critical'];
+const minSeverity = values.minSeverity ? values.minSeverity.toLowerCase() : null;
+if (minSeverity && !severityOrder.includes(minSeverity)) {
+  fail(`--min-severity must be one of: ${severityOrder.join(', ')}`);
+}
+
+const results = [];
+for (const item of evidence) {
   const { id, file, line } = item;
   const base = { id: id ?? null };
 
+  if (minSeverity) {
+    const severity = typeof item.severity === 'string' ? item.severity.trim().toLowerCase() : null;
+    if (!severity) {
+      console.error(`skipping "${id ?? '<no id>'}" — no severity field (--min-severity ${minSeverity} requires one)`);
+      continue;
+    }
+    const blocking = item.blocking === true || item.blocking === 'true';
+    if (severityOrder.indexOf(severity) < severityOrder.indexOf(minSeverity) && !blocking) {
+      console.error(`skipping "${id ?? '<no id>'}" — severity ${severity} is below --min-severity ${minSeverity} (and not marked blocking)`);
+      continue;
+    }
+  }
+
   if (typeof file !== 'string' || !Number.isInteger(line) || line < 1) {
-    return { ...base, commentable: false, reason: 'invalid evidence: file (string) and line (positive integer) required' };
+    results.push({ ...base, commentable: false, reason: 'invalid evidence: file (string) and line (positive integer) required' });
+    continue;
   }
 
   const entry = files.get(file);
@@ -168,11 +205,13 @@ const results = evidence.map((item) => {
     // Match against the old path too (renamed files); comment on the new path.
     const renamed = [...files.values()].find((f) => f.oldPath === file);
     if (!renamed) {
-      return { ...base, commentable: false, reason: `file "${file}" is not in the PR diff` };
+      results.push({ ...base, commentable: false, reason: `file "${file}" is not in the PR diff` });
+      continue;
     }
-    return mapLine(base, renamed.path, line, renamed);
+    results.push(mapLine(base, renamed.path, line, renamed));
+    continue;
   }
-  return mapLine(base, file, line, entry);
-});
+  results.push(mapLine(base, file, line, entry));
+}
 
 console.log(JSON.stringify(results, null, 2));
