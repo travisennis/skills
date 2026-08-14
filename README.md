@@ -35,6 +35,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | playground | 1.0 | ✅ | ✅ |
 | preflight | — | ✅ | ✅ |
 | red-teaming | 1.0 | ✅ | ✅ |
+| research-sources | — | ✅ | ✅ |
 | scripting | 1.0 | ✅ | ✅ |
 | show-me-your-work | — | ✅ | ❌ |
 | skill-creator | 1.0 | ✅ | ✅ |
