@@ -1,12 +1,21 @@
 ---
-name: research-sources
-description: Add external sources (YouTube videos, articles, papers, talks, podcasts, books) to the user's Notion research Sources database, with a written summary in the entry's page body. Use when the user asks to track, save, log, file, or catalog something they read or watched into their research, or wants a summary/notes of an article or talk persisted to their Notion research library.
+name: cataloging-sources
+description: Catalog an external source the user read or watched (YouTube video, article, paper, talk, podcast, or book) into the personal Notion research Sources library (Research Notes), recording its URL, author, media type, and a written summary in the page body. Use when the user asks to track, log, or catalog a source by its URL, or wants summary notes of an article or talk saved to their personal research library. For publishing a research document (title + body) to the Cake Research data source or another Notion target, use publishing-research-documents.
 ---
 
 # Research Sources
 
 Adds entries to the Notion database **Sources**, inside the **Research Notes** page
 (workspace top level, separate from the Cake research database).
+
+## Related skills
+
+- `publishing-research-documents` publishes research documents (title + body) into
+  the Cake Research data source or any other Notion target, with full property
+  handling and verification. Use it when the input is a document to publish,
+  not a URL to catalog.
+- Use this skill when the user names a source they read or watched and wants it
+  filed in their personal research library.
 
 ## Database
 

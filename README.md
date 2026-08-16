@@ -34,8 +34,8 @@ A collection of specialized skills for coding agents, providing structured workf
 | managing-bookmarks | — | ✅ | ✅ |
 | playground | 1.0 | ✅ | ✅ |
 | preflight | — | ✅ | ✅ |
+| publishing-research-documents | — | ✅ | ✅ |
 | red-teaming | 1.0 | ✅ | ✅ |
-| research-sources | — | ✅ | ✅ |
 | scripting | 1.0 | ✅ | ✅ |
 | show-me-your-work | — | ✅ | ❌ |
 | skill-creator | 1.0 | ✅ | ✅ |
