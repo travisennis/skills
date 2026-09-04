@@ -18,10 +18,13 @@ A collection of specialized skills for coding agents, providing structured workf
 | boost | 1.0 | ✅ | ❌ |
 | browser-automation | 1.0 | ✅ | ✅ |
 | capture-skill | 1.0 | ✅ | ✅ |
+| cataloging-sources | — | ✅ | ✅ |
 | cloning-repos-for-research | 1.0 | ✅ | ✅ |
 | code-review | 1.0 | ✅ | ✅ |
+| creating-agents-md | — | ✅ | ✅ |
 | delegating-to-cake | — | ✅ | ✅ |
 | docs | 1.0 | ✅ | ✅ |
+| eval-engineering | — | ✅ | ✅ |
 | fetching-web-content | 1.0 | ✅ | ❌ |
 | fetching-x-content | — | ✅ | ✅ |
 | fetching-youtube-transcripts | 1.0 | ✅ | ✅ |
@@ -34,9 +37,11 @@ A collection of specialized skills for coding agents, providing structured workf
 | managing-bookmarks | — | ✅ | ✅ |
 | playground | 1.0 | ✅ | ✅ |
 | preflight | — | ✅ | ✅ |
+| prompt-audit | 1.0 | ✅ | ✅ |
 | publishing-research-documents | — | ✅ | ✅ |
 | red-teaming | 1.0 | ✅ | ✅ |
 | scripting | 1.0 | ✅ | ✅ |
+| show-me | — | ✅ | ✅ |
 | show-me-your-work | — | ✅ | ❌ |
 | skill-creator | 1.0 | ✅ | ✅ |
 | tdd | 1.0 | ✅ | ❌ |
