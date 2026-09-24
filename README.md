@@ -45,6 +45,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | show-me-your-work | — | ✅ | ❌ |
 | skill-creator | 1.0 | ✅ | ✅ |
 | tdd | 1.0 | ✅ | ❌ |
+| test-audit | 1.0 | ✅ | ✅ |
 | using-chrome-cdp | — | ✅ | ✅ |
 | web-searching | 1.0 | ✅ | ❌ |
 | write-docs | — | ✅ | ✅ |
