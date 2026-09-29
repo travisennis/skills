@@ -35,6 +35,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | grill-with-docs | — | ✅ | ✅ |
 | grooming-backlog | — | ✅ | ✅ |
 | managing-bookmarks | — | ✅ | ✅ |
+| optimise-github-actions | 1.0 | ✅ | ✅ |
 | playground | 1.0 | ✅ | ✅ |
 | preflight | — | ✅ | ✅ |
 | prompt-audit | 1.0 | ✅ | ✅ |
