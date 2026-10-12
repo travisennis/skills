@@ -21,6 +21,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | cataloging-sources | — | ✅ | ✅ |
 | cloning-repos-for-research | 1.0 | ✅ | ✅ |
 | code-review | 1.0 | ✅ | ✅ |
+| create-verification-skill | — | ✅ | ❌ |
 | creating-agents-md | — | ✅ | ✅ |
 | delegating-to-cake | — | ✅ | ✅ |
 | docs | 1.0 | ✅ | ✅ |
@@ -34,6 +35,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | grill-me | 1.0 | ✅ | ❌ |
 | grill-with-docs | — | ✅ | ✅ |
 | grooming-backlog | — | ✅ | ✅ |
+| maintain-verification-skill | — | ✅ | ❌ |
 | managing-bookmarks | — | ✅ | ✅ |
 | optimise-github-actions | 1.0 | ✅ | ✅ |
 | playground | 1.0 | ✅ | ✅ |
