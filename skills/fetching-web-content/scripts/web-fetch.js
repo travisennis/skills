@@ -21,7 +21,12 @@ const optionsSchema = z.object({
   timeout: z.coerce.number().int().positive().default(DEFAULT_TIMEOUT),
   verbose: z.boolean().default(false),
   headers: z.boolean().default(false),
-  countTokens: z.boolean().default(false)
+  countTokens: z.boolean().default(false),
+  userAgent: z
+    .string()
+    .max(512)
+    .refine((value) => !/\r|\n/.test(value), 'must not contain line breaks')
+    .optional()
 });
 
 // Content type definitions
@@ -197,6 +202,11 @@ async function main() {
         type: 'boolean',
         short: 'c',
         description: 'Count tokens in the fetched content'
+      },
+      userAgent: {
+        type: 'string',
+        short: 'u',
+        description: 'User-Agent header for the fetch request'
       }
     };
 
@@ -220,7 +230,8 @@ async function main() {
       timeout: values.timeout || DEFAULT_TIMEOUT,
       verbose: values.verbose || false,
       headers: values.headers || false,
-      countTokens: values.countTokens || false
+      countTokens: values.countTokens || false,
+      userAgent: values.userAgent
     });
 
     const url = positionals[0];
@@ -241,7 +252,8 @@ async function main() {
     const result = await fetchUrl(url, {
       useJina: parsedOptions.jina,
       timeout: parsedOptions.timeout,
-      verbose: parsedOptions.verbose
+      verbose: parsedOptions.verbose,
+      userAgent: parsedOptions.userAgent
     });
 
     // Output the result
@@ -282,7 +294,7 @@ function isValidUrl(url) {
 }
 
 // Main fetch function
-async function fetchUrl(url, { useJina = false, timeout = DEFAULT_TIMEOUT, verbose = false } = {}) {
+async function fetchUrl(url, { useJina = false, timeout = DEFAULT_TIMEOUT, verbose = false, userAgent } = {}) {
   let redirectCount = 0;
   let currentUrl = url;
   
@@ -295,9 +307,18 @@ async function fetchUrl(url, { useJina = false, timeout = DEFAULT_TIMEOUT, verbo
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
 
+      const headers = {};
+      if (userAgent) {
+        headers['User-Agent'] = userAgent;
+        if (verbose) {
+          console.log(`🪪 User-Agent: ${userAgent}`);
+        }
+      }
+
       const response = await fetch(currentUrl, {
         signal: controller.signal,
-        redirect: 'manual'
+        redirect: 'manual',
+        headers
       });
 
       clearTimeout(timeoutId);
@@ -511,6 +532,15 @@ function formatOutput(result, options) {
 
 // Error handling
 function handleError(error) {
+  if (Array.isArray(error?.issues)) {
+    console.error('❌ Error: invalid options');
+    for (const issue of error.issues) {
+      const path = issue.path?.join('.') || 'input';
+      console.error(`  - ${path}: ${issue.message}`);
+    }
+    return;
+  }
+
   console.error(`❌ Error: ${error.message}`);
   
   if (error.stack && process.env.NODE_ENV === 'development') {
@@ -543,6 +573,7 @@ function showHelp(options) {
   console.log('  web-fetch.js https://example.com --jina');
   console.log('  web-fetch.js https://example.com --timeout 60000 --verbose');
   console.log('  web-fetch.js https://example.com --count-tokens');
+  console.log('  web-fetch.js https://example.com --user-agent "Mozilla/5.0 (compatible; MyBot/1.0)"');
   console.log('\nEnvironment:');
   console.log('  JINA_READER_API_KEY  Enable Jina AI HTML cleaning');
   console.log('\nContent Types:');
