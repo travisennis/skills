@@ -26,9 +26,11 @@ Spec artifacts live in `.agents/specs/` (gitignored, never committed).
 
 This is a skill collection, not a compiled app. To install skills:
 ```bash
-bash scripts/install.sh       # macOS/Linux
-powershell scripts/install.ps1  # Windows
+bash scripts/install.sh --all --dest project   # macOS/Linux
+powershell scripts/install.ps1 -All -Dest project  # Windows
 ```
+Both installers also prompt when run without flags. Use `--list` / `-List` to list installable skills and `--dry-run` / `-DryRun` to preview.
+
 There is no global test suite. Individual skills with scripts may have their own tests. No standard lint config exists.
 
 ## Conventional Commits
