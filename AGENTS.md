@@ -31,7 +31,11 @@ powershell scripts/install.ps1 -All -Dest project  # Windows
 ```
 Both installers also prompt when run without flags. Use `--list` / `-List` to list installable skills and `--dry-run` / `-DryRun` to preview.
 
-There is no global test suite. Individual skills with scripts may have their own tests. No standard lint config exists.
+Validate the collection before committing:
+```bash
+uv run scripts/check-skills.py --strict
+```
+This checks frontmatter, naming, line limits, README coverage, and relative links. CI runs it plus the `skill-doctor` unit tests. Individual skills with scripts may have their own tests.
 
 ## Conventional Commits
 

@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["pyyaml>=6"]
+# ///
 """
 Quick validation script for skills - minimal version
 """
@@ -38,8 +42,18 @@ def validate_skill(skill_path):
     except yaml.YAMLError as e:
         return False, f"Invalid YAML in frontmatter: {e}"
 
-    # Define allowed properties
-    ALLOWED_PROPERTIES = {'name', 'description', 'license', 'allowed-tools', 'metadata'}
+    # Define allowed properties. The last two are harness extensions used by
+    # this collection; keep them valid so the validator can check repo skills.
+    ALLOWED_PROPERTIES = {
+        'name',
+        'description',
+        'license',
+        'allowed-tools',
+        'metadata',
+        'compatibility',
+        'user-invocable',
+        'disable-model-invocation',
+    }
 
     # Check for unexpected properties (excluding nested keys under metadata)
     unexpected_keys = set(frontmatter.keys()) - ALLOWED_PROPERTIES

@@ -1,0 +1,27 @@
+name: Validate skills
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Check skill structure and frontmatter
+        run: uv run scripts/check-skills.py --strict
+
+      - name: Check installer syntax
+        run: bash -n scripts/install.sh
+
+      - name: Run skill-doctor tests
+        run: python3 -m unittest discover -s skills/skill-doctor/scripts -p "test_*.py" -v
