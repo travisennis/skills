@@ -1,12 +1,13 @@
 ---
 name: docs
 description: >-
-  Audit, refactor, maintain, and govern project documentation for coding agents.
-  Four modes — audit: read the active doc set and score nine agent-legibility
+  Audit, refactor, write, maintain, and govern project documentation for coding agents.
+  Five modes — audit: read the active doc set and score nine agent-legibility
   dimensions, then report concrete gaps; refactor: restructure AGENTS.md and
-  docs/ into a progressive-disclosure system; maintain: update docs after code
-  or behavior changes; govern: set up documentation ownership, lifecycle rules,
-  and freshness/link/lint enforcement. Use when asked to audit documentation
+  docs/ into a progressive-disclosure system; write: create or revise a README
+  or guide as a glossary of principles, not a mirror of the code; maintain:
+  update docs after code or behavior changes; govern: set up documentation
+  ownership, lifecycle rules, and freshness/link/lint enforcement. Use when asked to audit documentation
   quality, check whether docs are agent-legible, restructure or split an
   oversized AGENTS.md, organize a docs/ tree, update documentation after a
   change, decide whether completed work needs doc follow-up, or add
@@ -18,7 +19,7 @@ metadata:
 
 # Docs
 
-One skill for the full lifecycle of project documentation: assessing it, restructuring it, keeping it current, and keeping it governed. All four modes share one doctrine (`references/principles.md`) and one set of judgment criteria (`references/rubric.md`), so an audit's findings feed a refactor, and a refactor's output is what maintain and govern keep healthy.
+One skill for the full lifecycle of project documentation: assessing it, restructuring it, writing it, keeping it current, and keeping it governed. All five modes share one doctrine (`references/principles.md`) and one set of judgment criteria (`references/rubric.md`), so an audit's findings feed a refactor, a refactor's output is what maintain and govern keep healthy, and the write mode supplies the editing standard for both.
 
 This skill operates on the repository you are currently working in unless the user names a target path.
 
@@ -44,6 +45,7 @@ Classify the request, then read that mode's workflow file. Every mode assumes th
 |------|----------------------|------|
 | **audit** | score or assess documentation quality, check agent-legibility, find doc gaps | `references/audit.md` |
 | **refactor** | restructure AGENTS.md, split a bloated entry point, organize or create a docs/ hierarchy | `references/refactor.md` |
+| **write** | create or revise a README, guide, or doc; trim code-mirroring, narrative, and duplicated facts | `references/write.md` |
 | **maintain** | update docs after a change, check whether completed work needs documentation follow-up | `references/maintain.md` |
 | **govern** | define doc ownership or lifecycle rules, add freshness/link/lint checks, add PR doc rules | `references/govern.md` |
 
@@ -53,7 +55,8 @@ If a request spans modes, run them in lifecycle order — audit before refactor,
 
 - **audit → refactor**: refactor's Phase 1 survey uses the same rubric the audit scores; an existing audit report's "Prioritized Gaps" section is a ready-made refactor input.
 - **audit → govern**: a weak `freshness_enforcement` score is the signal to run govern mode and add mechanical checks.
-- **refactor → maintain/govern**: the structure refactor creates (per `references/taxonomy.md`) is exactly what maintain updates and govern protects.
+- **refactor → write**: the structure refactor creates (per `references/taxonomy.md`) is filled in with the writing standard in `references/write.md`.
+- **refactor → maintain/govern**: the same structure is what maintain updates and govern protects.
 - **maintain → audit**: if maintenance keeps finding systemic problems (duplication, contradictions, no clear home for content), stop patching and recommend an audit.
 
 ## Shared Rules
@@ -73,7 +76,12 @@ These apply in every mode:
 
 - `references/principles.md` — the doctrine: why good agent-facing documentation looks the way it does, with sources.
 - `references/rubric.md` — nine documentation dimensions with evidence signals and 0–3 scoring guidance; the judgment criteria for all modes.
+- `references/write.md` — the writing and editing standard: keep vs shed, point don't transcribe, one home per fact, link the tree downward.
 - `references/taxonomy.md` — the docs/ scaffold, the authority model (which doc owns which topic), and the AGENTS.md routing template.
 - `references/doc-templates.md` — fill-in shapes for guides, references, guardrails, runbooks, ADRs, and ARCHITECTURE.md.
-- `references/audit.md` / `refactor.md` / `maintain.md` / `govern.md` — per-mode workflows.
+- `references/audit.md` / `refactor.md` / `write.md` / `maintain.md` / `govern.md` — per-mode workflows.
 - `assets/report-template.md` — the audit report format.
+
+## Related skill
+
+For a new repository that only needs a basic root `AGENTS.md`, use `creating-agents-md`. Come back here when the repo already has docs and needs auditing, restructuring, or governance.

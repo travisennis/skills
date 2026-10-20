@@ -1,16 +1,15 @@
----
-name: write-docs
-description: Write and edit project docs (README/markdown) as a glossary of principles, not a mirror of the code. Use when creating or revising a README; when a doc enumerates exact scenes, scenarios, helpers, class ids, file lists, or command/flag matrices the code already holds; when trimming narrative or changelog out of a doc; or when deduplicating overlapping docs and wiring a root doc to its sub-docs.
----
+# Writing and Editing Docs
 
-# Write Docs
+How to write or revise a project document so it stays a glossary of principles rather
+than a mirror of the code. This is the writing pass used by the `write` mode, and the
+editing standard for `refactor` and `maintain`. Read `principles.md` first for the
+doctrine; this file is the hands-on checklist.
 
-A doc is a **glossary**: it names the moving parts, says why each exists, and
-carries the principles a reader can't derive by grepping. The code is the source
-of truth for *what exists right now* — the doc must never race it. Before writing
-any line, ask the one question that governs this skill: **could the reader get
-this faster and more reliably by reading the code?** If yes, point them at the
-code instead of copying it in.
+A doc is a **glossary**: it names the moving parts, says why each exists, and carries
+the principles a reader can't derive by grepping. The code is the source of truth for
+*what exists right now* — the doc must never race it. Before writing any line, ask the
+one question that governs this reference: **could the reader get this faster and more
+reliably by reading the code?** If yes, point them at the code instead of copying it in.
 
 ## Keep vs shed
 

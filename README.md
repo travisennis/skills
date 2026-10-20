@@ -52,7 +52,6 @@ A collection of specialized skills for coding agents, providing structured workf
 | test-audit | 1.0 | ✅ | ✅ |
 | using-chrome-cdp | — | ✅ | ✅ |
 | web-searching | 1.0 | ✅ | ❌ |
-| write-docs | — | ✅ | ✅ |
 | writing-clis-for-agents | 1.0 | ✅ | ✅ |
 
 ## Notes
