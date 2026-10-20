@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Web content fetching skill with HTML cleaning capabilities",
-  "main": "web-fetch.js",
+  "main": "scripts/web-fetch.js",
   "bin": {
-    "web-fetch": "web-fetch.js"
+    "web-fetch": "scripts/web-fetch.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
