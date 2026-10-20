@@ -15,6 +15,8 @@ Convert one or more web articles into a single EPUB with automatic table of cont
 
 **Script:** `scripts/web-to-epub.py`
 
+**Reference:** `references/web-to-epub.md` for architecture, dependencies, and key functions.
+
 #### Agent Workflow
 
 1. **Collect URLs** — Get the list of URLs from the user. They may provide them inline, paste them, or reference a file.
