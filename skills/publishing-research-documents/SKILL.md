@@ -13,6 +13,15 @@ properties correctly. The primary target is the **Cake Research** data source.
 Any other Notion database, data source, or page is supported as a general
 target.
 
+## Prerequisites
+
+- `ntn` is installed and authenticated (`ntn login`), or `NOTION_API_TOKEN` is set.
+- The IDs below are personal defaults for Travis's workspace. Replace them when
+  publishing to another workspace.
+- `ntn api` can hang in headless contexts. Run the commands below from an interactive
+  shell, put a timeout around them, or use the direct HTTP approach in
+  `cataloging-sources/scripts/add_source.py` when no `ntn` command is required.
+
 ## Related skills
 
 - `cataloging-sources` catalogs an external source the user read or watched
@@ -22,7 +31,8 @@ target.
 - Use this skill for research documents (title + body) going into the Cake
   Research data source or any target the user names.
 
-All commands below are verified against the `ntn` CLI on 2026-08-16.
+The CLI behavior and IDs below were verified against the `ntn` CLI on 2026-08-16.
+Re-check them if `ntn` changes or the workspace is recreated.
 
 ## Verified CLI behavior (read before writing)
 

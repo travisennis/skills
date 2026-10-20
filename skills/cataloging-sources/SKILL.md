@@ -22,7 +22,7 @@ Adds entries to the Notion database **Sources**, inside the **Research Notes** p
 
 ## Database
 
-- Database ID: `3bc30bc6-6cc7-815f-9bcc-d0dbe7147438`
+- Database ID: `3bc30bc6-6cc7-815f-9bcc-d0dbe7147438` (personal default; replace for another workspace)
 - Schema: `Title` (title), `URL` (url), `Type` (select), `Author` (rich text), `Date added` (created time, auto)
 - Allowed `Type` values: `YouTube video`, `Article`, `Paper`, `Book`, `Talk`, `Podcast`, `Documentation`, `Other`
 - Each entry's page body holds the summary/notes from the conversation.
@@ -59,4 +59,6 @@ If the database is ever recreated, update the ID above.
 The script resolves a token from `$NOTION_API_TOKEN`, falling back to
 `ntn auth token` (macOS keychain). If both fail, ask the user to run `ntn login`.
 
-Do **not** use `ntn api` for this workflow: it hangs in headless contexts.
+`ntn api` has been observed to hang in headless contexts. This workflow avoids it: the
+script calls the Notion HTTP API directly with `urllib`, so it does not depend on
+`ntn api`. Keep that constraint if you replace the script.
