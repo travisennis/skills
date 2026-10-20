@@ -66,3 +66,8 @@ A structured, spec-driven product-to-code lifecycle (PRD → research → task b
 
 - [Agent Skills Specification](https://agentskills.io/specification.md)
 - [Skill Authoring Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md)
+
+## License
+
+MIT. Third-party skill material retains its own license; see
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
