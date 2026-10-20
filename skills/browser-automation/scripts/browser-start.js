@@ -13,6 +13,12 @@ if (process.argv[2] && process.argv[2] !== "--profile") {
 }
 
 const SCRAPING_DIR = `${process.env.HOME}/.cache/browser-tools`;
+const CHROME_PATH =
+	process.env.CHROME_PATH ||
+	"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const PROFILE_SOURCE =
+	process.env.CHROME_PROFILE_DIR ||
+	`${process.env.HOME}/Library/Application Support/Google/Chrome/`;
 
 // Check if already running on :9222
 try {
@@ -34,6 +40,10 @@ try {
 } catch {}
 
 if (useProfile) {
+	console.error(
+		"Warning: --profile copies cookies and logged-in sessions into " +
+			`${SCRAPING_DIR}. Treat that directory as sensitive and delete it when done.`,
+	);
 	console.log("Syncing profile...");
 	execSync(
 		`rsync -a --delete \
@@ -45,14 +55,14 @@ if (useProfile) {
 			--exclude='*/Current Tabs' \
 			--exclude='*/Last Session' \
 			--exclude='*/Last Tabs' \
-			"${process.env.HOME}/Library/Application Support/Google/Chrome/" "${SCRAPING_DIR}/"`,
+			"${PROFILE_SOURCE}" "${SCRAPING_DIR}/"`,
 		{ stdio: "pipe" },
 	);
 }
 
 // Start Chrome with flags to force new instance
 spawn(
-	"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+	CHROME_PATH,
 	[
 		"--remote-debugging-port=9222",
 		`--user-data-dir=${SCRAPING_DIR}`,

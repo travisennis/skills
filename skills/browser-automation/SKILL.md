@@ -30,6 +30,12 @@ Run this script from this file's directory.
 ./scripts/browser-start.js --profile    # Copy user's profile (cookies, logins)
 ```
 
+`--profile` copies cookies and logged-in sessions into `~/.cache/browser-tools`. Treat
+that directory as sensitive: prefer a dedicated browser profile for automation, and
+delete the cache directory when you no longer need it. Set `CHROME_PATH` if Chrome is
+not at the default macOS location, and `CHROME_PROFILE_DIR` to override the profile
+source.
+
 ## Commands
 
 Run this script from this file's directory.
@@ -40,6 +46,7 @@ Run this script from this file's directory.
 - **Pick elements**: `./scripts/browser-pick.js "description"` - interactive picker for user to select DOM elements
 - **Cookies**: `./scripts/browser-cookies.js`
 - **Extract content**: `./scripts/browser-content.js <url>` - markdown via Readability
+- **Hacker News**: `./scripts/browser-hn-scraper.js [--limit N]` - parse front-page submissions
 
 ## Use When
 
