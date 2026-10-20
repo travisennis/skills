@@ -1,6 +1,6 @@
 ---
 name: publishing-research-documents
-description: Publish a Markdown research document (title + body) to Notion: as a research note in the Cake Research data source with Type/Status/Confidence/Tags properties set and verified, or to any other Notion database, data source, or page the user names. Use when the user asks to publish, post, or file a research document, note, or finding to Notion. For cataloging an external source (URL, author, media type) into the personal Sources library, use cataloging-sources.
+description: "Publish a Markdown research document (title + body) to Notion: as a research note in the Cake Research data source with Type/Status/Confidence/Tags properties set and verified, or to any other Notion database, data source, or page the user names. Use when the user asks to publish, post, or file a research document, note, or finding to Notion. For cataloging an external source (URL, author, media type) into the personal Sources library, use cataloging-sources."
 ---
 
 # Publish Research to Notion
