@@ -1,6 +1,6 @@
 ---
 name: finding-improvements
-description: Survey a codebase as a senior advisor, find the highest-value improvement opportunities, present them for acceptance, and create ahm tasks for accepted findings. Strictly read-only on source code — never implements, fixes, or refactors anything itself.
+description: Survey a codebase as a senior advisor, find the highest-value improvement opportunities, present them for acceptance, and create ahm tasks for accepted findings. Strictly read-only on source code — never implements, fixes, or refactors anything itself. Use when asked to audit a codebase, find improvement opportunities, or turn audit findings into tasks.
 user-invocable: true
 metadata:
   version: "1.0"

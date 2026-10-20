@@ -1,6 +1,6 @@
 ---
 name: preflight
-description: Run a focused review-readiness pass on a nearly finished change before commit. Scales the review to change size (XS/S = one pass, M = two passes, L/XL = three sequential passes covering rules conformance, correctness/source-of-truth, and overengineering). Then synthesize and apply the worthwhile fixes.
+description: Run a focused review-readiness pass on a nearly finished change before commit. Scales the review to change size (XS/S = one pass, M = two passes, L/XL = three sequential passes covering rules conformance, correctness/source-of-truth, and overengineering). Then synthesize and apply the worthwhile fixes. Use after a change is functionally complete and before commit, push, or handoff.
 user-invocable: true
 metadata:
   version: "1.0"

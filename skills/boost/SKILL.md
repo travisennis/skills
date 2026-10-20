@@ -1,6 +1,6 @@
 ---
 name: boost
-description: Refine and improve user prompts by clarifying requirements and expanding details
+description: Refine and improve a user prompt by clarifying requirements and expanding details. Use when the user asks to improve, clarify, expand, or rewrite a prompt before sending it to an agent.
 user-invocable: true
 disable-model-invocation: true
 metadata:
