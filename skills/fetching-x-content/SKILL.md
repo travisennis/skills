@@ -10,7 +10,7 @@ metadata:
 
 ## Overview
 
-Fetch individual X/Twitter posts and articles through a standalone Chrome profile. Use this for browser-rendered content that is unavailable or unreliable through direct HTTP fetching.
+Fetch individual X/Twitter posts and articles through a standalone Chrome profile. Use this for browser-rendered content that is unavailable or unreliable through direct HTTP fetching. Requires Node.js 22.12 or newer.
 
 ## Setup
 

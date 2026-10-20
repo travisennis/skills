@@ -9,7 +9,7 @@ metadata:
 # Browser Tools
 
 Chrome DevTools Protocol for agent-assisted web automation. Launches and connects to a
-dedicated Chrome instance on `:9222`.
+dedicated Chrome instance on `:9222`. Requires Node.js 22.12 or newer.
 
 Use `using-chrome-cdp` instead when the user already has Chrome open and wants you to
 inspect or drive that live session. This skill is for a separate browser you launch with
