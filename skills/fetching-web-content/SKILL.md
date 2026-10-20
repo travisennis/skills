@@ -61,5 +61,5 @@ Run this script from this file's directory.
 - Jina cleaning is better but requires API key; falls back to local cleaning
 - `--user-agent` applies to the direct fetch only; Jina cleaning uses its own request
 - Follows redirects (max 5)
-- Respects robots.txt
+- Does not evaluate robots.txt; check the target site's policy before automated fetching
 - Handles: HTML, text, markdown, JSON, XML, images (base64)
