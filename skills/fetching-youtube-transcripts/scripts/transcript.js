@@ -1,14 +1,27 @@
 #!/usr/bin/env node
 
-import { YoutubeTranscript } from "youtube-transcript-plus";
+import {
+	YoutubeTranscript,
+	YoutubeTranscriptNotAvailableLanguageError,
+} from "youtube-transcript-plus";
 
-const videoId = process.argv[2];
+const args = process.argv.slice(2);
+let language = "en";
+let videoId;
 
-if (!videoId) {
-	console.error("Usage: transcript.js <video-id-or-url>");
+for (let i = 0; i < args.length; i++) {
+	if (args[i] === "--lang" || args[i] === "-l") {
+		language = args[++i];
+	} else if (videoId === undefined) {
+		videoId = args[i];
+	}
+}
+
+if (!videoId || !language) {
+	console.error("Usage: transcript.js <video-id-or-url> [--lang <code>]");
 	console.error("Example: transcript.js EBw7gsDPAYQ");
 	console.error(
-		"Example: transcript.js https://www.youtube.com/watch?v=EBw7gsDPAYQ",
+		"Example: transcript.js https://www.youtube.com/watch?v=EBw7gsDPAYQ --lang es",
 	);
 	process.exit(1);
 }
@@ -23,7 +36,25 @@ if (videoId.includes("youtube.com") || videoId.includes("youtu.be")) {
 }
 
 try {
-	const transcript = await YoutubeTranscript.fetchTranscript(extractedId);
+	// Request the preferred language explicitly: without `lang` the library
+	// takes the first caption track YouTube returns, which may be an
+	// auto-dub or translation rather than the video's spoken language.
+	// Fall back to the default track when the preferred language is missing.
+	let transcript;
+	try {
+		transcript = await YoutubeTranscript.fetchTranscript(extractedId, {
+			lang: language,
+		});
+	} catch (error) {
+		if (!(error instanceof YoutubeTranscriptNotAvailableLanguageError)) {
+			throw error;
+		}
+		// Tell the user rather than silently returning a different language.
+		// The error message lists the available language codes.
+		console.error(`Warning: ${error.message}`);
+		console.error("Falling back to the first available track.");
+		transcript = await YoutubeTranscript.fetchTranscript(extractedId);
+	}
 
 	for (const entry of transcript) {
 		const timestamp = formatTimestamp(entry.offset / 1000);
