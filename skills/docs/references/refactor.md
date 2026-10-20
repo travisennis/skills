@@ -87,6 +87,7 @@ Apply the changes directly to the working tree.
 2. **Create `docs/` directory and structure** — only docs that were in the manifest, following the scaffold in `taxonomy.md`.
 3. **Move content** — relocate detailed rules from AGENTS.md into appropriate deeper docs (use the shapes in `doc-templates.md` where a doc is created fresh). Preserve existing docs/ content; slot it into the new structure.
 4. **Create `docs/README.md`** — documentation index per the requirements in `taxonomy.md`.
+5. **Update `CONTRIBUTING.md` when contributor conventions are in scope** — commit message format, branch naming, PR title conventions, issue references, and required local checks belong there. Route commit and branch work from `AGENTS.md` to `CONTRIBUTING.md` instead of duplicating the detailed rules in the routing file.
 
 ### Guardrail creation rule
 

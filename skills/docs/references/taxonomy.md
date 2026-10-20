@@ -27,7 +27,7 @@ Each topic has exactly one authoritative home. When two docs cover the same topi
 
 - `AGENTS.md`: agent routing, compatibility surfaces, the operating loop — not every procedure.
 - `README.md`: project purpose, quick start, user-facing install/use path.
-- `CONTRIBUTING.md`: contributor workflow, local setup, validation commands, PR expectations.
+- `CONTRIBUTING.md`: contributor workflow, local setup, validation commands, PR expectations, commit message format, branch naming, PR title conventions, and issue references.
 - `ARCHITECTURE.md`: codemap, invariants, boundaries, cross-cutting system concerns.
 - `docs/README.md` or `docs/index.md`: documentation navigation — not agent behavior.
 - `docs/guardrails/`: risk-specific rules and constraints.
