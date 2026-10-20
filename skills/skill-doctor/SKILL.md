@@ -9,6 +9,9 @@ metadata:
 
 Grade the user's agent setup by scoring recent local conversations, then propose concrete skill edits and render one shareable report page.
 
+Related: use `skill-creator` to create or update a skill, and `prompt-audit` to clean up
+the prompt text those edits touch.
+
 The report can cover conversations in the current repository, conversations in selected projects, or all local conversations. It can evaluate project skills alone or project and global skills together. It does not need to run inside the harness that produced the conversations — any locally available supported session source works.
 
 Everything runs locally. Never upload transcripts, session files, or any excerpt of them anywhere. The only shareable artifact is the report the user chooses to post.

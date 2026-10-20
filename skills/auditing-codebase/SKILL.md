@@ -13,6 +13,9 @@ metadata:
 
 Use git commands to diagnose a repository before reading its code.
 
+Related: use `finding-improvements` when the goal is a prioritized, actionable
+improvement backlog rather than git-history diagnostics and churn analysis.
+
 ## Reporting Requirements
 
 When presenting audit results, always use the exact structure in [report-template.md](references/report-template.md).

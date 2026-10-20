@@ -10,6 +10,9 @@ metadata:
 
 This skill helps you extract knowledge, patterns, and workflows from the current conversation and persist them as a reusable skill.
 
+Related: use `skill-creator` to create a skill from scratch or revise one in depth, and
+`prompt-audit` to remove dated patterns from the result.
+
 ## When to Use
 
 - The user says "capture this as a skill" or "save this for next time"

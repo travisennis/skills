@@ -11,6 +11,9 @@ metadata:
 
 Search the web with Exa (preferred, requires API key) or DuckDuckGo.
 
+Related: use `fetching-web-content` to read a specific result URL, or
+`browser-automation` / `using-chrome-cdp` for pages that require JavaScript or a login.
+
 ## Setup
 
 ```bash

@@ -58,6 +58,7 @@ Run this script from this file's directory.
 
 ## Notes
 
+- For JavaScript-heavy or authenticated pages, use `browser-automation` or `using-chrome-cdp` instead of direct fetching
 - Jina cleaning is better but requires API key; falls back to local cleaning
 - `--user-agent` applies to the direct fetch only; Jina cleaning uses its own request
 - Follows redirects (max 5)

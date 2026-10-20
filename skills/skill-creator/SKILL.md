@@ -11,6 +11,10 @@ metadata:
 
 This skill provides guidance for creating effective skills.
 
+Related: use `capture-skill` to turn learnings from the current conversation into a
+skill, `skill-doctor` to grade installed skills from real sessions, and `prompt-audit`
+to remove dated prompting patterns from skill text.
+
 ## About Skills
 
 Skills are modular, self-contained packages that extend the agent's capabilities by providing
