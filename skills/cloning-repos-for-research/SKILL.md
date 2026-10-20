@@ -1,6 +1,7 @@
 ---
 name: cloning-repos-for-research
 description: Clone a GitHub or other git repository into /tmp for temporary research and investigation. Use when the user asks to inspect, research, audit, compare, or understand an external git repository without adding it to the current workspace.
+user-invocable: true
 metadata:
   version: "1.0"
 ---

@@ -1,6 +1,7 @@
 ---
 name: browser-automation
 description: Interactive browser automation via a dedicated Chrome instance on port 9222. Use when you need a disposable browser you control, to test frontends, or when interaction with a visible browser is required. For the user's live Chrome session, use using-chrome-cdp instead.
+user-invocable: true
 metadata:
   version: "1.0"
 ---

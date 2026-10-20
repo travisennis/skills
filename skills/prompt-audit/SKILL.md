@@ -1,6 +1,7 @@
 ---
 name: prompt-audit
 description: Audit system prompts, skill files, and tool descriptions for dated prompting patterns tuned to older models — pressure language, scaffolds replaced by API features, over-specification, fossils, brittle skill text, misplaced tool-description content, and request-config fossils. Use when the user asks to audit, clean up, or modernize prompts, skills, or tool definitions, when migrating prompts to a newer model, or when prompt behavior has degraded (over-triggering, over-planning, rigid responses). Produces an audit report with file:line findings plus a proposed diff; never applies edits without consent.
+user-invocable: true
 metadata:
   version: "1.0"
 ---

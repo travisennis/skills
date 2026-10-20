@@ -1,6 +1,9 @@
 ---
 name: cataloging-sources
 description: Catalog an external source the user read or watched (YouTube video, article, paper, talk, podcast, or book) into the personal Notion research Sources library (Research Notes), recording its URL, author, media type, and a written summary in the page body. Use when the user asks to track, log, or catalog a source by its URL, or wants summary notes of an article or talk saved to their personal research library. For publishing a research document (title + body) to the Cake Research data source or another Notion target, use publishing-research-documents.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Research Sources

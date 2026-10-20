@@ -1,6 +1,7 @@
 ---
 name: fetching-youtube-transcripts
 description: Fetch transcripts from YouTube videos for summarization and analysis. Use when the user asks to get, extract, or retrieve a YouTube video transcript.
+user-invocable: true
 metadata:
   version: "1.0"
 ---

@@ -1,6 +1,9 @@
 ---
 name: creating-agents-md
 description: Create or update a basic root AGENTS.md for a repository that has no agent instructions yet. Use when the user asks to create AGENTS.md, add starter agent instructions, or capture setup, test, style, and Git conventions for an agent. For restructuring an existing AGENTS.md or docs/ tree into a progressive-disclosure system, use the docs skill instead.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Creating AGENTS.md

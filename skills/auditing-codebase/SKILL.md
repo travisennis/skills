@@ -4,6 +4,9 @@ description: >
   Investigate, audit, and surface information about a git repository using diagnostic commands.
   Use when you need to: understand codebase health, hotspots, and pain points before reading code; identify high-churn files, bug clusters, and technical debt; analyze contributor patterns, bus factor, and team dynamics; assess project velocity, momentum, and maintenance status; surface information for due diligence, onboarding, or audits.
   Commands include file churn analysis, bug density mapping, commit velocity charts, contributor attribution, and firefighting detection.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Auditing Codebase

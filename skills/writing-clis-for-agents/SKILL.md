@@ -6,6 +6,7 @@ description: >-
   idempotency, dry-run, and predictable structure. Use when building a CLI,
   adding commands, writing --help, or when the user mentions agents, terminals,
   or automation-friendly CLIs.
+user-invocable: true
 metadata:
   version: "1.0"
 ---

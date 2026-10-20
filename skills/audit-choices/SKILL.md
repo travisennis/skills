@@ -1,6 +1,9 @@
 ---
 name: audit-choices
 description: Audit the choices an implementing agent made, not its diff — a pure decision audit that traces the session's history into a choices ledger, changes no code, and never blocks an unsupervised run. Working code still embeds architecture the user never chose; surface it because future work inherits it. Use when the user wants to review the decisions the AI made on their behalf, before merging or committing AI-implemented work, when integrating a delegated subagent's pass, or when a fix "works" but might be a point fix.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Audit Choices

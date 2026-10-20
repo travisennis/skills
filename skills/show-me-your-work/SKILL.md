@@ -2,6 +2,9 @@
 name: show-me-your-work
 description: "Keep a reviewable decision trail for long-running, delegated, or unattended work using a TSV log with one row per decision: what, why, evidence, and result. Use when the user asks to see the agent's work, when multiple agents or phases contribute to a task, or when a human will review the result after stepping away. Keep the trail local by default; commit it when a reviewer needs it to trust the result."
 disable-model-invocation: true
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Show me your work

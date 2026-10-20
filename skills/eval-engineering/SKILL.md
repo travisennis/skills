@@ -1,6 +1,9 @@
 ---
 name: eval-engineering
 description: Iteratively inspect an agent repository and optional traces, interview the user, and create, run, and audit Harbor evals one at a time. Use for agent evals, benchmark tasks, regression cases, trace-informed evals, verifier design, or controlled agent environments.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Eval Engineering

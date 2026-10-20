@@ -1,6 +1,7 @@
 ---
 name: grill-with-docs
 description: Grilling session that challenges a plan against the existing domain model, sharpens terminology, and records resolved terms and decisions in CONTEXT.md and ADRs. Use when the user wants to stress-test a plan against their project's language and documented decisions. For a generic interview use grill-me; for the full unknowns pass use grill-for-unknowns.
+user-invocable: true
 metadata:
   version: "1.0"
 ---

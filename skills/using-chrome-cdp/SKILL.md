@@ -1,6 +1,9 @@
 ---
 name: using-chrome-cdp
 description: Interact with the user's live Chrome browser via Chrome DevTools Protocol (CDP). Use when the user wants to inspect, debug, screenshot, navigate, click, or interact with web pages already open in their Chrome browser. Works with live Chrome sessions - no separate browser instance needed. Requires Chrome with remote debugging enabled. For a disposable browser you launch yourself, use browser-automation instead.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Chrome CDP

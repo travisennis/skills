@@ -1,6 +1,9 @@
 ---
 name: grooming-backlog
 description: Go through Open, Pending, and Blocked tasks in the backlog and make sure all decisions are made, dependencies are correct, and no open questions remain. The goal is to get tasks into a ready state for work.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Grooming Backlog

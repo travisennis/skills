@@ -1,6 +1,9 @@
 ---
 name: grill-for-unknowns
 description: Interrogate complex implementation plans against docs, source, tests, and real constraints before building. Use when the agent needs to surface material unknowns, pressure-test assumptions, clarify domain language, expose unstated user criteria through prototypes or references, prepare a launch packet for agents, or recover from an attempt that failed because it rushed past ambiguity. For a short one-question-at-a-time interview use grill-me; for a docs and domain-modeling emphasis use grill-with-docs.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Docs + Unknowns Grill

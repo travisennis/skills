@@ -1,6 +1,9 @@
 ---
 name: fetching-x-content
 description: Retrieve individual X/Twitter post and article content through a browser session instead of the paid X API. Use when asked to fetch, read, scrape, extract, summarize, archive, or cite content from x.com or twitter.com post/status URLs or X article URLs.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # X Content Fetching

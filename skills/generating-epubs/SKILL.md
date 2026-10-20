@@ -1,6 +1,9 @@
 ---
 name: generating-epubs
 description: "Convert web articles to EPUB e-books using reader mode extraction. Use when the user wants to: create an EPUB from web URLs, build a reading collection from web articles, save web articles for offline reading, or convert URLs from a file to EPUB format."
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Generating EPUBs

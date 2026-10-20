@@ -1,6 +1,9 @@
 ---
 name: delegating-to-cake
 description: Use cake as the sole subagent and codebase access boundary for repository research, implementation, debugging, testing, refactoring, documentation, or code review. Activate when the user requires all codebase work to be performed by executing cake, asks Codex to use cake as a subagent, or wants a task delegated end to end through the cake CLI rather than using local file or code tools directly.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Delegate To Cake

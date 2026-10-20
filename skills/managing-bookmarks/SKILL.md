@@ -1,6 +1,9 @@
 ---
 name: managing-bookmarks
 description: Manage bookmarks in Raindrop.io for research workflows. Use when the user asks to find, search, retrieve, save, organize, or manage saved bookmarks, links, or resources stored in Raindrop.io. Covers searching bookmarks, fetching full article text for reading and distilling, saving new bookmarks, deleting bookmarks, tag management for organization, and collection browsing. Essential for research workflows involving discovering, reading, distilling, and note-taking from saved web resources.
+user-invocable: true
+metadata:
+  version: "1.0"
 ---
 
 # Raindrop.io Bookmark Management
