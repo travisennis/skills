@@ -8,6 +8,9 @@ metadata:
 
 # Test Audit
 
+Related: use `tdd` for the test-first implementation loop, and `code-review` for a
+broader review of the change that contains the tests.
+
 Three modes, one value bar. Authoring mode gates every new or changed test at
 write time. Audit mode runs focused sweeps of tests that re-assert source,
 duplicate stronger proof, couple behavior to implementation, or keep test-only

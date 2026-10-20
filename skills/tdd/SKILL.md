@@ -9,6 +9,9 @@ metadata:
 
 # Test-Driven Development
 
+Related: use `test-audit` to judge whether existing or newly written tests earn their
+maintenance cost.
+
 ## Philosophy
 
 **Core principle**: Tests should verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't.

@@ -20,6 +20,14 @@ Use this skill when asked to review, audit, check, or analyze code in **any scen
 a branch against main, unstaged changes, staged changes, a specific commit, recent commits,
 or specific files.
 
+## Related skills
+
+- `preflight` runs the pre-commit self-review pass; use this skill to review a branch,
+  commit, or PR.
+- `test-audit` judges test value; `tdd` covers test-first implementation.
+- `red-teaming` runs a security-focused pass over the whole repository or a named
+  boundary.
+
 ---
 
 ## 1. Scope Detection
