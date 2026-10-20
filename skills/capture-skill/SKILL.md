@@ -33,15 +33,17 @@ Summarize what you plan to capture and confirm with the user before proceeding.
 
 ### Phase 2: Decide Destination
 
-If the user already specified a skill or the destination is obvious from context, just proceed. Otherwise, use the AskQuestion tool (or ask conversationally) to clarify:
+If the user already specified a skill or the destination is obvious from context, just proceed. Otherwise, use the agent's question tool when it has one; otherwise ask conversationally:
 
 1. **New or existing skill?**
-   - If existing: Which skill to update? (list relevant skills from `~/.cursor/skills/` and `.cursor/skills/`)
+   - If existing: Which skill to update? List the active skill directories, for example
+     `~/.agents/skills/`, `~/.cursor/skills/`, `~/.claude/skills/`, or their project
+     equivalents.
    - If new: What should it be named?
 
 2. **Storage location** (for new skills):
-   - Personal (`~/.cursor/skills/`) — available across all projects
-   - Project (`.cursor/skills/`) — shared with the repository
+   - Personal (`~/.agents/skills/`, or the harness's global skill directory) — available across all projects
+   - Project (`.agents/skills/`, or the harness's project skill directory) — shared with the repository
 
 ### Phase 3: Draft the Skill Content
 
@@ -120,6 +122,6 @@ Note how this captures the diagnostic sequence and common solutions without any 
 
 **Conversation had multiple topics**: Ask which specific learning to capture, or suggest creating separate skills for distinct topics.
 
-**Learning is too small for a skill**: Suggest creating a Cursor rule (`.cursor/rules/`) instead, which is better suited for single-line or short guidelines.
+**Learning is too small for a skill**: Suggest adding it to the repository's existing agent instruction file (for example `AGENTS.md`) or a short rule file instead; single-line guidance does not need a skill.
 
 **Existing skill needs major rewrite**: Confirm with the user whether to restructure the existing skill or create a new one that supersedes it.
