@@ -37,6 +37,7 @@ A collection of specialized skills for coding agents, providing structured workf
 | grooming-backlog | 1.0 | ✅ | ✅ |
 | maintain-verification-skill | 1.0 | ✅ | ❌ |
 | managing-bookmarks | 1.0 | ✅ | ✅ |
+| merge-risk | 1.0 | ✅ | ✅ |
 | optimise-github-actions | 1.0 | ✅ | ✅ |
 | playground | 1.0 | ✅ | ✅ |
 | preflight | 1.0 | ✅ | ✅ |

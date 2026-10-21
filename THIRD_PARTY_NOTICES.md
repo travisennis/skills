@@ -10,6 +10,7 @@ include material from other projects and retain their own license terms.
 | `grill-for-unknowns` | Matt Pocock and Nico Bailon | MIT; see `skills/grill-for-unknowns/LICENSE` |
 | `prompt-audit` | Adapted from the `prompt-audit` prompt in `anthropics/skills` | See the upstream repository for terms |
 | `browser-automation` | Browser tooling adapted from Mario Zechner's browser-tools | MIT; see `skills/browser-automation/package.json` |
+| `merge-risk` | Matt Pocock's `pr` skill, via `warpdotdev/common-skills` | MIT; see `skills/merge-risk/LICENSE` |
 
 JavaScript dependencies are declared in each skill's `package.json` and locked in its
 `package-lock.json`; their licenses remain with their respective authors.
