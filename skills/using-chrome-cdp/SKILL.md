@@ -1,6 +1,6 @@
 ---
 name: using-chrome-cdp
-description: Interact with the user's live Chrome browser via Chrome DevTools Protocol (CDP). Use when the user wants to inspect, debug, screenshot, navigate, click, or interact with web pages already open in their Chrome browser. Works with live Chrome sessions - no separate browser instance needed. Requires Chrome with remote debugging enabled. For a disposable browser you launch yourself, use browser-automation instead.
+description: Interact with the user's live Chrome browser via Chrome DevTools Protocol (CDP). Use when the user wants to inspect, debug, screenshot, navigate, click, or interact with web pages already open in their Chrome browser. Works with live Chrome sessions - no separate browser instance needed. Requires Chrome with remote debugging enabled. This skill attaches to a browser the user already has open; it does not launch a separate instance.
 user-invocable: true
 metadata:
   version: "1.0"
@@ -12,8 +12,8 @@ Lightweight Chrome DevTools Protocol CLI for interacting with your live Chrome b
 session. Connects directly via WebSocket - no Puppeteer, works with 100+ tabs, instant
 connection.
 
-Use `browser-automation` instead when you need a separate browser instance with its own
-profile or a clean session. This skill attaches to Chrome the user already has open.
+This skill attaches to Chrome the user already has open. It does not launch a separate
+browser instance or create a clean profile.
 
 ## Prerequisites
 

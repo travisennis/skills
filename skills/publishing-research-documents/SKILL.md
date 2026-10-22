@@ -1,6 +1,6 @@
 ---
 name: publishing-research-documents
-description: "Publish a Markdown research document (title + body) to Notion: as a research note in the Cake Research data source with Type/Status/Confidence/Tags properties set and verified, or to any other Notion database, data source, or page the user names. Use when the user asks to publish, post, or file a research document, note, or finding to Notion. For cataloging an external source (URL, author, media type) into the personal Sources library, use cataloging-sources."
+description: "Publish a Markdown research document (title + body) to Notion: as a research note in the Cake Research data source with Type/Status/Confidence/Tags properties set and verified, or to any other Notion database, data source, or page the user names. Use when the user asks to publish, post, or file a research document, note, or finding to Notion."
 user-invocable: true
 metadata:
   version: "1.0"
@@ -19,17 +19,8 @@ target.
 - The IDs below are personal defaults for Travis's workspace. Replace them when
   publishing to another workspace.
 - `ntn api` can hang in headless contexts. Run the commands below from an interactive
-  shell, put a timeout around them, or use the direct HTTP approach in
-  `cataloging-sources/scripts/add_source.py` when no `ntn` command is required.
-
-## Related skills
-
-- `cataloging-sources` catalogs an external source the user read or watched
-  (YouTube video, article, paper, talk, ...) into the personal Sources library
-  (Research Notes) by URL, with author and media type. Use it for
-  "I read/watched this" items.
-- Use this skill for research documents (title + body) going into the Cake
-  Research data source or any target the user names.
+  shell, put a timeout around them, or call the Notion API directly over HTTP with
+  `NOTION_API_TOKEN` and `Notion-Version: 2022-06-28` when no `ntn` command is required.
 
 The CLI behavior and IDs below were verified against the `ntn` CLI on 2026-08-16.
 Re-check them if `ntn` changes or the workspace is recreated.

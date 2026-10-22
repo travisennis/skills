@@ -33,7 +33,6 @@ A collection of specialized skills for coding agents, providing structured workf
 | generating-epubs | 1.0 | ✅ | ✅ |
 | grill-for-unknowns | 1.0 | ✅ | ✅ |
 | grill-me | 1.0 | ✅ | ❌ |
-| grill-with-docs | 1.0 | ✅ | ✅ |
 | grooming-backlog | 1.0 | ✅ | ✅ |
 | maintain-verification-skill | 1.0 | ✅ | ❌ |
 | managing-bookmarks | 1.0 | ✅ | ✅ |
@@ -54,6 +53,33 @@ A collection of specialized skills for coding agents, providing structured workf
 | using-chrome-cdp | 1.0 | ✅ | ✅ |
 | web-searching | 1.0 | ✅ | ❌ |
 | writing-clis-for-agents | 1.0 | ✅ | ✅ |
+
+## Choosing Between Related Skills
+
+Every skill is independently installable; none requires another skill to be present.
+Use this map when several skills could fit.
+
+- **Reviewing a change:** `code-review` finds defects. `preflight` is the author-side
+  readiness pass. `merge-risk` decides whether the evidence supports merging.
+  `red-teaming` is an adversarial whole-repository or named-boundary pass. `test-audit`
+  judges whether tests earn their keep. `tdd` is the test-first implementation loop.
+- **Planning:** `grill-me` is a short one-question-at-a-time interview.
+  `grill-for-unknowns` is the full planning pass, including docs-grounded grilling and
+  domain modeling.
+- **Web:** `web-searching` finds results. `fetching-web-content` reads static pages.
+  `browser-automation` launches a disposable browser. `using-chrome-cdp` drives the
+  user's live Chrome.
+- **Documentation:** `creating-agents-md` writes a starter root `AGENTS.md`. `docs`
+  audits, restructures, writes, and governs a documentation set.
+- **Skill authoring:** `skill-creator` builds a skill. `capture-skill` turns the current
+  conversation into one. `prompt-audit` removes dated prompting patterns.
+  `skill-doctor` grades installed skills from session history.
+- **Research publishing:** `cataloging-sources` files an external source by URL.
+  `publishing-research-documents` publishes a written document.
+- **Codebase audit:** `auditing-codebase` reports git-history diagnostics.
+  `finding-improvements` turns a survey into a prioritized backlog.
+- **Verification:** `create-verification-skill` generates a project-local proof harness.
+  `maintain-verification-skill` keeps its feature map honest.
 
 ## Notes
 

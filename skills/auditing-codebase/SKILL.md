@@ -11,10 +11,8 @@ metadata:
 
 # Auditing Codebase
 
-Use git commands to diagnose a repository before reading its code.
-
-Related: use `finding-improvements` when the goal is a prioritized, actionable
-improvement backlog rather than git-history diagnostics and churn analysis.
+Use git commands to diagnose a repository before reading its code. This skill reports
+git-history diagnostics; it does not produce a prioritized improvement backlog.
 
 ## Reporting Requirements
 

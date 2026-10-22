@@ -12,8 +12,8 @@ Run a security review with a proof standard: **a candidate is not a finding unti
 show impact or exploitability**. This is a whole-repository or named-boundary pass, not a
 diff-only code review.
 
-Related: `code-review` covers correctness, architecture, and performance alongside
-security. Use this skill when the goal is specifically adversarial analysis.
+Use this skill when the goal is adversarial analysis of a whole repository or a named
+trust boundary. It does not review a diff for general correctness or maintainability.
 
 ## Workflow
 
@@ -22,9 +22,9 @@ security. Use this skill when the goal is specifically adversarial analysis.
 2. **Map the attack surface.** Trace user input through HTTP, CLI, files, queues,
    templates, deserialization, shell, database, browser, and network boundaries. Record
    authentication and authorization checks, secret handling, and privileged operations.
-3. **Apply the checklist.** Read `../code-review/references/security-checklist.md` and
-   work the sections that match the surface. Add repository-specific threats where the
-   generic checklist is silent.
+3. **Apply the checklist.** Read `references/security-checklist.md` and work the
+   sections that match the surface. Add repository-specific threats where the generic
+   checklist is silent.
 4. **Prove each candidate.** For every candidate, record:
    - the concrete path from input to effect;
    - preconditions (auth, config, data, platform);

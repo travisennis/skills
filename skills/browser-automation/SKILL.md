@@ -1,6 +1,6 @@
 ---
 name: browser-automation
-description: Interactive browser automation via a dedicated Chrome instance on port 9222. Use when you need a disposable browser you control, to test frontends, or when interaction with a visible browser is required. For the user's live Chrome session, use using-chrome-cdp instead.
+description: Interactive browser automation via a dedicated Chrome instance on port 9222. Use when you need a disposable browser you control, to test frontends, or when interaction with a visible browser is required. This skill launches its own browser; it does not attach to a browser the user already has open.
 user-invocable: true
 metadata:
   version: "1.0"
@@ -11,9 +11,8 @@ metadata:
 Chrome DevTools Protocol for agent-assisted web automation. Launches and connects to a
 dedicated Chrome instance on `:9222`. Requires Node.js 22.12 or newer.
 
-Use `using-chrome-cdp` instead when the user already has Chrome open and wants you to
-inspect or drive that live session. This skill is for a separate browser you launch with
-its own profile.
+This skill is for a separate browser you launch with its own profile. It does not attach
+to a Chrome session the user already has open.
 
 ## Setup
 

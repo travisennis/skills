@@ -10,10 +10,8 @@ metadata:
 
 Use this skill after a change is functionally correct and before commit or
 handoff. The PR, commit text, task notes, and final response should describe
-already-preflighted code.
-
-Related: use `code-review` to review a branch, commit, or PR; use `test-audit` when
-the change adds or edits tests.
+already-preflighted code. This is an author-side readiness pass, not a full review
+after handoff.
 
 ## Goals
 

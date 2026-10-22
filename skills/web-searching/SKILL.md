@@ -9,10 +9,8 @@ metadata:
 
 # Web Search
 
-Search the web with Exa (preferred, requires API key) or DuckDuckGo.
-
-Related: use `fetching-web-content` to read a specific result URL, or
-`browser-automation` / `using-chrome-cdp` for pages that require JavaScript or a login.
+Search the web with Exa (preferred, requires API key) or DuckDuckGo. This skill returns
+results; it does not read or render the pages behind them.
 
 ## Setup
 

@@ -11,9 +11,8 @@ metadata:
 Judge a PR as a merge decision, not as a code review. The question is not "is
 this code good?" but "what could go wrong if this lands, and how would we know?"
 
-Use `code-review` to find defects in the change; use this skill to decide whether
-the evidence supports merging it. Use `preflight` for the author-side pass before
-commit.
+This skill does not look for defects in the change; it decides whether the evidence
+supports merging it. It is a merge decision, not an author-side readiness pass.
 
 ## Gather evidence first
 

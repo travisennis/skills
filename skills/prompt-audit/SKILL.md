@@ -8,9 +8,6 @@ metadata:
 
 # Prompt Audit — Finding and Removing Dated Prompting Patterns
 
-Related: use `skill-creator` to create or update a skill, and `skill-doctor` to grade
-how installed skills perform in real sessions.
-
 Execute the steps below in order — do not summarize them back to the user. Start with Step 0 (establish scope and target model), and finish by producing both deliverables: the audit report (Step 5) and the proposed diff (Step 6).
 
 Prompts, skills, and tool descriptions accumulate instructions tuned to older models: emphasis added because an old model under-triggered, step-by-step scripts added because an old model planned poorly, format scaffolds written before the API had structured outputs. Current models follow instructions more closely and more literally than the models much of this text was written for, so the leftover text is not just wasted tokens — specific outdated instructions actively degrade behavior (over-triggering, over-planning, rigid responses in gray areas), while merely irrelevant text is comparatively harmless. The audit's job is therefore to find **specific dated instructions**, not to make prompts shorter. "Every token earns its place" is the frame; "make it short" is not.

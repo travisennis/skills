@@ -4,7 +4,7 @@ This skill adapts three upstream Matt Pocock skills plus Thariq's "Finding Your 
 
 ## Source skills
 
-- `grill-with-docs`: https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md
+- Matt Pocock's grill-with-docs: https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md
   - Minimal composition skill: run a `/grilling` session while using `/domain-modeling`.
   - Important implication: the real behavior comes from combining relentless interview + domain-model maintenance.
 - `grilling`: https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md
@@ -52,6 +52,6 @@ The article's concrete tactics are: blindspot passes, brainstorming/prototypes, 
 
 Lessons from adapting the upstream skills. These are guidance for future edits to this package, not runtime behavior for the skill itself:
 
-- **Inspect the full upstream composition.** Do not stop at the headline artifact when adapting a skill/article/framework. `grill-with-docs` looked tiny, but its real behavior came from its linked `grilling` + `domain-modeling` skills and their support files.
+- **Inspect the full upstream composition.** Do not stop at the headline artifact when adapting a skill/article/framework. Matt Pocock's grill-with-docs looked tiny, but its real behavior came from its linked `grilling` + `domain-modeling` skills and their support files.
 - **Treat a newly authored skill as a first pass.** Re-read it against the source material and ask what dependency, support file, template, or behavior is missing before calling it done.
 - **Preserve attribution and licenses.** Keep attribution in this lineage reference and upstream license/copyright notices in `LICENSE`. Do not replace upstream copyright with only the local adapter's name.

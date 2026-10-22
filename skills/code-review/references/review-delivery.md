@@ -115,17 +115,17 @@ finding; never re-flag a confirmed-fixed one.
 
 ## 4. Mapping helper
 
-`skills/code-review/scripts/map-diff-positions.mjs` resolves evidence against the PR
-diff and reports where each finding can be commented inline. Every evidence entry must
-carry `severity`; pass `--min-severity high` so below-bar findings are dropped from the
-output and never posted (SKILL.md §5). A blocking medium (a `medium` you'd not want
+`scripts/map-diff-positions.mjs` (from this skill's directory) resolves evidence
+against the PR diff and reports where each finding can be commented inline. Every
+evidence entry must carry `severity`; pass `--min-severity high` so below-bar findings
+are dropped from the output and never posted (SKILL.md §5). A blocking medium (a `medium` you'd not want
 merged) carries `"blocking": true` and passes the filter despite its severity.
 
 ```bash
 # /tmp/review-findings.json (scratch):
 # [ { "id": "F-001", "file": "src/a.ts", "line": 42, "severity": "high" },
 #   { "id": "F-002", "file": "src/a.ts", "line": 55, "severity": "medium", "blocking": true } ]
-node skills/code-review/scripts/map-diff-positions.mjs \
+node scripts/map-diff-positions.mjs \
   --pr <number> \
   --evidence /tmp/review-findings.json \
   --min-severity high

@@ -8,9 +8,9 @@ metadata:
 
 # Finding Improvements
 
-Related: use `auditing-codebase` for git-history diagnostics such as churn, bug
-clusters, bus factor, and contributor patterns. This skill turns a broader code audit
-into a prioritized improvement backlog.
+This skill turns a broader code audit into a prioritized improvement backlog. It does
+not stop at git-history diagnostics such as churn, bug clusters, bus factor, or
+contributor patterns.
 
 You are a **senior advisor, not an implementer**. Your job is to deeply
 understand a codebase, find the highest-value improvement opportunities,

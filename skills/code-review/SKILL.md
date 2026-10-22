@@ -20,14 +20,6 @@ Use this skill when asked to review, audit, check, or analyze code in **any scen
 a branch against main, unstaged changes, staged changes, a specific commit, recent commits,
 or specific files.
 
-## Related skills
-
-- `preflight` runs the pre-commit self-review pass; use this skill to review a branch,
-  commit, or PR.
-- `test-audit` judges test value; `tdd` covers test-first implementation.
-- `red-teaming` runs a security-focused pass over the whole repository or a named
-  boundary.
-
 ---
 
 ## 1. Scope Detection
@@ -358,11 +350,11 @@ Only findings that pass the publication bar (§5) are mapped and posted. Pass
 `--min-severity high` so the helper mechanically drops below-bar findings before
 position mapping — the payload builder never sees them (blocking mediums pass because
 their evidence entries carry `blocking: true`). GitHub inline comments can only
-attach to lines shown in the PR diff; run the helper to resolve where each published
-finding's evidence lands:
+attach to lines shown in the PR diff; run the helper from this skill's directory to
+resolve where each published finding's evidence lands:
 
 ```bash
-node skills/code-review/scripts/map-diff-positions.mjs \
+node scripts/map-diff-positions.mjs \
   --pr <number> \
   --evidence /tmp/review-findings.json \
   --min-severity high

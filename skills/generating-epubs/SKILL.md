@@ -27,7 +27,7 @@ Convert one or more web articles into a single EPUB with automatic table of cont
 3. **Write a URL file** (if many URLs) — For more than ~3 URLs, write them to a temporary file (one URL per line, `#` comments allowed) and use the `-f` flag.
 4. **Run the script** — Execute with `uv run` from the skill directory:
    ```bash
-   uv run /path/to/skills/generating-epubs/scripts/web-to-epub.py [urls or -f file] -o output.epub
+   uv run scripts/web-to-epub.py [urls or -f file] -o output.epub
    ```
 5. **Check the summary** — The script outputs a summary showing how many articles succeeded/failed. **You MUST report any failed URLs to the user** with their reasons.
 6. **Verify output** — Confirm the EPUB was created, report the absolute path and file size to the user.

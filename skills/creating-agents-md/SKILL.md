@@ -1,6 +1,6 @@
 ---
 name: creating-agents-md
-description: Create or update a basic root AGENTS.md for a repository that has no agent instructions yet. Use when the user asks to create AGENTS.md, add starter agent instructions, or capture setup, test, style, and Git conventions for an agent. For restructuring an existing AGENTS.md or docs/ tree into a progressive-disclosure system, use the docs skill instead.
+description: Create or update a basic root AGENTS.md for a repository that has no agent instructions yet. Use when the user asks to create AGENTS.md, add starter agent instructions, or capture setup, test, style, and Git conventions for an agent. This skill writes only the root entry file; it does not restructure an existing docs tree.
 user-invocable: true
 metadata:
   version: "1.0"
@@ -12,10 +12,11 @@ Create a useful root `AGENTS.md` for the current repository. `AGENTS.md` is a "R
 for agents": concise, actionable instructions that help stateless coding agents discover
 the repo, edit safely, and verify their work.
 
-This skill covers the basic starter file. If the repo already has `AGENTS.md`,
-`CLAUDE.md`, `.cursorrules`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, or a substantial
-`docs/` tree, and the user wants routing docs, progressive disclosure, or a docs
-restructure, use the `docs` skill (`/docs refactor`) instead.
+This skill covers the basic starter file and only writes the root entry point. If the
+repo already has `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `CONTRIBUTING.md`,
+`ARCHITECTURE.md`, or a substantial `docs/` tree, and the user wants routing docs,
+progressive disclosure, or a docs restructure, treat that as a different scope and say
+so instead of expanding this pass.
 
 ## Discovery Checklist
 

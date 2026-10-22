@@ -81,7 +81,3 @@ These apply in every mode:
 - `references/doc-templates.md` — fill-in shapes for guides, references, guardrails, runbooks, ADRs, and ARCHITECTURE.md.
 - `references/audit.md` / `refactor.md` / `write.md` / `maintain.md` / `govern.md` — per-mode workflows.
 - `assets/report-template.md` — the audit report format.
-
-## Related skill
-
-For a new repository that only needs a basic root `AGENTS.md`, use `creating-agents-md`. Come back here when the repo already has docs and needs auditing, restructuring, or governance.
